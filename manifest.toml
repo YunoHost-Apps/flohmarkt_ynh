@@ -1,0 +1,112 @@
+#:schema https://raw.githubusercontent.com/YunoHost/apps/master/schemas/manifest.v2.schema.json
+
+packaging_format = 2
+
+id = "flohmarkt"
+name = "flohmarkt"
+description.en = "A decentral federated small ads platform"
+
+version = "1.0~ynh1"
+
+maintainers = ["Chris Vogel"]
+
+[upstream]
+license = "AGPL-3.0"
+website = "https://codeberg.org/flohmarkt/flohmarkt"
+demo = "https://flohmarkt.ween.de/"
+admindoc = "https://codeberg.org/flohmarkt/flohmarkt/wiki"
+userdoc = "https://codeberg.org/flohmarkt/flohmarkt/wiki"
+code = "https://codeberg.org/flohmarkt/flohmarkt"
+# For example, for Nextcloud, the CPE is 'cpe:2.3:a:nextcloud:nextcloud' (no need to include the version number)
+# cpe = "does_not_exist_yet"
+
+# This is meant to be an URL where people can financially support this app, especially when its development is based
+# on volunteers and/or financed by its community. YunoHost may later advertise it in the webadmin.
+# fund = "???"
+
+[integration]
+yunohost = ">= 11.2"
+architectures = "all"
+multi_instance = true
+
+# the "ldap" key corresponds to wether or not a user *can* login on the app using
+# its YunoHost credentials.
+# https://codeberg.org/ChriChri/flohmarkt_ynh/issues/2
+ldap = "false"
+
+# the "sso" key corresponds to wether or not a user is *automatically logged-in*
+# on the app when logged-in on the YunoHost portal.
+# "Internally, SSOwat will on-the-fly inject HTTP Basic Auth Headers like Authorization: 
+# Basic <base64credentials>."
+# https://yunohost.org/de/packaging_sso_ldap_integration#sso-integration
+# https://codeberg.org/ChriChri/flohmarkt_ynh/issues/3
+sso = "false"
+
+# FIXME: replace with an **estimate** minimum disk and RAM requirements. e.g. 20M, 400M, 1G...
+disk = "10M"
+ram.build = "50M"
+ram.runtime = "50M"
+
+[install]
+    [install.domain]
+    # ask admin on which domain to run flohmarkt
+    type = "domain"
+
+    [install.path]
+    # ask admin under which path flohmarkt will be reachable
+    # e.g. 'https://doma.in/path' - might not work, needs to be tested:
+    # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
+    type = "path"
+    default = "/flohmarkt"
+
+    [install.init_main_permission]
+    # who will be able to access the apps URL after installation?
+    type = "group"
+    default = "visitors"
+
+[resources]
+    # See the packaging documentation for the full set
+    # of explanation regarding the behavior and properties for each of those
+
+    [resources.sources]
+
+    [resources.sources.main]
+    # This will pre-fetch the asset which can then be deployed during the install/upgrade scripts with :
+    #    ynh_setup_source --dest_dir="$install_dir"
+    # You can also define other assets than "main" and add --source_id="foobar" in the previous command
+    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/eaa868cf5f6fa39f022781ac43ebecad43c0f7b8.tar.gz"
+    sha256 = "f01726f5ae98e68f379adb43dcffaa1aa7023164384d98a711e144189f61dbd6"
+
+    # These infos are used by https://github.com/YunoHost/apps/blob/master/tools/autoupdate_app_sources/autoupdate_app_sources.py
+    # to auto-update the previous asset urls and sha256sum + manifest version
+    # assuming the upstream's code repo is on github and relies on tags or releases
+    # See the 'sources' resource documentation for more details
+
+    # autoupdate.strategy = "latest_github_tag"
+
+    [resources.system_user]
+    # This will provision/deprovision a unix system user named id form above → 'flohmarkt'
+
+    [resources.install_dir]
+    dir = "/opt/flohmarkt"
+
+    [resources.data_dir]
+    # This will create/remove the data dir as /home/yunohost.app/$app
+    # and store the corresponding setting $data_dir
+
+    [resources.permissions]
+    # This will configure SSOwat permission for $domain/$path/
+    # The initial allowed group of user is configured via the init_main_permission question 
+    # (public=visitors, private=all_users)
+    # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/5
+    main.url = "/"
+
+    [resources.ports]
+    # This will pick a random port for reverse-proxying and store it as the $port setting
+    # uvicorn running the flohmarkt app will be started listening to this port
+    # if 'main.default' is already in use another random port will be used
+    main.default = 8000
+
+    [resources.apt]
+    # python dependencies shall be installed in a venv using pip.
+    packages = "python3-pip python3-full curl apt-transport-https gnupg"
