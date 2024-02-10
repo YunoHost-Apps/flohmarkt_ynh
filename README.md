@@ -9,7 +9,11 @@ You're welcome to take part by opening issues or sending pull requests. You can 
 It is recommended to use couchdb from `https://apache.jfrog.io/artifactory/couchdb-deb/` which would need to be included as a repository. It seems that ynh_couchdb provides this.
 
 * Is  it possible to make ynh_couchdb a dependency for my new ynh_flohmarkt?
-* It looks like ynhg_couchdb should listen externally. I'd prefer to have it listen to 127.0.0.1 only. Is there a way to use the existing packet like this.
+  * Wrong question: I'll pull in couchdb as a dependency the same way ynh_couchdb does. There'll be a debian package that'll contain a dependency on the couchdb package for ynh_flohmarkt the same as for ynh_couchdb. The last app deinstalled will leave couchdb to `apt autoremove` to clean up.
+* It looks like ynh_couchdb should listen externally. I'd prefer to have it listen to 127.0.0.1 only. Is there a way to use the existing packet like this.
+  * Whatever ynh_couchdb will configure additionally on the couchdb package should be compatible with whatever ynh_flohmarkt will configure on the couchdb package. Otherwise those two apps should not influence each other.
+
+## ideas
 
 For the time being I'd not like to integrate into ldap. I'd like to let the admin choose whether registration is open to anybody, to yunohost user group (sso) or nobody. _anybody_ and _nobody_ is what flohmarkt already offers.
 
