@@ -57,12 +57,18 @@ ram.runtime = "50M"
     # e.g. 'https://doma.in/path' - might not work, needs to be tested:
     # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
     type = "path"
-    default = "/flohmarkt"
+    default = "/"
 
     [install.init_main_permission]
     # who will be able to access the apps URL after installation?
     type = "group"
     default = "visitors"
+
+	[install.password]
+
+	[install.password.couchdb]
+    # couchdb admin password
+    type = password
 
 [resources]
     # See the packaging documentation for the full set
