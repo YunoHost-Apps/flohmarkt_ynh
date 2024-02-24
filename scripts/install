@@ -16,7 +16,7 @@ source /usr/share/yunohost/helpers
 #=================================================
 
 # Not stored by default
-ynh_app_setting_set --app=$app --key=password --value="$password"
+ynh_app_setting_set --app=$app --key=password --value="$password_couchdb_admin"
 
 #=================================================
 # NGINX CONFIGURATION

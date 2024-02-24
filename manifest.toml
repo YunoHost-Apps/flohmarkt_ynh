@@ -64,9 +64,7 @@ ram.runtime = "50M"
     type = "group"
     default = "visitors"
 
-	[install.password]
-
-	[install.password.couchdb]
+    [install.password_couchdb_admin]
     # couchdb admin password
     type = password
 
