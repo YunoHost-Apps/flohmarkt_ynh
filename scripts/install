@@ -56,7 +56,7 @@ ynh_install_extra_app_dependencies \
 ynh_script_progression --message="Adding a configuration file..." --weight=2
 
 # Customize a bit the couch config
-ynh_add_config --template="../conf/couch_ynh.ini" --destination="$install_dir/etc/local.d/couch_ynh.ini"
+ynh_add_config --template="../conf/couch_ynh.ini" --destination="/opt/couchdb/etc/local.d/couch_ynh.ini"
 
 chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
