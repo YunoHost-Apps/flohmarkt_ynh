@@ -43,12 +43,23 @@ chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"
 
-# @@ setup python environment for flohmarkt
-ynh_secure_remove "$data_dir/venv"
-python3 -m venv --without-pip "$data_dir/venv"
+# get flohmarkt
+ynh_setup_source --dest-dir="$install_dir"
 
-# @@ get git
-# @@ install python dependencies
+# setup python environment for flohmarkt
+ynh_secure_remove "$install_dir/venv"
+python3 -m venv --without-pip "$install_dir/venv"
+
+# install python dependencies
+(
+    set +o nounset
+    source "$install_dir/venv/bin/activate"
+    set -o nounset
+    set -x
+    ynh_exec_as $app $data_dir/venv/bin/python3 -m ensurepip
+    ynh_exec_as $app $data_dir/venv/bin/pip3 install -r "$install_dir/flohmarkt/requirements.txt"
+)
+
 # @@ configure
 
 # SETUP LOGROTATE
