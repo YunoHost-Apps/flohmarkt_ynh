@@ -39,12 +39,13 @@ ynh_script_progression --message="Adding a configuration file..." --weight=2
 # customize couchdb config
 ynh_add_config --template="../conf/couch_ynh.ini" --destination="/opt/couchdb/etc/local.d/couch_ynh.ini"
 
+# @@ todo need to create a couchdb user and set the files to be readable/executable by it
 chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"
 
 # get flohmarkt
-ynh_setup_source --dest_dir="$install_dir"
+ynh_setup_source --dest_dir="$install_dir/flohmarkt.git/"
 
 # setup python environment for flohmarkt
 ynh_secure_remove "$install_dir/venv"
@@ -56,8 +57,8 @@ python3 -m venv --without-pip "$install_dir/venv"
     source "$install_dir/venv/bin/activate"
     set -o nounset
     set -x
-    ynh_exec_as $app $data_dir/venv/bin/python3 -m ensurepip
-    ynh_exec_as $app $data_dir/venv/bin/pip3 install -r "$install_dir/flohmarkt/requirements.txt"
+    ynh_exec_as $app $install_dir/venv/bin/python3 -m ensurepip
+    ynh_exec_as $app $install_dir/venv/bin/pip3 install -r "$install_dir/flohmarkt.git/requirements.txt"
 )
 
 # @@ configure
