@@ -72,6 +72,13 @@ ram.runtime = "50M"
     # cochdb flohmarkt user password
     type = "password"
 
+    [install.mail_domain]
+    # @@ is there a 'type' that makes sure that on this domain email service is enabled?
+    type = "domain"
+
+    [install.mail_user]
+    # @@ any type for this to make sure it can be used as the user part of an email address?
+
 [resources]
     # See the packaging documentation for the full set
     # of explanation regarding the behavior and properties for each of those
