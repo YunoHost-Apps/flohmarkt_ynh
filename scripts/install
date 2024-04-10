@@ -44,7 +44,7 @@ chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"
 
 # get flohmarkt
-ynh_setup_source --dest-dir="$install_dir"
+ynh_setup_source --dest_dir="$install_dir"
 
 # setup python environment for flohmarkt
 ynh_secure_remove "$install_dir/venv"
