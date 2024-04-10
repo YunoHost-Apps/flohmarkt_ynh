@@ -102,11 +102,13 @@ ram.runtime = "50M"
     # This will provision/deprovision a unix system user named id form above → 'flohmarkt'
     [resources.system_user]
     allow_email = true
-    mail_user = "replace_mail_user_in_manifest_toml"
-    mail_domain = "replace_mail_domain_in_manifest.toml"
-    # @@ how to create a couchdb user if needed? in install-script manually?
-    # @@ where to get/put mail_user and mail_domain to let the user set the address?
+    # ++ where to get/put mail_user and mail_domain to let the user set the address?
     #    https://yunohost.org/de/packaging_apps_resources#properties-4
+    #    → [install] section
+    # these shouldn't be necessary, because defined in the [install] section
+    # mail_user = "replace_mail_user_in_manifest_toml"
+    # mail_domain = "replace_mail_domain_in_manifest.toml"
+    # @@ how to create a couchdb user if needed? in install-script manually?
 
     [resources.install_dir]
     dir = "/opt/flohmarkt"
