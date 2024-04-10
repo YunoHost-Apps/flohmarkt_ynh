@@ -62,7 +62,7 @@ python3 -m venv --without-pip "$install_dir/venv"
 )
 
 # @@ configure
-ynh_add_config --template="../conf/flohmarkt.ini" --destination="$install_dir/$app/flohmarkt.ini"
+ynh_add_config --template="../conf/flohmarkt.conf" --destination="$install_dir/$app/flohmarkt.conf"
 
 # SETUP LOGROTATE
 ynh_script_progression --message="Configuring log rotation..." --weight=2
