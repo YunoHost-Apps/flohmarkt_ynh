@@ -1,38 +1,22 @@
 #!/bin/bash
-# @@ install of flohmarkt still missing
 
-#=================================================
-# GENERIC START
-#=================================================
 # IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
 
-
-#=================================================
 # INITIALIZE AND STORE SETTINGS
-#=================================================
-
-# Not stored by default
+# @@ todo do we need to store the password un-encrypted somewhere on the system?
 ynh_app_setting_set --app=$app --key=password_couchdb_admin --value="$password_couchdb_admin"
 
-#=================================================
-# NGINX CONFIGURATION
-#=================================================
-ynh_script_progression --message="Configuring NGINX web server..." --weight=3
-
-# Create a dedicated NGINX config
-ynh_add_nginx_config
-
-#=================================================
-# SPECIFIC SETUP
-#=================================================
 # INSTALL COUCHDB
-#=================================================
+# @@ todo
+# https://codeberg.org/ChriChri/flohmarkt_ynh/issues/9
+# check if couchdb is already installed
+# get port, admin_pw for already installed couchdb
+# skip the installation steps below
 ynh_script_progression --message="Installing CouchDB..." --weight=60
 
+# @@ todo: why is 'cookie string' and 'admin password' below the same?
 echo "\
 couchdb couchdb/mode select standalone
 couchdb couchdb/mode seen true
@@ -50,48 +34,44 @@ ynh_install_extra_app_dependencies \
     --key="https://couchdb.apache.org/repo/keys.asc" \
     --package="couchdb"
 
-#=================================================
-# ADD A CONFIGURATION
-#=================================================
+# add couchdb configuration
 ynh_script_progression --message="Adding a configuration file..." --weight=2
-
-# Customize a bit the couch config
+# customize couchdb config
 ynh_add_config --template="../conf/couch_ynh.ini" --destination="/opt/couchdb/etc/local.d/couch_ynh.ini"
 
 chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"
 
-#=================================================
-# GENERIC FINALIZATION
-#=================================================
-# SETUP LOGROTATE
-#=================================================
-ynh_script_progression --message="Configuring log rotation..." --weight=2
+# @@ setup python environment for flohmarkt
+ynh_secure_remove "$data_dir/venv"
+python3 -m venv --without-pip "$data_dir/venv"
 
+# @@ get git
+# @@ install python dependencies
+# @@ configure
+
+# SETUP LOGROTATE
+ynh_script_progression --message="Configuring log rotation..." --weight=2
 # Use logrotate to manage application logfile(s)
 # @@ how does this know where the logfiles are?
 ynh_use_logrotate
 
-#=================================================
-# INTEGRATE SERVICE IN YUNOHOST
-#=================================================
-ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
+# NGINX CONFIGURATION
+ynh_script_progression --message="Configuring NGINX web server..." --weight=3
+# Create a dedicated NGINX config
+ynh_add_nginx_config
 
+# INTEGRATE SERVICE IN YUNOHOST
+ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 yunohost service add $app --description="Open-source document-oriented NoSQL database" --log="/var/log/$app/$app.log" --needs_exposed_ports "$port"
 
-#=================================================
 # SETUP FAIL2BAN
-#=================================================
-
 # no need for couchdb, because it will not listen externally
 # ynh_script_progression --message="Configuring Fail2Ban..." --weight=3
 # 
 # # Create a dedicated Fail2Ban config
 # ynh_add_fail2ban_config --logpath="/var/log/couchdb/couchdb.log" --failregex="[warning] .*couch_httpd_auth: Authentication failed for user .+ from <HOST>" --max_retry=5
 
-#=================================================
-# END OF SCRIPT
-#=================================================
-
+# qed
 ynh_script_progression --message="Installation of $app completed" --last

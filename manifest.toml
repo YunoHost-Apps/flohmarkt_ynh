@@ -110,6 +110,8 @@ ram.runtime = "50M"
     # uvicorn running the flohmarkt app will be started listening to this port
     # if 'main.default' is already in use another random port will be used
     main.default = 8000
+    couchdb.default = 5984
+    
 
     [resources.apt]
     # python dependencies shall be installed in a venv using pip.
