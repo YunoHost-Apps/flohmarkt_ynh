@@ -68,6 +68,10 @@ ram.runtime = "50M"
     # couchdb admin password
     type = "password"
 
+    [install.password_couchdb_flohmarkt]
+    # cochdb flohmarkt user password
+    type = "password"
+
 [resources]
     # See the packaging documentation for the full set
     # of explanation regarding the behavior and properties for each of those
@@ -88,8 +92,14 @@ ram.runtime = "50M"
 
     # autoupdate.strategy = "latest_github_tag"
 
-    [resources.system_user]
     # This will provision/deprovision a unix system user named id form above → 'flohmarkt'
+    [resources.system_user]
+    allow_email = true
+    mail_user = "replace_mail_user_in_manifest_toml"
+    mail_domain = "replace_mail_domain_in_manifest.toml"
+    # @@ how to create a couchdb user if needed? in install-script manually?
+    # @@ where to get/put mail_user and mail_domain to let the user set the address?
+    #    https://yunohost.org/de/packaging_apps_resources#properties-4
 
     [resources.install_dir]
     dir = "/opt/flohmarkt"

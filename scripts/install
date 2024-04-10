@@ -45,7 +45,7 @@ chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"
 
 # get flohmarkt
-ynh_setup_source --dest_dir="$install_dir/flohmarkt.git/"
+ynh_setup_source --dest_dir="$install_dir/$app/"
 
 # setup python environment for flohmarkt
 ynh_secure_remove "$install_dir/venv"
@@ -58,10 +58,11 @@ python3 -m venv --without-pip "$install_dir/venv"
     set -o nounset
     set -x
     $install_dir/venv/bin/python3 -m ensurepip
-    $install_dir/venv/bin/pip3 install -r "$install_dir/flohmarkt.git/requirements.txt"
+    $install_dir/venv/bin/pip3 install -r "$install_dir/$app/requirements.txt"
 )
 
 # @@ configure
+ynh_add_config --template="../conf/flohmarkt.ini" --destination="$install_dir/$app/flohmarkt.ini"
 
 # SETUP LOGROTATE
 ynh_script_progression --message="Configuring log rotation..." --weight=2
