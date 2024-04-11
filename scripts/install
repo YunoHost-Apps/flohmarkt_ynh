@@ -44,6 +44,10 @@ chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"
 
+# INTEGRATE SERVICE IN YUNOHOST
+# ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
+# yunohost service add $app --description="war mal couchdb" --log="/var/log/$app/$app.log"
+
 # get flohmarkt
 ynh_setup_source --dest_dir="$install_dir/$app/"
 
@@ -64,8 +68,17 @@ python3 -m venv --without-pip "$install_dir/venv"
 # JwtSecret
 jwtsecret=$(openssl rand 256 | base64 -w 0)
 
-# @@ configure
+# generate flohmarkt.conf
 ynh_add_config --template="../conf/flohmarkt.conf" --destination="$install_dir/$app/flohmarkt.conf"
+
+# setup couchdb
+(
+    set +o nounset
+    source "$install_dir/venv/bin/activate"
+    set -o nounset
+    cd "$install_dir/$app"
+    python3 initialize_couchdb.py bla42fasel bla42fasel
+)
 
 # SETUP LOGROTATE
 ynh_script_progression --message="Configuring log rotation..." --weight=2
@@ -78,9 +91,13 @@ ynh_script_progression --message="Configuring NGINX web server..." --weight=3
 # Create a dedicated NGINX config
 ynh_add_nginx_config
 
-# INTEGRATE SERVICE IN YUNOHOST
+# systemd.service
+ynh_script_progression --message="Configuring a systemd service..." --weight=1
+# Create a dedicated systemd config
+ynh_add_systemd_config
+# integrate into yunohost
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
-yunohost service add $app --description="Open-source document-oriented NoSQL database" --log="/var/log/$app/$app.log" --needs_exposed_ports "$port"
+yunohost service add $app --description="A self-hosted, single-user, ActivityPub powered microblog." --log="/var/log/$app/$app.log"
 
 # SETUP FAIL2BAN
 # no need for couchdb, because it will not listen externally
@@ -89,5 +106,7 @@ yunohost service add $app --description="Open-source document-oriented NoSQL dat
 # # Create a dedicated Fail2Ban config
 # ynh_add_fail2ban_config --logpath="/var/log/couchdb/couchdb.log" --failregex="[warning] .*couch_httpd_auth: Authentication failed for user .+ from <HOST>" --max_retry=5
 
-# qed
+# @@ logrotation
+
 ynh_script_progression --message="Installation of $app completed" --last
+# qed
