@@ -79,6 +79,9 @@ ram.runtime = "50M"
     [install.mail_user]
     # @@ any type for this to make sure it can be used as the user part of an email address?
 
+    [install.flohmarkt_name]
+    # flohmarkt.conf: "InstanceName"
+
 [resources]
     # See the packaging documentation for the full set
     # of explanation regarding the behavior and properties for each of those
@@ -106,6 +109,8 @@ ram.runtime = "50M"
     #    https://yunohost.org/de/packaging_apps_resources#properties-4
     #    → [install] section
     # these shouldn't be necessary, because defined in the [install] section
+    #    → yes, works. With the values from install section the mailuser ends up in 
+    #      /etc/postfix/app_senders_login_maps
     # mail_user = "replace_mail_user_in_manifest_toml"
     # mail_domain = "replace_mail_domain_in_manifest.toml"
     # @@ how to create a couchdb user if needed? in install-script manually?

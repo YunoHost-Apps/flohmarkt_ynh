@@ -61,6 +61,9 @@ python3 -m venv --without-pip "$install_dir/venv"
     $install_dir/venv/bin/pip3 install -r "$install_dir/$app/requirements.txt"
 )
 
+# JwtSecret
+jwtsecret = $(openssl rand 256 | base64 -w 0)
+
 # @@ configure
 ynh_add_config --template="../conf/flohmarkt.conf" --destination="$install_dir/$app/flohmarkt.conf"
 
