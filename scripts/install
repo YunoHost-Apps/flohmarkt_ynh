@@ -98,6 +98,8 @@ ynh_add_systemd_config
 # integrate into yunohost
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 yunohost service add $app --description="A self-hosted, single-user, ActivityPub powered microblog." --log="/var/log/$app/$app.log"
+# start service
+ynh_systemd_action --service_name=$app --action="start"
 
 # SETUP FAIL2BAN
 # no need for couchdb, because it will not listen externally
