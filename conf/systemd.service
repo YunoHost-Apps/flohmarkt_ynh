@@ -7,10 +7,8 @@ Type=simple
 User=__APP__
 Group=__APP__
 WorkingDirectory=__INSTALL_DIR__/__APP__
-Environment="UVICORN_PORT=__PORT__"
 Environment="VENV_DIR=__INSTALL_DIR__/venv/"
-Environment="UVICORN_HOST=127.0.0.1"
-ExecStart=__INSTALL_DIR__/venv/bin/uvicorn --reload flohmarkt:app
+ExecStart=__INSTALL_DIR__/venv/bin/uvicorn --host 127.0.0.1 --port __PORT__ --reload flohmarkt:app
 StandardOutput=append:/var/log/__APP__/__APP__.log
 StandardError=inherit
 
