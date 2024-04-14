@@ -67,20 +67,40 @@ ram.runtime = "50M"
     [install.password_couchdb_admin]
     # couchdb admin password
     type = "password"
+    ask.en = "CouchDB password for admin user"
+    help.en = "Don't forget to note this password somewhere! You need to provide this password during install and for future upgrades. If there's already a CouchDB installed provide the adminpassword for the existing installation."
+    ask.de = "Passwort für den admin Benutzer von CouchDB"
+    help.de = "Bitte das Passwort notieren und aufheben! Dieses Passwort muss bei der Installation und bei zukünftigen Upgrades eingegeben werden. Wenn bereits eine CouchDB installiert ist, hier das Passwort der bestehenden Installation eingeben."
 
     [install.password_couchdb_flohmarkt]
     # cochdb flohmarkt user password
     type = "password"
+    ask.en = "CouchDB password for flohmarkt user"
+    help.en = "This password will be used by flohmarkt during normal operation and is stored in its configuration file flohmarkt.conf"
+    ask.de = "Passwort für den admin Benutzer von CouchDB"
+    help.de = "Dieses Passwort wird von flohmarkt im normalen Betrieb verwendet und ist in der Konfigurationsdatei flohmarkt.conf gespeichert."
+
+    [install.mail_user]
+    # @@ any type for this to make sure it can be used as the user part of an email address?
+    default = "flohmarkt"
+    ask.en = "mail sender local part"
+    help.en = "flohmarkt will send emails using the sender <mail_user>@<mail_domain>. Please provide the <mail_user> part."
+    ask.de = "E-Mail-Absender Benutzername"
+    help.de = "flohmarkt verschickt emails unter dem Absender <mail_user>@<mail_domain>. Bitte gib Deinen <mail_user> ein."
 
     [install.mail_domain]
     # @@ is there a 'type' that makes sure that on this domain email service is enabled?
     type = "domain"
-
-    [install.mail_user]
-    # @@ any type for this to make sure it can be used as the user part of an email address?
+    ask.en = "mail sender domain part"
+    help.en = "flohmarkt will send emails using the sender <mail_user>@<mail_domain>. Please provide the <mail_domain> part."
+    ask.de = "E-Mail-Absender Domain"
+    help.de = "flohmarkt verschickt emails unter dem Absender <mail_user>@<mail_domain>. Bitte gib Deine <mail_domain> ein."
 
     [install.flohmarkt_name]
     # flohmarkt.conf: "InstanceName"
+    default = "my yunohost flohmarkt"
+    ask.en = "name of your flohmarkt instance"
+    ask.de = "Name des Flohmarkts"
 
 [resources]
     # See the packaging documentation for the full set

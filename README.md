@@ -1,6 +1,20 @@
-This is just a little beginning. 
+## status
 
 These are my notes about questions and ideas regarding packaging [flohmarkt](https://codeberg.org/flohmarkt/flohmarkt) for yunohost.
+
+### installs, but only installs
+
+I've only been working on the install script, yet. 'Remove' fails or only partly removes what had been installed.
+
+**Warning:** This will probably break any existing installation of couchdb (there's an couchdb app to install just couchdb and expose its port via nginx reverse-proxy).
+
+To remove the stuff installed by the install script in my testing environment I use `systemctl stop flohmarkt.service; systemctl stop couchdb; yunohost app remove flohmarkt; rm -rf /var/lib/couchdb/; rm -rf /home/yunohost.app/flohmarkt; rm -rf /opt/flohmarkt`.
+
+**Another warning:** When installing flohmarkt on a a domain/path and letting it talk to other ActivityPub instances it will propagate a key associated to your domain. If you remove your flohmarkt from that domain and loose that key other instances might not want to talk to you anymore after you installed flohmarkt again on the same domain/path generating a new key.
+
+**This is really strictly for testing only, yet**
+
+### help welcome
 
 You're welcome to take part by opening issues or sending pull requests. You can also reach me on Matrix in [Yunohost Apps development](https://matrix.to/#/%23yunohost-apps:matrix.org) as @chrichri:librem.one .
 
@@ -45,5 +59,3 @@ For 'yunohost user group' I'd like to have the registration urls rewritten by ng
 
 * is it possible to have multiple flohmarkt instances in one couchdb
   * database name could contain domain name
-
-* done?
