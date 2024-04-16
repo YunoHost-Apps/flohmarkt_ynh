@@ -56,6 +56,7 @@ I also announced this work on the [yunohost forum](https://forum.yunohost.org/t/
 ### → 0.2 beta
 * restore script
 * upgrade script
+* fail2ban config
 
 ### later
 
