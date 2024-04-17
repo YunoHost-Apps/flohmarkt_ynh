@@ -27,7 +27,9 @@ code = "https://codeberg.org/flohmarkt/flohmarkt"
 [integration]
 yunohost = ">= 11.2"
 architectures = "all"
-multi_instance = true
+# https://codeberg.org/ChriChri/flohmarkt_ynh/issues/11
+# multi_instance = true
+multi_instance = false
 
 # the "ldap" key corresponds to wether or not a user *can* login on the app using
 # its YunoHost credentials.
