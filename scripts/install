@@ -26,7 +26,7 @@ ynh_script_progression --message="Installing CouchDB..." --weight=60
 # A CouchDB node has an Erlang magic cookie value set at startup.
 # This value must match for all nodes in the cluster. If they do not match,
 # attempts to connect the node to the cluster will be rejected.
-couchdb_magic_cookie=$(openssl rand 256 | base64 -w 0)
+couchdb_magic_cookie=$(openssl rand 32 | base32 -w 0 | head -c-4)
 
 echo "\
 couchdb couchdb/mode select standalone
@@ -89,9 +89,9 @@ ynh_add_config --template="../conf/flohmarkt.conf" --destination="$install_dir/$
     set -o nounset
     cd "$install_dir/$app"
     # initialize_couchdb seems to re-try on connect problems endlessly blocking the yunohost api
-    # @@ todo take care of this
+    # give it 45 seconds to finish and then fail
     # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/13
-    timeout 20 python3 initialize_couchdb.py $password_couchdb_admin $password_couchdb_flohmarkt
+    timeout 45 python3 initialize_couchdb.py $password_couchdb_admin $password_couchdb_flohmarkt
 )
 
 # SETUP LOGROTATE
