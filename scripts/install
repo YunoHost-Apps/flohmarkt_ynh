@@ -12,7 +12,7 @@ ynh_app_setting_set --app=$app --key=password_couchdb_admin --value="$password_c
 # check if couchdb is already installed
 if [[ -e /opt/couchdb ]] || pgrep epmd > /dev/null || pgrep beam.smp || dpkg-query -W couchdb > /dev/null 2>&1; 
 then
-  ynh_print_err --message="CouchDB already installed on this host - will not proceed."
+  ynh_die --message="CouchDB already installed on this host - will not proceed."
   exit 1
 fi
 
