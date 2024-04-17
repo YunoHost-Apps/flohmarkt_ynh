@@ -2,21 +2,17 @@
 
 These are my notes about questions and ideas regarding packaging [flohmarkt](https://codeberg.org/flohmarkt/flohmarkt) for yunohost.
 
-### installs, but only installs
+### installs
 
-I've only been working on the install script, yet. 'Remove' fails or only partly removes what had been installed.
+flohmarkt will only install if there's not yet a couchdb installed as .dep or running otherwise.
 
-### remove manually
+### removes
 
 **Warning:** This will probably break any existing installation of couchdb (there's an couchdb app to install just couchdb and expose its port via nginx reverse-proxy).
 
-To remove the stuff installed by the install script in my testing environment I use `systemctl stop flohmarkt.service; systemctl stop couchdb; yunohost app remove flohmarkt; rm -rf /var/lib/couchdb/; rm -rf /home/yunohost.app/flohmarkt; rm -rf /opt/flohmarkt`.
+### no backup, yet
 
-### Warnings
-
-**Another warning:** When installing flohmarkt on a a domain/path and letting it talk to other ActivityPub instances it will propagate a key associated to your domain. If you remove your flohmarkt from that domain and loose that key other instances might not want to talk to you anymore after you installed flohmarkt again on the same domain/path generating a new key.
-
-**Again:** This might break **couchdb_ynh** if you installed it already. **Don't install if you already use a couchdb in production.**
+**Another warning:** When installing flohmarkt on a a domain and letting it talk to other ActivityPub instances it will propagate a key associated to your domain. If you remove your flohmarkt from that domain and loose that key other instances might not want to talk to you anymore after you installed flohmarkt again on the same domain generating a new key.
 
 **This is really strictly for testing only - don't install on a production yunohost.**
 
@@ -44,8 +40,8 @@ I also announced this work on the [yunohost forum](https://forum.yunohost.org/t/
 
 * make first ynh_package
   * ~~nginx just reverse proxy~~ done
-    * disable http (without s)
-  * remove script
+    * ~~disable http (without s)~~ this is a general yunohost setting
+  * ~~remove script~~
   * backup script
     * export flohmarkt data from couchdb
     * backup yunohost.app/$app
@@ -55,6 +51,7 @@ I also announced this work on the [yunohost forum](https://forum.yunohost.org/t/
 * ~~disable path selection and mark it that it needs its own domain.~~
 * tag 0.1 alpha
 * write limitations in README.md (copy from `antifeatures` in manifest.toml)
+* fail2ban configuration
 
 ### → 0.2 beta
 * restore script

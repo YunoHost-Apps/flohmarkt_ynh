@@ -30,7 +30,7 @@ fi
 ynh_script_progression --message="Stopping couchdb..." --weight=2
 systemctl stop couchdb
 
-ynh_script_progression --message="Removing database..." --weight=2
+ynh_script_progression --message="Removing databases..." --weight=2
 # remove flohmarkt database and database user
 # ynh_script_progression --message="removing flohmarkt couchdb user and database" --weight=2
 # @@ wie komme ich hier an das admin-password, falls ich es brauche?
