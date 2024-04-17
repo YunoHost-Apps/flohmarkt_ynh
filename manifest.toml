@@ -52,12 +52,13 @@ ram.runtime = "50M"
     # ask admin on which domain to run flohmarkt
     type = "domain"
 
-    [install.path]
-    # ask admin under which path flohmarkt will be reachable
-    # e.g. 'https://doma.in/path' - might not work, needs to be tested:
-    # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
-    type = "path"
-    default = "/"
+# https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
+#     [install.path]
+#     # ask admin under which path flohmarkt will be reachable
+#     # e.g. 'https://doma.in/path' - might not work, needs to be tested:
+#     # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
+#     type = "path"
+#     default = "/"
 
     [install.init_main_permission]
     # who will be able to access the apps URL after installation?
@@ -160,3 +161,31 @@ ram.runtime = "50M"
     [resources.apt]
     # python dependencies shall be installed in a venv using pip.
     packages = "python3-pip python3-full curl apt-transport-https gnupg"
+
+[antifeatures]
+
+[alpha-software]
+description.en = "Early development stage. May contain changing or unstable features, bugs, and security vulnerability."
+description.eu = "Garapenaren hasierako fasean dago. Ezaugarri aldakor edo ezegonkorrak, erroreak eta segurtasuneko arazoak izan ditzazke."
+description.fr = "Le logiciel est au tout début de son développement. Il pourrait contenir des fonctionnalités changeantes ou instables, des bugs, et des failles de sécurité."
+description.it = "Questo software è all’inizio della sua fase di sviluppo. Potrebbe dunque essere instabile, contenere bug e vulnerabilità di sicurezza."
+icon = "flask"
+title.en = "Alpha software"
+title.eu = "Alfa softwarea"
+title.fr = "Logiciel en version alpha "
+title.it = "Software in versione alpha"
+
+[arbitrary-limitations]
+title.en = "Exclusive use of couchdb"
+description.en = "flohmarkt expects to install CouchDB from the Apache repository for its own, exclusive use. Installation might break already existing installs of CouchDB. https://codeberg.org/ChriChri/flohmarkt_ynh/issues/9"
+icon = "star-half-empty"
+
+[arbitrary-limitations]
+title.en = "Exclusive use of (sub)domain"
+description.en = "flohmarkt expects to bei installed on its own (sub)domain. https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4"
+icon = "star-half-empty"
+
+[arbitrary-limitations]
+title.en = "No integration in yunohost user database"
+description.en = "flohmarkt mainanins its own user database in CouchDB. Users have to register to flohmarkt to get an account. Registration cannot be restricted to yunohost users. https://codeberg.org/ChriChri/flohmarkt_ynh/issues/5"
+icon = "star-half-empty"
