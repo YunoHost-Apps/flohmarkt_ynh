@@ -175,17 +175,17 @@ title.eu = "Alfa softwarea"
 title.fr = "Logiciel en version alpha "
 title.it = "Software in versione alpha"
 
-[arbitrary-limitations]
+[arbitrary-limitations-1]
 title.en = "Exclusive use of couchdb"
 description.en = "flohmarkt expects to install CouchDB from the Apache repository for its own, exclusive use. Installation might break already existing installs of CouchDB. https://codeberg.org/ChriChri/flohmarkt_ynh/issues/9"
 icon = "star-half-empty"
 
-[arbitrary-limitations]
+[arbitrary-limitations-2]
 title.en = "Exclusive use of (sub)domain"
 description.en = "flohmarkt expects to bei installed on its own (sub)domain. https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4"
 icon = "star-half-empty"
 
-[arbitrary-limitations]
+[arbitrary-limitations-3]
 title.en = "No integration in yunohost user database"
 description.en = "flohmarkt mainanins its own user database in CouchDB. Users have to register to flohmarkt to get an account. Registration cannot be restricted to yunohost users. https://codeberg.org/ChriChri/flohmarkt_ynh/issues/5"
 icon = "star-half-empty"
