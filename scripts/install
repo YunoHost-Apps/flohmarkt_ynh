@@ -90,8 +90,8 @@ ynh_add_config --template="../conf/flohmarkt.conf" --destination="$install_dir/$
     cd "$install_dir/$app"
     # initialize_couchdb seems to re-try on connect problems endlessly blocking the yunohost api
     # @@ todo take care of this
-    # 
-    python3 initialize_couchdb.py $password_couchdb_admin $password_couchdb_flohmarkt
+    # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/13
+    timeout 20 python3 initialize_couchdb.py $password_couchdb_admin $password_couchdb_flohmarkt
 )
 
 # SETUP LOGROTATE
