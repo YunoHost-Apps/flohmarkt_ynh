@@ -46,12 +46,15 @@ I also announced this work on the [yunohost forum](https://forum.yunohost.org/t/
   * ~~nginx just reverse proxy~~ done
     * disable http (without s)
   * remove script
-  * backup script (export flohmarkt data from couchdb)
+  * backup script
+    * export flohmarkt data from couchdb
+    * backup yunohost.app/$app
+    * check whether app settings are stored by yunohost framework (password, etc.)
 
 ### → 0.1 alpha
-* disable path selection and mark it that it needs its own domain.
+* ~~disable path selection and mark it that it needs its own domain.~~
 * tag 0.1 alpha
-* write limitations in README.md
+* write limitations in README.md (copy from `antifeatures` in manifest.toml)
 
 ### → 0.2 beta
 * restore script
