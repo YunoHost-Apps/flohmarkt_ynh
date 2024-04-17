@@ -4,10 +4,6 @@
 source _common.sh
 source /usr/share/yunohost/helpers
 
-# INITIALIZE AND STORE SETTINGS
-# @@ todo do we need to store the password un-encrypted somewhere on the system?
-ynh_app_setting_set --app=$app --key=password_couchdb_admin --value="$password_couchdb_admin"
-
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/9
 # check if couchdb is already installed
 if [[ -e /opt/couchdb ]] || pgrep epmd > /dev/null || pgrep beam.smp || dpkg-query -W couchdb > /dev/null 2>&1; 
@@ -15,6 +11,13 @@ then
   ynh_die --message="CouchDB already installed on this host - will not proceed."
   exit 1
 fi
+
+# INITIALIZE AND STORE SETTINGS
+# todo: do we need to store the password un-encrypted somewhere on the system?
+# → there's no way to get the admin password later if sometimes in the future deleting
+#   the app will delete its specific database only (instead of the whole couchdb server as
+#   of now in the earliest versions of the integration).
+ynh_app_setting_set --app=$app --key=password_couchdb_admin --value="$password_couchdb_admin"
 
 # get port, admin_pw for already installed couchdb
 # skip the installation steps below
