@@ -27,6 +27,7 @@ ynh_script_progression --message="Installing CouchDB..." --weight=60
 # This value must match for all nodes in the cluster. If they do not match,
 # attempts to connect the node to the cluster will be rejected.
 couchdb_magic_cookie=$(openssl rand 32 | base32 -w 0 | head -c-4)
+ynh_app_setting_set --app=$app --key=erlang_cookie --value="$couchdb_magic_cookie"
 
 echo "\
 couchdb couchdb/mode select standalone
