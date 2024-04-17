@@ -8,10 +8,14 @@ source /usr/share/yunohost/helpers
 # @@ todo do we need to store the password un-encrypted somewhere on the system?
 ynh_app_setting_set --app=$app --key=password_couchdb_admin --value="$password_couchdb_admin"
 
-# INSTALL COUCHDB
-# @@ todo
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/9
 # check if couchdb is already installed
+if [[ -e /opt/couchdb ]] || pgrep epmd > /dev/null || pgrep beam.smp || dpkg-query -W couchdb > /dev/null 2>&1; 
+then
+  ynh_print_err --message="CouchDB already installed on this host - will not proceed."
+  exit 1
+fi
+
 # get port, admin_pw for already installed couchdb
 # skip the installation steps below
 ynh_script_progression --message="Installing CouchDB..." --weight=60
