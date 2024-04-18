@@ -26,7 +26,7 @@ ynh_script_progression --message="Installing CouchDB..." --weight=60
 # A CouchDB node has an Erlang magic cookie value set at startup.
 # This value must match for all nodes in the cluster. If they do not match,
 # attempts to connect the node to the cluster will be rejected.
-couchdb_magic_cookie=$(openssl rand 32 | base32 -w 0 | head -c-4)
+couchdb_magic_cookie=$(ynh_string_random --length=23 --filter='A-Za-z0-9_')
 ynh_app_setting_set --app=$app --key=erlang_cookie --value="$couchdb_magic_cookie"
 
 echo "\
@@ -78,7 +78,7 @@ python3 -m venv --without-pip "$install_dir/venv"
 )
 
 # JwtSecret
-jwtsecret=$(openssl rand 256 | base64 -w 0)
+jwtsecret=$(ynh_string_random --length=344 --filter='a-zA-Z0-9/+')
 
 # generate flohmarkt.conf
 ynh_add_config --template="../conf/flohmarkt.conf" --destination="$install_dir/$app/flohmarkt.conf"
