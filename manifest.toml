@@ -44,10 +44,10 @@ ldap = false
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/3
 sso = false
 
-# FIXME: replace with an **estimate** minimum disk and RAM requirements. e.g. 20M, 400M, 1G...
-disk = "10M"
-ram.build = "50M"
-ram.runtime = "50M"
+# **estimate** minimum disk and RAM requirements
+disk = "100M"
+ram.build = "200M"
+ram.runtime = "100M"
 
 [install]
     [install.domain]
