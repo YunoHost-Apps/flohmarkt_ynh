@@ -1,31 +1,3 @@
-## status
-
-These are my notes about questions and ideas regarding packaging [flohmarkt](https://codeberg.org/flohmarkt/flohmarkt) for yunohost.
-
-### installs
-
-flohmarkt will only install if there's not yet a couchdb installed as .dep or running otherwise.
-
-### removes
-
-**Warning:** This will probably break any existing installation of couchdb (there's an couchdb app to install just couchdb and expose its port via nginx reverse-proxy).
-
-### no backup, yet
-
-**Another warning:** When installing flohmarkt on a a domain and letting it talk to other ActivityPub instances it will propagate a key associated to your domain. If you remove your flohmarkt from that domain and loose that key other instances might not want to talk to you anymore after you installed flohmarkt again on the same domain generating a new key.
-
-**This is really strictly for testing only - don't install on a production yunohost.**
-
-### Go ahead…
-
-…test, break stuff and open issues :) !
-
-## help welcome
-
-You're welcome to take part by opening issues or sending pull requests. You can also reach me on Matrix in [Yunohost Apps development](https://matrix.to/#/%23yunohost-apps:matrix.org) as @chrichri:librem.one .
-
-I also announced this work on the [yunohost forum](https://forum.yunohost.org/t/ynh-flohmarkt-flohmarkt-as-an-app-for-yunohost/28455?u=chrichri).
-
 ## roadmap
 
 * ~~use couchdb installation from ynh_couchdb~~: no
