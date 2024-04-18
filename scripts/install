@@ -112,7 +112,7 @@ ynh_script_progression --message="Configuring a systemd service..." --weight=1
 ynh_add_systemd_config
 # integrate into yunohost
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
-yunohost service add $app --description="A self-hosted, single-user, ActivityPub powered microblog." --log="/var/log/$app/$app.log"
+yunohost service add $app --description="A decentral federated small advertisement platform" --log="/var/log/$app/$app.log"
 # start service
 ynh_systemd_action --service_name=$app --action="start"
 
