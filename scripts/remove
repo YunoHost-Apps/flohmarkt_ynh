@@ -41,7 +41,7 @@ ynh_script_progression --message="Removing databases..." --weight=2
 # curl -X DELETE "http://127.0.0.1:5984/_users/org.couchdb.user%3Aflohmarkt?rev=`curl -sX GET 'http://127.0.0.1:5984/_users/org.couchdb.user%3Aflohmarkt' --user 'admin:bla42fasel' | jq -r ._rev`" --user '<admin-user>:<admin-password>'
 # @@ todo improve this like above
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/12
-rm -rf /var/lib/couchdb
+ynh_secure_remove --file=/var/lib/couchdb
 
 # Remove the app-specific logrotate config
 ynh_remove_logrotate
