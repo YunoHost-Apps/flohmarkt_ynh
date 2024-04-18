@@ -34,7 +34,7 @@ multi_instance = false
 # the "ldap" key corresponds to wether or not a user *can* login on the app using
 # its YunoHost credentials.
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/2
-ldap = "false"
+ldap = false
 
 # the "sso" key corresponds to wether or not a user is *automatically logged-in*
 # on the app when logged-in on the YunoHost portal.
@@ -42,7 +42,7 @@ ldap = "false"
 # Basic <base64credentials>."
 # https://yunohost.org/de/packaging_sso_ldap_integration#sso-integration
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/3
-sso = "false"
+sso = false
 
 # FIXME: replace with an **estimate** minimum disk and RAM requirements. e.g. 20M, 400M, 1G...
 disk = "10M"
@@ -86,6 +86,7 @@ ram.runtime = "50M"
     [install.mail_user]
     # @@ any type for this to make sure it can be used as the user part of an email address?
     default = "flohmarkt"
+    type = "string"
     ask.en = "mail sender local part"
     help.en = "flohmarkt will send emails using the sender <mail_user>@<mail_domain>. Please provide the <mail_user> part."
     ask.de = "E-Mail-Absender Benutzername"
@@ -101,6 +102,7 @@ ram.runtime = "50M"
 
     [install.flohmarkt_name]
     # flohmarkt.conf: "InstanceName"
+    type = "string"
     default = "my yunohost flohmarkt"
     ask.en = "name of your flohmarkt instance"
     ask.de = "Name des Flohmarkts"
