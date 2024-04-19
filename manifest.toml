@@ -75,14 +75,6 @@ ram.runtime = "100M"
     ask.de = "Passwort für den admin Benutzer von CouchDB"
     help.de = "Bitte das Passwort notieren und aufheben! Dieses Passwort muss bei der Installation und bei zukünftigen Upgrades eingegeben werden. Wenn bereits eine CouchDB installiert ist, hier das Passwort der bestehenden Installation eingeben."
 
-    [install.password_couchdb_flohmarkt]
-    # cochdb flohmarkt user password
-    type = "password"
-    ask.en = "CouchDB password for flohmarkt user"
-    help.en = "This password will be used by flohmarkt during normal operation and is stored in its configuration file flohmarkt.conf"
-    ask.de = "Passwort für den admin Benutzer von CouchDB"
-    help.de = "Dieses Passwort wird von flohmarkt im normalen Betrieb verwendet und ist in der Konfigurationsdatei flohmarkt.conf gespeichert."
-
     [install.mail_user]
     # @@ any type for this to make sure it can be used as the user part of an email address?
     default = "flohmarkt"
@@ -166,7 +158,7 @@ ram.runtime = "100M"
     # python dependencies shall be installed in a venv using pip.
     packages = "python3-pip python3-full curl apt-transport-https gnupg"
     # repo for couchdb
-	extras.couchdb.repo = "deb https://apache.jfrog.io/artifactory/couchdb-deb/ $(lsb_release -c -s) main"
+	extras.couchdb.repo = "deb https://apache.jfrog.io/artifactory/couchdb-deb/ bullseye main"
 	extras.couchdb.key = "https://couchdb.apache.org/repo/keys.asc"
 	extras.couchdb.packages = ["couchdb"]
 
