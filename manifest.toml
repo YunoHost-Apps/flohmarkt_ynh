@@ -165,6 +165,10 @@ ram.runtime = "100M"
     [resources.apt]
     # python dependencies shall be installed in a venv using pip.
     packages = "python3-pip python3-full curl apt-transport-https gnupg"
+    # repo for couchdb
+	extras.couchdb.repo = "deb https://apache.jfrog.io/artifactory/couchdb-deb/ $(lsb_release -c -s) main"
+	extras.couchdb.key = "https://couchdb.apache.org/repo/keys.asc"
+	extras.couchdb.packages = ["couchdb"]
 
 [antifeatures]
 
