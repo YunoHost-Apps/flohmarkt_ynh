@@ -160,7 +160,7 @@ ram.runtime = "100M"
     # repo for couchdb
 	extras.couchdb.repo = "deb https://apache.jfrog.io/artifactory/couchdb-deb/ __YNH_DEBIAN__ main"
 	extras.couchdb.key = "https://couchdb.apache.org/repo/keys.asc"
-	extras.couchdb.packages = ["couchdb"]
+	# extras.couchdb.packages = ["couchdb"]
 
 [antifeatures]
 
