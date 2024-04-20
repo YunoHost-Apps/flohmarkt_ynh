@@ -52,7 +52,7 @@ fi
 #=================================================
 ynh_script_progression --message="Updating a configuration file..." --weight=1
 
-ynh_add_config --template="../conf/couch_ynh.ini" --destination="$install_dir/etc/local.d/couch_ynh.ini"
+ynh_add_config --template="../conf/5-flohmarkt.ini" --destination="$install_dir/etc/local.d/5-flohmarkt.ini"
 
 chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
