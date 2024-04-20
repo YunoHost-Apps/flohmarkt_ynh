@@ -50,13 +50,15 @@ ynh_install_extra_app_dependencies \
 ynh_script_progression --message="Adding a configuration file..." --weight=2
 # customize couchdb config
 ynh_add_config --template="../conf/couch_ynh.ini" --destination="/opt/couchdb/etc/local.d/couch_ynh.ini"
-# restart couchdb to pick up changes
-systemctl restart couchdb
 
 # @@ todo need to create a couchdb user and set the files to be readable/executable by it
 chmod 750 "$install_dir"
 chmod -R o-rwx "$install_dir"
 chown -R "$app:$app" "$install_dir"
+
+# restart couchdb to pick up changes
+systemctl restart couchdb
+systemctl status couchdb
 
 # INTEGRATE SERVICE IN YUNOHOST
 # would this work? couchdb brings its own systemd.service...
