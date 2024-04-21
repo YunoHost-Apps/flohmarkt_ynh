@@ -53,11 +53,6 @@ ynh_add_config --template="../conf/05-flohmarkt.ini" --destination="/opt/couchdb
 chown root:couchdb /opt/couchdb/etc/local.d/05-flohmarkt.ini
 chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
 
-# @@ todo need to create a couchdb user and set the files to be readable/executable by it
-chmod 750 "$install_dir"
-chmod -R o-rwx "$install_dir"
-chown -R "$app:$app" "$install_dir"
-
 # restart couchdb to pick up changes
 systemctl restart couchdb
 systemctl status couchdb
@@ -136,4 +131,3 @@ ynh_systemd_action --service_name=$app --action="start"
 # @@ logrotation
 
 ynh_script_progression --message="Installation of $app completed" --last
-# qed
