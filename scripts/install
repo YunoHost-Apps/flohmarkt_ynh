@@ -49,9 +49,9 @@ ynh_install_extra_app_dependencies \
 # add couchdb configuration
 ynh_script_progression --message="Adding a configuration file..." --weight=2
 # customize couchdb config
-ynh_add_config --template="../conf/5-flohmarkt.ini" --destination="/opt/couchdb/etc/local.d/5-flohmarkt.ini"
-chown root:couchdb /opt/couchdb/etc/local.d/5-flohmarkt.ini
-chmod 640 /opt/couchdb/etc/local.d/5-flohmarkt.ini
+ynh_add_config --template="../conf/05-flohmarkt.ini" --destination="/opt/couchdb/etc/local.d/05-flohmarkt.ini"
+chown root:couchdb /opt/couchdb/etc/local.d/05-flohmarkt.ini
+chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
 
 # @@ todo need to create a couchdb user and set the files to be readable/executable by it
 chmod 750 "$install_dir"
