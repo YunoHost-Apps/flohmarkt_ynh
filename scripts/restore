@@ -3,30 +3,11 @@
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-##
-## 1. - 4. order matters!
-##
-
-# 1. restore couchdb directory
-# uncritical, good to have
+# restore couchdb directory
 ynh_script_progression --message="Restoring couchdb directory..." --weight=1
 ynh_restore_file --origin_path="/var/lib/couchdb"
 
-# 2. restore the apps settings
-# they contain variables needed to install couchdb (see below)
-ynh_script_progression --message="Restoring flohmarkts settings..." --weight=1
-ynh_restore_file --origin_path="/etc/yunohost/apps/$app"
-
-# 3. get variables from settings.yaml for couchdb
-ynh_script_progression --message="Restoring settings for couchdb install..." --weight=1
-# export app=$YNH_APP_INSTANCE_NAME
-# export couchdb_magic_cookie=$(ynh_app_setting_get $app couchdb_magic_cookie)
-# export password_couchdb_admin=$(ynh_app_setting_get $app password_couchdb_admin)
-# export password_couchdb_admin=$(ynh_app_setting_get $app password_couchdb_admin)
-# @@ debug
-env
-
-# 4. reinstall couchdb
+# reinstall couchdb
 ynh_script_progression --message="Reinstalling couchdb..." --weight=40
 
 echo "\
