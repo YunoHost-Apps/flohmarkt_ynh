@@ -52,6 +52,10 @@ ynh_remove_nginx_config
 # Remove the dedicated Fail2Ban config
 ynh_remove_fail2ban_config
 
+# Remove home
+ynh_script_progression --message="Removing data directory..." --weight=2
+ynh_secure_remove --file=$data_dir
+
 #=================================================
 # END OF SCRIPT
 #=================================================
