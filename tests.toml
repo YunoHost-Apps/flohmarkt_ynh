@@ -2,7 +2,7 @@ test_format = 1.0
 
 [default]
     # still in development
-	exclude = ["install.private", "install.multi", "upgrade", "backup_restore", "change_url", "install_subdir"]
+	exclude = ["install.private", "install.multi", "upgrade", "change_url", "install_subdir"]
 
     args.password_couchdb_admin = "TestPasswordCouchDBadmin"
     args.password_couchdb_flohmarkt = "TestPasswordCouchDBflohmarkt"

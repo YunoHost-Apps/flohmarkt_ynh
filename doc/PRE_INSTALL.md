@@ -1,6 +1,6 @@
 ## installs
 
-But very limited.
+But very limited - see [issues](https://codeberg.org/ChriChri/flohmarkt_ynh/issues)
 
 ### Exclusive use of couchdb 
 
@@ -24,7 +24,7 @@ https://codeberg.org/ChriChri/flohmarkt_ynh/issues/5 .
 
 **Warning:** This will probably break any existing installation of couchdb (there's an couchdb app to install just couchdb and expose its port via nginx reverse-proxy).
 
-## no backup, yet
+## read before test installation
 
 **Another warning:** When installing flohmarkt on a a domain and letting it talk to other ActivityPub instances it will propagate a key associated to your domain. If you remove your flohmarkt from that domain and loose that key other instances might not want to talk to you anymore after you installed flohmarkt again on the same domain generating a new key.
 
