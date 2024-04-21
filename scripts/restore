@@ -7,6 +7,11 @@ source /usr/share/yunohost/helpers
 ynh_script_progression --message="Restoring the app main directory..." --weight=10
 ynh_restore_file --origin_path="$install_dir"
 
+# restore the apps settings
+ynh_script_progression --message="Restoring flohmarkts settings..." --weight=1
+ynh_restore_file --origin_path="/etc/yunohost/apps/$app"
+
+
 # RESTORE THE DATA DIRECTORY
 ynh_script_progression --message="Restoring the data directory..." --weight=1
 ynh_restore_file --origin_path="$data_dir" --not_mandatory
