@@ -27,7 +27,7 @@ ynh_script_progression --message="Installing CouchDB..." --weight=60
 # This value must match for all nodes in the cluster. If they do not match,
 # attempts to connect the node to the cluster will be rejected.
 couchdb_magic_cookie=$(ynh_string_random --length=23 --filter='A-Za-z0-9_')
-ynh_app_setting_set --app=$app --key=erlang_cookie --value="$couchdb_magic_cookie"
+ynh_app_setting_set --app=$app --key=couchdb_magic_cookie --value="$couchdb_magic_cookie"
 
 echo "\
 couchdb couchdb/mode select standalone
@@ -83,7 +83,7 @@ python3 -m venv --without-pip "$install_dir/venv"
 jwtsecret=$(ynh_string_random --length=344 --filter='a-zA-Z0-9/+')
 
 password_couchdb_flohmarkt=$(ynh_string_random --length=31 --filter='A-Za-z0-9_.:,')
-ynh_app_setting_set --app=$app --key=erlang_cookie --value="$password_couchdb_flohmarkt"
+ynh_app_setting_set --app=$app --key=password_couchdb_flohmarkt --value="$password_couchdb_flohmarkt"
 
 # generate flohmarkt.conf
 ynh_add_config --template="../conf/flohmarkt.conf" --destination="$install_dir/$app/flohmarkt.conf"

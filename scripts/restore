@@ -3,31 +3,30 @@
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-# RESTORE THE APP MAIN DIR
-ynh_script_progression --message="Restoring the app main directory..." --weight=10
-ynh_restore_file --origin_path="$install_dir"
+##
+## 1. - 4. order matters!
+##
 
-# restore the apps settings
+# 1. restore couchdb directory
+# uncritical, good to have
+ynh_script_progression --message="Restoring couchdb directory..." --weight=1
+ynh_restore_file --origin_path="/var/lib/couchdb"
+
+# 2. restore the apps settings
+# they contain variables needed to install couchdb (see below)
 ynh_script_progression --message="Restoring flohmarkts settings..." --weight=1
 ynh_restore_file --origin_path="/etc/yunohost/apps/$app"
 
+# 3. get variables from settings.yaml for couchdb
+ynh_script_progression --message="Restoring settings for couchdb install..." --weight=1
+# export app=$YNH_APP_INSTANCE_NAME
+# export couchdb_magic_cookie=$(ynh_app_setting_get $app couchdb_magic_cookie)
+# export password_couchdb_admin=$(ynh_app_setting_get $app password_couchdb_admin)
+# export password_couchdb_admin=$(ynh_app_setting_get $app password_couchdb_admin)
+# @@ debug
+env
 
-# RESTORE THE DATA DIRECTORY
-ynh_script_progression --message="Restoring the data directory..." --weight=1
-ynh_restore_file --origin_path="$data_dir" --not_mandatory
-mkdir -p $data_dir
-
-# RESTORE FAIL2BAN CONFIGURATION
-ynh_script_progression --message="Restoring the Fail2Ban configuration..." --weight=2
-ynh_restore_file --origin_path="/etc/fail2ban/jail.d/$app.conf"
-ynh_restore_file --origin_path="/etc/fail2ban/filter.d/$app.conf"
-ynh_systemd_action --action=restart --service_name=fail2ban
-
-# RESTORE THE NGINX CONFIGURATION
-ynh_script_progression --message="Restoring the NGINX web server configuration..." --weight=1
-ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
-
-# REINSTALL COUCHDB
+# 4. reinstall couchdb
 ynh_script_progression --message="Reinstalling couchdb..." --weight=40
 
 echo "\
@@ -56,13 +55,28 @@ ynh_restore_file --origin_path="/opt/couchdb/etc/local.d/05-flohmarkt.ini"
 chown root:couchdb /opt/couchdb/etc/local.d/05-flohmarkt.ini
 chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
 
-# restore couchdb directory
-ynh_script_progression --message="Restoring couchdb directory..." --weight=1
-ynh_restore_file --origin_path="/var/lib/couchdb"
-
 # start couchdb
 systemctl start couchdb
 systemctl status couchdb
+
+# RESTORE THE APP MAIN DIR
+ynh_script_progression --message="Restoring the app main directory..." --weight=10
+ynh_restore_file --origin_path="$install_dir"
+
+# RESTORE THE DATA DIRECTORY
+ynh_script_progression --message="Restoring the data directory..." --weight=1
+ynh_restore_file --origin_path="$data_dir" --not_mandatory
+mkdir -p $data_dir
+
+# RESTORE FAIL2BAN CONFIGURATION
+ynh_script_progression --message="Restoring the Fail2Ban configuration..." --weight=2
+ynh_restore_file --origin_path="/etc/fail2ban/jail.d/$app.conf"
+ynh_restore_file --origin_path="/etc/fail2ban/filter.d/$app.conf"
+ynh_systemd_action --action=restart --service_name=fail2ban
+
+# RESTORE THE NGINX CONFIGURATION
+ynh_script_progression --message="Restoring the NGINX web server configuration..." --weight=1
+ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 
 # RESTORE THE LOGROTATE CONFIGURATION
 ynh_script_progression --message="Restoring the logrotate configuration..." --weight=1
