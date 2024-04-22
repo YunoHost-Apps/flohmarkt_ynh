@@ -65,6 +65,7 @@ ynh_restore_file --origin_path="/etc/logrotate.d/$app"
 
 # INTEGRATE SERVICE IN YUNOHOST
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
+ynh_restore_file --origin_path="/etc/systemd/system/$app.service"
 yunohost service add $app --description="A decentral federated small advertisement platform" --log="/var/log/$app/$app.log"
 ynh_systemd_action --action=start --line_match="INFO:     Application startup complete."
 
