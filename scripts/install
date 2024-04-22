@@ -57,11 +57,6 @@ chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
 systemctl restart couchdb
 systemctl status couchdb
 
-# INTEGRATE SERVICE IN YUNOHOST
-# would this work? couchdb brings its own systemd.service...
-# ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
-# yunohost service add $app --description="war mal couchdb" --log="/var/log/$app/$app.log"
-
 # get flohmarkt
 ynh_setup_source --dest_dir="$install_dir/$app/"
 
@@ -104,7 +99,6 @@ ynh_add_config --template="../conf/flohmarkt.conf" --destination="$install_dir/$
 # SETUP LOGROTATE
 ynh_script_progression --message="Configuring log rotation..." --weight=2
 # Use logrotate to manage application logfile(s)
-# @@ how does this know where the logfiles are?
 ynh_use_logrotate
 
 # NGINX CONFIGURATION
@@ -128,7 +122,5 @@ ynh_systemd_action --service_name=$app --action="start"
 # 
 # # Create a dedicated Fail2Ban config
 # ynh_add_fail2ban_config --logpath="/var/log/couchdb/couchdb.log" --failregex="[warning] .*couch_httpd_auth: Authentication failed for user .+ from <HOST>" --max_retry=5
-
-# @@ logrotation
 
 ynh_script_progression --message="Installation of $app completed" --last
