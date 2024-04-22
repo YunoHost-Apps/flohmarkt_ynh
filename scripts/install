@@ -76,6 +76,7 @@ python3 -m venv --without-pip "$install_dir/venv"
 
 # JwtSecret
 jwtsecret=$(ynh_string_random --length=344 --filter='a-zA-Z0-9/+')
+ynh_app_setting_set --app=$app --key=jwtsecret --value="$jwtsecret"
 
 password_couchdb_flohmarkt=$(ynh_string_random --length=31 --filter='A-Za-z0-9_.:,')
 ynh_app_setting_set --app=$app --key=password_couchdb_flohmarkt --value="$password_couchdb_flohmarkt"
