@@ -22,10 +22,10 @@ couchdb couchdb/mode select standalone
 couchdb couchdb/mode seen true
 couchdb couchdb/bindaddress string 127.0.0.1
 couchdb couchdb/bindaddress seen true
-couchdb couchdb/cookie string $password
-couchdb couchdb/adminpass password $password
+couchdb couchdb/cookie string $couchdb_magic_cookie
+couchdb couchdb/adminpass password $password_couchdb_admin
 couchdb couchdb/adminpass seen true
-couchdb couchdb/adminpass_again password $password
+couchdb couchdb/adminpass_again password $password_couchdb_admin
 couchdb couchdb/adminpass_again seen true" | debconf-set-selections
 DEBIAN_FRONTEND=noninteractive # apt-get install -y --force-yes couchdb
 ynh_install_extra_app_dependencies \
