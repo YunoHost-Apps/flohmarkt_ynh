@@ -75,4 +75,15 @@ ynh_systemd_action --action=start --line_match="INFO:     Application startup co
 ynh_script_progression --message="Reloading NGINX web server..." --weight=1
 ynh_systemd_action --service_name=nginx --action=reload
 
+# add some debugging to find #21
+ls -lR /var/lib/couchdb /opt/couchdb/ $install_dir /var/log/couchdb/couchdb.log /var/log/$app/$app.log \
+  $data_dir /etc/nginx/conf.d/$domain.d/$app.conf
+cat $install_dir/$app/flohmarkt.conf /opt/couchdb/etc/local.d/05-flohmarkt.ini
+cat /var/log/couchdb/couchdb.log /var/log/$app/$app.log
+netstat -pnlt
+systemctl status flohmarkt
+systemctl status couchdb
+ps axuf
+# debug end
+
 ynh_script_progression --message="Restoration completed for $app" --last
