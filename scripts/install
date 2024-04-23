@@ -75,7 +75,8 @@ python3 -m venv --without-pip "$install_dir/venv"
 )
 
 # JwtSecret
-jwtsecret=$(ynh_string_random --length=344 --filter='a-zA-Z0-9/+')
+# workaround for https://github.com/YunoHost/issues/issues/2379
+jwtsecret=$(ynh_string_random -l 200 -f 'a-zA-Z0-9/+'; ynh_string_random -l 142 -f 'a-zA-Z0-9/+'; echo -n '==')
 ynh_app_setting_set --app=$app --key=jwtsecret --value="$jwtsecret"
 
 password_couchdb_flohmarkt=$(ynh_string_random --length=31 --filter='A-Za-z0-9_.:,')
