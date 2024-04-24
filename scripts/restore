@@ -67,7 +67,7 @@ ynh_restore_file --origin_path="/etc/logrotate.d/$app"
 
 # add some debugging to find #21
 ynh_exec_warn_less ls -lR /var/lib/couchdb /opt/couchdb/etc $install_dir /var/log/couchdb/couchdb.log \
-  /var/log/$app/$app.log $data_dir /etc/nginx/conf.d/$domain.d/$app.conf
+  /var/log/$app/$app.log $data_dir /etc/nginx/conf.d/$domain.d/$app.conf || true
 ynh_exec_warn_less cat $install_dir/$app/flohmarkt.conf /opt/couchdb/etc/local.d/05-flohmarkt.ini
 ynh_exec_warn_less cat /var/log/couchdb/couchdb.log /var/log/$app/$app.log
 
