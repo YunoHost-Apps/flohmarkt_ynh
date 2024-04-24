@@ -69,7 +69,12 @@ ynh_restore_file --origin_path="/etc/logrotate.d/$app"
 ynh_exec_warn_less ls -lR /var/lib/couchdb /opt/couchdb/etc $install_dir /var/log/couchdb/couchdb.log \
   /var/log/$app/$app.log $data_dir /etc/nginx/conf.d/$domain.d/$app.conf || true
 ynh_exec_warn_less cat $install_dir/$app/flohmarkt.conf /opt/couchdb/etc/local.d/05-flohmarkt.ini
-ynh_exec_warn_less cat /var/log/couchdb/couchdb.log /var/log/$app/$app.log
+ynh_exec_warn_less tail -n50 /var/log/couchdb/couchdb.log /var/log/$app/$app.log
+ynh_exec_warn_less cat /etc/nginx/conf.d/$domain.d/$app.conf
+ynh_exec_warn_less curl -D - "http://admin:$password_couchdb_admin:127.0.0.1:5984"
+ynh_exec_warn_less curl -D - "http://flohmarkt:$password_couchdb_flohmarkt:127.0.0.1:5984"
+ynh_exec_warn_less curl -D - "http://$domain"
+ynh_exec_warn_less curl -kD - "https://$domain"
 
 # INTEGRATE SERVICE IN YUNOHOST
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
