@@ -71,8 +71,8 @@ ynh_exec_warn_less ls -lR /var/lib/couchdb /opt/couchdb/etc $install_dir /var/lo
 ynh_exec_warn_less cat $install_dir/$app/flohmarkt.conf /opt/couchdb/etc/local.d/05-flohmarkt.ini
 ynh_exec_warn_less tail -n50 /var/log/couchdb/couchdb.log /var/log/$app/$app.log
 ynh_exec_warn_less cat /etc/nginx/conf.d/$domain.d/$app.conf
-ynh_exec_warn_less curl -D - "http://admin:$password_couchdb_admin:127.0.0.1:5984"
-ynh_exec_warn_less curl -D - "http://flohmarkt:$password_couchdb_flohmarkt:127.0.0.1:5984"
+ynh_exec_warn_less curl -D - "http://admin:$password_couchdb_admin@127.0.0.1:5984"
+ynh_exec_warn_less curl -D - "http://flohmarkt:$password_couchdb_flohmarkt@127.0.0.1:5984"
 ynh_exec_warn_less curl -D - "http://$domain"
 ynh_exec_warn_less curl -kD - "https://$domain"
 
