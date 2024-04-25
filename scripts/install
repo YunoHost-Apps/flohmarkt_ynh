@@ -115,6 +115,8 @@ ynh_add_systemd_config
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 yunohost service add $app --description="A decentral federated small advertisement platform" --log="/var/log/$app/$app.log"
 #  logfile contains possibly the secret setup URL
+mkdir -m755 -p "/var/log/$app"
+touch "/var/log/$app/$app.log"
 chmod 640 "/var/log/$app/$app.log"
 # start service
 ynh_systemd_action --service_name=$app --action="start"
