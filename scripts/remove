@@ -46,6 +46,9 @@ ynh_secure_remove --file=/var/lib/couchdb
 # Remove the app-specific logrotate config
 ynh_remove_logrotate
 
+# remove log directory
+ynh_secure_remove --file="/var/log/$app/$app.log"
+
 # Remove the dedicated NGINX config
 ynh_remove_nginx_config
 
