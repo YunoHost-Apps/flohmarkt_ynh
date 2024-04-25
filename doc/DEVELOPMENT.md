@@ -4,3 +4,5 @@ The yunohost integration of flohmarkt is developed by the flohmarkt organization
 
 Please refer to https://codeberg.org/flohmarkt/flohmarkt_ynh/ to take part in development.
 
+
+
