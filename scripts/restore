@@ -58,9 +58,9 @@ mkdir -p $data_dir
 ynh_script_progression --message="Restoring log directory and logfiles..." --weight=1
 ynh_restore_file --origin_path="/var/log/$app" --not_mandatory
 mkdir -p -m755 "/var/log/$app"
-touch "/var/log/$app/$app"
+touch "/var/log/$app/$app.log"
 # logfile contains possibly the secret setup URL
-chmod 640 "/var/log/$app/$app"
+chmod 640 "/var/log/$app/$app.log"
 
 # RESTORE FAIL2BAN CONFIGURATION
 ynh_script_progression --message="Restoring the Fail2Ban configuration..." --weight=2
