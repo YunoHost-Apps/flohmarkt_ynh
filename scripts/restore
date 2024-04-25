@@ -76,12 +76,6 @@ ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 ynh_script_progression --message="Restoring the logrotate configuration..." --weight=1
 ynh_restore_file --origin_path="/etc/logrotate.d/$app"
 
-# add some debugging to find #21
-ls -lR /var/lib/couchdb /opt/couchdb/etc $install_dir /var/log/couchdb/couchdb.log \
-  /var/log/$app/$app.log $data_dir /etc/nginx/conf.d/$domain.d/$app.conf || true
-cat $install_dir/$app/flohmarkt.conf /opt/couchdb/etc/local.d/05-flohmarkt.ini
-tail -n50 /var/log/couchdb/couchdb.log /var/log/$app/$app.log || true
-
 # restore flohmarkt systemd service and integrate service into yunohost
 ynh_script_progression --message="Restoring flohmarkt.service and integrating service into YunoHost..." --weight=1
 ynh_restore_file --origin_path="/etc/systemd/system/$app.service"
@@ -89,22 +83,8 @@ ynh_systemd_action --action=enable
 yunohost service add $app --description="A decentral federated small advertisement platform" --log="/var/log/$app/$app.log"
 ynh_systemd_action --action=start --line_match="INFO:     Application startup complete."
 
-# add some debugging to find #21
-systemctl status flohmarkt
-systemctl status couchdb
-
 # RELOAD NGINX
 ynh_script_progression --message="Reloading NGINX web server..." --weight=1
 ynh_systemd_action --service_name=nginx --action=reload
-
-# add some debugging to find #21
-ps axuf
-netstat -pnlt
-cat /etc/nginx/conf.d/$domain.d/$app.conf
-curl -D - "http://admin:$password_couchdb_admin@127.0.0.1:5984" || true
-curl -D - "http://flohmarkt:$password_couchdb_flohmarkt@127.0.0.1:5984" || true
-curl -D - "http://127.0.0.1:8000" || true
-curl -D - "http://$domain" || true
-curl -kD - "https://$domain" || true
 
 ynh_script_progression --message="Restoration completed for $app" --last

@@ -19,10 +19,11 @@ ynh_print_info --message="Stopping flohmarkt and couchdb to backup data..."
 yunohost service stop flohmarkt
 systemctl stop couchdb
 
+# https://codeberg.org/ChriChri/flohmarkt_ynh/issues/24
 # since this might be re-installed as a dependency during 'remove' and 
 # 'install' anew (like after a failed upgrade) we do not want to use
 # --is_big even thought the directories might be big because:
-# "don't want that your package does backup that part during ynh_backup_before_upgrade"
+# "don't want that your package does backup that part during ynh_backup_﻿before_upgrade"
 # https://yunohost.org/en/packaging_apps_scripts_helpers#ynh-backup
 # 
 # if this becomes a pain we'll need to stop deleting this directories on 'remove'
