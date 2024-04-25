@@ -2,7 +2,9 @@ test_format = 1.0
 
 [default]
     # still in development
-	exclude = ["install.private", "install.multi", "upgrade", "change_url", "install_subdir"]
+	# https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
+	# https://codeberg.org/ChriChri/flohmarkt_ynh/issues/11
+	exclude = ["install.multi", "change_url", "install_subdir"]
 
     args.password_couchdb_admin = "TestPasswordCouchDBadmin"
     args.password_couchdb_flohmarkt = "TestPasswordCouchDBflohmarkt"
