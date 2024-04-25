@@ -1,7 +1,3 @@
-## installs
-
-But very limited - see [issues](https://codeberg.org/ChriChri/flohmarkt_ynh/issues)
-
 ### Exclusive use of couchdb 
 
 flohmarkt expects to install CouchDB from the Apache repository for its own, exclusive use. Installation might break already existing installs of CouchDB.
@@ -32,12 +28,11 @@ https://codeberg.org/ChriChri/flohmarkt_ynh/issues/5 .
 
 ## Go ahead…
 
-…test, break stuff and open issues :) !
+…test, break stuff and open issues on codeberg :) !
 
 # help welcome
 
 You're welcome to take part by opening issues or sending pull requests. You can also reach me on Matrix in [Yunohost Apps development](https://matrix.to/#/%23yunohost-apps:matrix.org) as @chrichri:librem.one .
 
 I also announced this work on the [yunohost forum](https://forum.yunohost.org/t/ynh-flohmarkt-flohmarkt-as-an-app-for-yunohost/28455?u=chrichri).
-
 
