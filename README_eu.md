@@ -81,6 +81,11 @@ Please refer to https://codeberg.org/flohmarkt/flohmarkt_ynh/ to take part in de
 
 More about development of **flohmarkt**s yunohost integration can be found in [DEVELOPMENT.md](DEVELOPMENT.md)
 
+## :red_circle: Ezaugarri zalantzagarriak
+
+- **Alfa softwarea**: Garapenaren hasierako fasean dago. Ezaugarri aldakor edo ezegonkorrak, erroreak eta segurtasuneko arazoak izan ditzazke.
+- **Muga arbitrarioak**: Muga arbitrarioak ditu. Irakurri README fitxategia.
+
 ## Dokumentazioa eta baliabideak
 
 - Aplikazioaren webgune ofiziala: <https://codeberg.org/flohmarkt/flohmarkt>

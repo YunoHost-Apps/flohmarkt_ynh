@@ -81,6 +81,11 @@ Please refer to https://codeberg.org/flohmarkt/flohmarkt_ynh/ to take part in de
 
 More about development of **flohmarkt**s yunohost integration can be found in [DEVELOPMENT.md](DEVELOPMENT.md)
 
+## :red_circle: Antifeatures
+
+- **Alpha software**: Early development stage. May contain changing or unstable features, bugs, and security vulnerability.
+- **Arbitrary limitations**: Features arbitrary limitations. Please refer to the README.
+
 ## Documentation and resources
 
 - Official app website: <https://codeberg.org/flohmarkt/flohmarkt>
