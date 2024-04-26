@@ -28,3 +28,26 @@ Once in a while we'll reach the point to tag a new `-ynhX` version for changes o
 To do so we'll push the according changes to the [flohmarkt repository at github](https://github.com/YunoHost-Apps/flohmarkt_ynh) to make upgrades available to the yunohost community.
 
 One **pitfall** doing so is that we can't rely on the yunohost CI for testing for our codeberg repository this way. If need'll be and developers would like to use yunohost as their base for active work on flohmarkt we might release another app **flohmarkt-devel_ynh** in future that closely follows the repository we use for development.
+
+### pushing to github
+
+* make sure the local git and the codeberg git are in sync on their main branch
+* tag a new version on codeberg `<major>.<minor>-ynh<X>`, e.g. `0.01-ynh5`. `<major>.<minor>` is the flohmarkt version. `ynhX` is the version of the integration into flohmarkt (this repo).
+  * new flohmarkt version: only `manifest.toml` changed to point to the newer source archive
+    → change `<major>.<minor>-ynh<X>` according to the new flohmarkt version
+  * changes in integration: scripts, conf files or `doc/*` changed
+    → increment `<X>` to signal a new version of the yunohost integration
+* **help needed** make sure the main branch contains the version to publish
+* try to push to github and maybe fail:
+  * on github the README.md and README_LANG.md files are automatically generated and might have changed
+  * check the difference between github and the local git
+  * pull the newer versions from github and merge them
+* push the update to github
+* push the local git to codeberg
+
+#### help wanted
+
+At time of writing the author still is learning about git and didn't know a way to push a branch/tag from their local git repository onto a different branch on a remote repository which would help to
+* tag a release version on codeberg
+* checkout the version into a local git and
+* push that version to github
