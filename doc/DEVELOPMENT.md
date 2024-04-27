@@ -29,6 +29,12 @@ To do so we'll push the according changes to the [flohmarkt repository at github
 
 One **pitfall** doing so is that we can't rely on the yunohost CI for testing for our codeberg repository this way. If need'll be and developers would like to use yunohost as their base for active work on flohmarkt we might release another app **flohmarkt-devel_ynh** in future that closely follows the repository we use for development.
 
+#### master and main
+
+The development startet on codeberg on a branch named **main**. That worked all the way until the repository got mirrored to github to be included into the yunohost app catalog. The last change that needed to be done for flohmarkt to appear on the catalog has been to change the name of the branch to **master** for the workflows on github to recognize it for catalog inclusion.
+
+Short: for **historic** reason we use the branch **main** on codeberg and publish the versions for the catalog as **master** on github.
+
 ### pushing to github
 
 * make sure the local git and the codeberg git are in sync on their main branch
@@ -37,17 +43,11 @@ One **pitfall** doing so is that we can't rely on the yunohost CI for testing fo
     → change `<major>.<minor>-ynh<X>` according to the new flohmarkt version
   * changes in integration: scripts, conf files or `doc/*` changed
     → increment `<X>` to signal a new version of the yunohost integration
-* **help needed** make sure the main branch contains the version to publish
-* try to push to github and maybe fail:
-  * on github the README.md and README_LANG.md files are automatically generated and might have changed
-  * check the difference between github and the local git
-  * pull the newer versions from github and merge them
-* push the update to github
-* push the local git to codeberg
+* try to push the local main branch to github which might fail
+  * there might for some reason exist an old main branch that had not been deleted after the PR to the github master branch - check carefully and delete the existing main branch
+* on github open an PR from the main branch into the master branch
+  * the PR can be tested on the CI workflow if a comment containing `!testme` is added to the PR
+* the PR will be included after
+  * it successfully ran through the CI workflow (results will show up inside the PR)
+  * it has been reviewed 
 
-#### help wanted
-
-At time of writing the author still is learning about git and didn't know a way to push a branch/tag from their local git repository onto a different branch on a remote repository which would help to
-* tag a release version on codeberg
-* checkout the version into a local git and
-* push that version to github
