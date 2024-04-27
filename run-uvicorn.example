@@ -1,0 +1,55 @@
+/opt/flohmarkt/venv/bin/uvicorn --host 127.0.0.1 --port 8000 --reload --log-config logger.json flohmarkt.web:start
+
+Fehler:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.9/logging/config.py", line 385, in resolve
+    found = self.importer(used)
+ModuleNotFoundError: No module named 'pythonjsonlogger'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.9/logging/config.py", line 543, in configure
+    formatters[name] = self.configure_formatter(
+  File "/usr/lib/python3.9/logging/config.py", line 655, in configure_formatter
+    result = self.configure_custom(config)
+  File "/usr/lib/python3.9/logging/config.py", line 470, in configure_custom
+    c = self.resolve(c)
+  File "/usr/lib/python3.9/logging/config.py", line 398, in resolve
+    raise v
+  File "/usr/lib/python3.9/logging/config.py", line 385, in resolve
+    found = self.importer(used)
+ValueError: Cannot resolve 'pythonjsonlogger.jsonlogger.JsonFormatter': No module named 'pythonjsonlogger'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/opt/flohmarkt/venv/bin/uvicorn", line 8, in <module>
+    sys.exit(main())
+  File "/opt/flohmarkt/venv/lib/python3.9/site-packages/click/core.py", line 1157, in __call__
+    return self.main(*args, **kwargs)
+  File "/opt/flohmarkt/venv/lib/python3.9/site-packages/click/core.py", line 1078, in main
+    rv = self.invoke(ctx)
+  File "/opt/flohmarkt/venv/lib/python3.9/site-packages/click/core.py", line 1434, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+  File "/opt/flohmarkt/venv/lib/python3.9/site-packages/click/core.py", line 783, in invoke
+    return __callback(*args, **kwargs)
+  File "/opt/flohmarkt/venv/lib/python3.9/site-packages/uvicorn/main.py", line 404, in main
+    run(
+  File "/opt/flohmarkt/venv/lib/python3.9/site-packages/uvicorn/main.py", line 506, in run
+    config = Config(
+  File "/opt/flohmarkt/venv/lib/python3.9/site-packages/uvicorn/config.py", line 299, in __init__
+    self.configure_logging()
+  File "/opt/flohmarkt/venv/lib/python3.9/site-packages/uvicorn/config.py", line 411, in configure_logging
+    logging.config.dictConfig(loaded_config)
+  File "/usr/lib/python3.9/logging/config.py", line 809, in dictConfig
+    dictConfigClass(config).configure()
+  File "/usr/lib/python3.9/logging/config.py", line 546, in configure
+    raise ValueError('Unable to configure '
+ValueError: Unable to configure formatter 'json'
+
+(venv) root@yt:/opt/flohmarkt/flohmarkt# pip install python-json-logger
+Requirement already satisfied: python-json-logger in /usr/lib/python3.9/site-packages (2.0.7)
+
+Ausgabe in json will ich eigentlich auch nicht falls das in der config steht. Der Kram ist aber so dokumentiert, dass ich ihn nicht verstehe...
