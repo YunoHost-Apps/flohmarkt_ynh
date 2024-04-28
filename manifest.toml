@@ -6,7 +6,7 @@ id = "flohmarkt"
 name = "flohmarkt"
 description.en = "A decentral federated small ads platform"
 
-version = "0.0~ynh3"
+version = "0.0~ynh4"
 
 maintainers = ["Chris Vogel"]
 
@@ -156,7 +156,8 @@ ram.runtime = "100M"
 
     [resources.apt]
     # python dependencies shall be installed in a venv using pip.
-    packages = "python3-pip python3-full curl apt-transport-https gnupg"
+	# moreutils is needed for `ts` used in systemd.service
+    packages = "python3-pip python3-full curl apt-transport-https gnupg moreutils"
     # repo for couchdb - doesn't work, yet
     # extras.couchdb.repo = "deb https://apache.jfrog.io/artifactory/couchdb-deb/ __YNH_DEBIAN_VERSION__ main"
     # extras.couchdb.key = "https://couchdb.apache.org/repo/keys.asc"

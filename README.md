@@ -28,7 +28,7 @@ Registered users can access a simple form to publish there small ads. The small 
 
 ## Federation
 
-To communicate with someone who published a small ad the server hints to an unregistred user _"To answer this offer please log in or create an account. OR use another fediverse-account".
+To communicate with someone who published a small ad the server hints to an unregistred user _"To answer this offer please log in or create an account. OR use another fediverse-account"._
 
 The small add visited turns out to be a _note_ in the fediverse. It's url can be opened with your favourite fediverse client at the server you're already registered to. You then can boost the small ad like any other note you read.
 
@@ -53,7 +53,7 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 * [Service compatibility chart](https://codeberg.org/flohmarkt/flohmarkt/wiki/Service-compatibility-chart)
 
 
-**Shipped version:** 0.0~ynh3
+**Shipped version:** 0.0~ynh4
 
 **Demo:** <https://flohmarkt.ween.de/>
 
