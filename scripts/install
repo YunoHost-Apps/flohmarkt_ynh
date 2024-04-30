@@ -6,7 +6,11 @@ source /usr/share/yunohost/helpers
 
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/9
 # check if couchdb is already installed
-if [[ -e /opt/couchdb ]] || pgrep epmd > /dev/null || pgrep beam.smp || dpkg-query -W couchdb > /dev/null 2>&1; 
+# if there's a couchdb configuration file for flohmarkt we'll assume that couchdb
+# had been installed by flohmarkt and we thus can savely do whatever we want to it
+# with the resulting damage hopefully only influencing flohmarkt instances
+if [[ -e /opt/couchdb ]] || pgrep epmd > /dev/null || pgrep beam.smp || dpkg-query -W couchdb > /dev/null 2>&1 \
+  && ![[ -e /opt/couchdb/etc/local.d/05-flohmarkt.ini ]];
 then
   ynh_die --message="CouchDB already installed on this host - will not proceed."
   exit 1
@@ -58,20 +62,20 @@ systemctl restart couchdb
 systemctl status couchdb
 
 # get flohmarkt
-ynh_setup_source --dest_dir="$install_dir/$app/"
+ynh_setup_source --dest_dir="$flohmarkt_install"
 
 # setup python environment for flohmarkt
-ynh_secure_remove "$install_dir/venv"
-python3 -m venv --without-pip "$install_dir/venv"
+ynh_secure_remove "$flohmarkt_venv_dir"
+python3 -m venv --without-pip "$flohmarkt_venv_dir"
 
 # install python dependencies
 (
     set +o nounset
-    source "$install_dir/venv/bin/activate"
+    source "$flohmarkt_venv_dir/bin/activate"
     set -o nounset
     set -x
-    $install_dir/venv/bin/python3 -m ensurepip
-    $install_dir/venv/bin/pip3 install -r "$install_dir/$app/requirements.txt"
+    $flohmarkt_venv_dir/bin/python3 -m ensurepip
+    $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_install/requirements.txt"
 )
 
 # JwtSecret
@@ -83,14 +87,14 @@ password_couchdb_flohmarkt=$(ynh_string_random --length=31 --filter='A-Za-z0-9_.
 ynh_app_setting_set --app=$app --key=password_couchdb_flohmarkt --value="$password_couchdb_flohmarkt"
 
 # generate flohmarkt.conf
-ynh_add_config --template="../conf/flohmarkt.conf" --destination="$install_dir/$app/flohmarkt.conf"
+ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_install/flohmarkt.conf"
 
 # setup couchdb
 (
     set +o nounset
-    source "$install_dir/venv/bin/activate"
+    source "$flohmarkt_venv_dir/bin/activate"
     set -o nounset
-    cd "$install_dir/$app"
+    cd "$flohmarkt_install"
     # initialize_couchdb seems to re-try on connect problems endlessly blocking the yunohost api
     # give it 45 seconds to finish and then fail
     # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/13
