@@ -46,30 +46,30 @@ systemctl status couchdb
 
 # install upgrade for flohmarkt
 ynh_script_progression --message="Upgrading flohmarkt..." --weight=4
-ynh_setup_source --dest_dir="$install_dir/$app/"
+ynh_setup_source --dest_dir="$flohmarkt_install/"
 
 ynh_script_progression --message="Upgrading flohmarkt python dependencies..." --weight=5
 # upgrade python environment / install new dependencies
 (
     set +o nounset
-    source "$install_dir/venv/bin/activate"
+    source "$flohmarkt_venv_dir/bin/activate"
     set -o nounset
     set -x
-    $install_dir/venv/bin/python3 -m ensurepip
-    $install_dir/venv/bin/pip3 install -r "$install_dir/$app/requirements.txt"
+    $flohmarkt_venv_dir/bin/python3 -m ensurepip
+    $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_install/requirements.txt"
 )
 
 # upgrade flohmarkt.conf
 ynh_script_progression --message="Upgrading flohmarkt configuration..." --weight=1
-ynh_add_config --template="../conf/flohmarkt.conf" --destination="$install_dir/$app/flohmarkt.conf"
+ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_install/flohmarkt.conf"
 
 ynh_script_progression --message="Upgrading flohmarkt couchdb..." --weight=10
 # run initialize_couchdb.py
 (
     set +o nounset
-    source "$install_dir/venv/bin/activate"
+    source "$flohmarkt_venv_dir/bin/activate"
     set -o nounset
-    cd "$install_dir/$app"
+    cd "$flohmarkt_install"
     # initialize_couchdb seems to re-try on connect problems endlessly blocking the yunohost api
     # give it 45 seconds to finish and then fail
     # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/13

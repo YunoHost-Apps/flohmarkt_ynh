@@ -54,13 +54,12 @@ ram.runtime = "100M"
     # ask admin on which domain to run flohmarkt
     type = "domain"
 
-# https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
-#     [install.path]
-#     # ask admin under which path flohmarkt will be reachable
-#     # e.g. 'https://doma.in/path' - might not work, needs to be tested:
-#     # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
-#     type = "path"
-#     default = "/"
+    [install.path]
+    # ask admin under which path flohmarkt will be reachable
+    # e.g. 'https://doma.in/path' - might not work, needs to be tested:
+    # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
+    type = "path"
+    default = "/"
 
     [install.init_main_permission]
     # who will be able to access the apps URL after installation?
