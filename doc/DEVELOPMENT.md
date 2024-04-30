@@ -29,24 +29,26 @@ To do so we'll push the according changes to the [flohmarkt repository at github
 
 One **pitfall** doing so is that we can't rely on the yunohost CI for testing for our codeberg repository this way. If need'll be and developers would like to use yunohost as their base for active work on flohmarkt we might release another app **flohmarkt-devel_ynh** in future that closely follows the repository we use for development.
 
-#### master and main
+#### master, main and testing
 
 The development startet on codeberg on a branch named **main**. That worked all the way until the repository got mirrored to github to be included into the yunohost app catalog. The last change that needed to be done for flohmarkt to appear on the catalog has been to change the name of the branch to **master** for the workflows on github to recognize it for catalog inclusion.
 
 Short: for **historic** reason we use the branch **main** on codeberg and publish the versions for the catalog as **master** on github.
 
+Because of https://github.com/YunoHost-Apps/flohmarkt_ynh/pull/2#issuecomment-2081108150 we decided to name the working branch on codeberg **testing** which also signals that this is not the place to install from if testing and development is not wanted.
+
 ### pushing to github
 
-* make sure the local git and the codeberg git are in sync on their main branch
+* make sure the local git and the codeberg git are in sync on their testing branch
 * tag a new version on codeberg `<major>.<minor>-ynh<X>`, e.g. `0.01-ynh5`. `<major>.<minor>` is the flohmarkt version. `ynhX` is the version of the integration into flohmarkt (this repo).
   * new flohmarkt version: only `manifest.toml` changed to point to the newer source archive
     → change `<major>.<minor>-ynh<X>` according to the new flohmarkt version
   * changes in integration: scripts, conf files or `doc/*` changed
     → increment `<X>` to signal a new version of the yunohost integration
-* try to push the local main branch to github which might fail
-  * there might for some reason exist an old main branch that had not been deleted after the PR to the github master branch - check carefully and delete the existing main branch
-* on github open an PR from the main branch into the master branch
-  * the PR can be tested on the CI workflow if a comment containing `!testme` is added to the PR
+* push the local testing branch to github, if this fails:
+  * there might for some reason exist an old testing branch that had not been deleted after the PR to the github master branch - check carefully and delete the existing testing branch
+* on github open an PR from the testing branch into the master branch
+  * test the PR on the CI workflow by commenting it containing `!testme` on one line by itself to the PR
 * the PR will be included after
   * it successfully ran through the CI workflow (results will show up inside the PR)
   * it has been reviewed 
