@@ -15,6 +15,15 @@ ynh_systemd_action --service_name=$app --action="stop"
 # stop couchdb
 ynh_systemd_action --service_name=couchdb --action="stop"
 
+# Upgrade ynh4 → ynh5, change of paths and filenames
+# https://matrix.to/#/!PauySEslPVuJCJCwlZ:matrix.org/$auU_rSL6MACt9wkyFGlCQbO8ivFlU0ztYW74TimZdcM?via=matrix.org&via=aria-net.org&via=sans-nuage.fr
+# and follow-ups
+if ynh_compare_current_package_version --comparision lt --version 0.00~ynh5 &&
+  ( [[ $upgrade_type == UPGRADE_PACKAGE ]] || [[ $upgrade_type == UPGRADE_APP ]] )
+then
+  flohmarkt_ynh_upgrade_path_ynh5
+fi
+
 # upgrade couchdb
 ynh_script_progression --message="Upgrading CouchDB..." --weight=50
 echo "\
@@ -46,9 +55,9 @@ systemctl status couchdb
 
 # install upgrade for flohmarkt
 ynh_script_progression --message="Upgrading flohmarkt..." --weight=4
-ynh_setup_source --dest_dir="$flohmarkt_install/"
+ynh_setup_source --dest_dir="$flohmarkt_app_dir/"
 
-ynh_script_progression --message="Upgrading flohmarkt python dependencies..." --weight=5
+ynh_script_progression --message="Upgrading flohmarkt python dependencies..." --weight=6
 # upgrade python environment / install new dependencies
 (
     set +o nounset
@@ -56,12 +65,12 @@ ynh_script_progression --message="Upgrading flohmarkt python dependencies..." --
     set -o nounset
     set -x
     $flohmarkt_venv_dir/bin/python3 -m ensurepip
-    $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_install/requirements.txt"
+    $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_app_dir/requirements.txt"
 )
 
 # upgrade flohmarkt.conf
 ynh_script_progression --message="Upgrading flohmarkt configuration..." --weight=1
-ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_install/flohmarkt.conf"
+ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_app_dir/flohmarkt.conf"
 
 ynh_script_progression --message="Upgrading flohmarkt couchdb..." --weight=10
 # run initialize_couchdb.py
@@ -69,7 +78,7 @@ ynh_script_progression --message="Upgrading flohmarkt couchdb..." --weight=10
     set +o nounset
     source "$flohmarkt_venv_dir/bin/activate"
     set -o nounset
-    cd "$flohmarkt_install"
+    cd "$flohmarkt_app_dir"
     # initialize_couchdb seems to re-try on connect problems endlessly blocking the yunohost api
     # give it 45 seconds to finish and then fail
     # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/13
@@ -78,10 +87,10 @@ ynh_script_progression --message="Upgrading flohmarkt couchdb..." --weight=10
 
 # systemd service upgrade
 ynh_script_progression --message="Upgrading flohmarkt systemd service..." --weight=1
-ynh_add_systemd_config
+ynh_add_systemd_config --service=$flohmarkt_filename
 # INTEGRATE SERVICE IN YUNOHOST
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=2
-yunohost service add $app --description="A decentral federated small advertisement platform" --log="/var/log/$app/$app.log"
+yunohost service add $flohmarkt_filename --description="A decentral federated small advertisement platform" --log="$flohmarkt_logfile"
 
 # upgrade logrotate
 ynh_script_progression --message="Upgrading logrotate configuration..." --weight=1
@@ -94,10 +103,10 @@ ynh_add_nginx_config
 
 # UPGRADE FAIL2BAN
 ynh_script_progression --message="Reconfiguring Fail2Ban..." --weight=3
-ynh_add_fail2ban_config --logpath="/var/log/$app/$app.log" --failregex='INFO: +<HOST>:\d+ - "POST /token HTTP/\d+\.\d+" 403 Forbidden' --max_retry=5
+ynh_add_fail2ban_config --logpath="$flohmarkt_logfile" --failregex='INFO: +<HOST>:\d+ - "POST /token HTTP/\d+\.\d+" 403 Forbidden' --max_retry=5
 
 # start flohmarkt
 ynh_script_progression --message="Starting flohmarkt..." --weight=3
-ynh_systemd_action --service_name=$app --action="start" --line_match="INFO:     Application startup complete."
+ynh_systemd_action --service_name=$flohmarkt_filename --action="start" --line_match="INFO:     Application startup complete."
 
 ynh_script_progression --message="Upgrade of $app completed" --last

@@ -16,6 +16,12 @@ then
   exit 1
 fi
 
+# create and setup $data_dir
+data_dir="${flohmarkt_data_dir}"
+ynh_script_progression --message="Creating data_dir '$data_dir'..." --weight=2
+ynh_app_setting_set --app=$app --key=data_dir --value="$data_dir"
+flohmarkt_ynh_create_data_dir
+
 # INITIALIZE AND STORE SETTINGS
 # todo: do we need to store the password un-encrypted somewhere on the system?
 # → there's no way to get the admin password later if sometimes in the future deleting
@@ -62,7 +68,7 @@ systemctl restart couchdb
 systemctl status couchdb
 
 # get flohmarkt
-ynh_setup_source --dest_dir="$flohmarkt_install"
+ynh_setup_source --dest_dir="$flohmarkt_app_dir"
 
 # setup python environment for flohmarkt
 ynh_secure_remove "$flohmarkt_venv_dir"
@@ -75,7 +81,7 @@ python3 -m venv --without-pip "$flohmarkt_venv_dir"
     set -o nounset
     set -x
     $flohmarkt_venv_dir/bin/python3 -m ensurepip
-    $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_install/requirements.txt"
+    $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_app_dir/requirements.txt"
 )
 
 # JwtSecret
@@ -87,24 +93,24 @@ password_couchdb_flohmarkt=$(ynh_string_random --length=31 --filter='A-Za-z0-9_.
 ynh_app_setting_set --app=$app --key=password_couchdb_flohmarkt --value="$password_couchdb_flohmarkt"
 
 # generate flohmarkt.conf
-ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_install/flohmarkt.conf"
+ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_app_dir/flohmarkt.conf"
 
 # setup couchdb
 (
     set +o nounset
     source "$flohmarkt_venv_dir/bin/activate"
     set -o nounset
-    cd "$flohmarkt_install"
+    cd "$flohmarkt_app_dir"
     # initialize_couchdb seems to re-try on connect problems endlessly blocking the yunohost api
     # give it 45 seconds to finish and then fail
     # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/13
-    timeout 45 python3 initialize_couchdb.py $password_couchdb_admin $password_couchdb_flohmarkt
+    timeout 45 python3 initialize_couchdb.py $password_couchdb_admin
 )
 
 # SETUP LOGROTATE
 ynh_script_progression --message="Configuring log rotation..." --weight=2
 # Use logrotate to manage application logfile(s)
-ynh_use_logrotate
+ynh_use_logrotate --logfile=$flohmarkt_logfile
 
 # NGINX CONFIGURATION
 ynh_script_progression --message="Configuring NGINX web server..." --weight=3
@@ -114,19 +120,21 @@ ynh_add_nginx_config
 # systemd.service
 ynh_script_progression --message="Configuring a systemd service..." --weight=1
 # Create a dedicated systemd config
-ynh_add_systemd_config
+ynh_add_systemd_config --service=$flohmarkt_filename
 # integrate into yunohost
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
-yunohost service add $app --description="A decentral federated small advertisement platform" --log="/var/log/$app/$app.log"
+yunohost service add $flohmarkt_filename --description="A decentral federated small advertisement platform" --log="$flohmarkt_logfile"
 #  logfile contains possibly the secret setup URL
-mkdir -m755 -p "/var/log/$app"
-touch "/var/log/$app/$app.log"
-chmod 640 "/var/log/$app/$app.log"
+mkdir -m755 -p "$flohmarkt_log_dir"
+touch "$flohmarkt_logfile"
+chmod 640 "$flohmarkt_logfile"
 # start service
-ynh_systemd_action --service_name=$app --action="start"
+ynh_systemd_action --service_name=$flohmarkt_filename --action="start" 
+# https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/44
+# --line_match="INFO:     Application startup complete."
 
 # SETUP FAIL2BAN
 ynh_script_progression --message="Configuring Fail2Ban..." --weight=3
-ynh_add_fail2ban_config --logpath="/var/log/$app/$app.log" --failregex='INFO: +<HOST>:\d+ - "POST /token HTTP/\d+\.\d+" 403 Forbidden' --max_retry=5
+ynh_add_fail2ban_config --logpath="$flohmarkt_logfile" --failregex='INFO: +<HOST>:\d+ - "POST /token HTTP/\d+\.\d+" 403 Forbidden' --max_retry=5
 
-ynh_script_progression --message="Installation of $app completed" --last
+ynh_script_progression --message="Installation of $id completed" --last

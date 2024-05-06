@@ -6,11 +6,11 @@ After=network.target couchdb.service
 Type=simple
 User=__APP__
 Group=__APP__
-WorkingDirectory=__FLOHMARKT_INSTALL__
+WorkingDirectory=__FLOHMARKT_APP_DIR__
 Environment="VENV_DIR=__FLOHMARKT_VENV_DIR__"
-ExecStart=/bin/bash -c "__FLOHMARKT_VENV_DIR__/bin/uvicorn --host 127.0.0.1 --port 8000 --reload flohmarkt.web:start  2>&1 | /usr/bin/ts '%%Y-%%m-%%d %%H:%%M:%%S'"
+ExecStart=/bin/bash -c "__FLOHMARKT_VENV_DIR__/bin/uvicorn --host 127.0.0.1 --port __PORT__ flohmarkt.web:start  2>&1 | /usr/bin/ts '%%Y-%%m-%%d %%H:%%M:%%S'"
 # nicer logfile naming https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/38
-StandardOutput=append:/var/log/__ID__/__APP__.log
+StandardOutput=append:__FLOHMARKT_LOGFILE__
 StandardError=inherit
 
 # Sandboxing options to harden security

@@ -23,7 +23,7 @@ Your opinion is appreciated on this topic.
 
 The codeberg repository is meant to be bleeding edge and we'll try to follow the HEAD of [flohmarkts](https://codeberg.org/flohmarkt/flohmarkt) repository closely.
 
-Once in a while we'll reach the point to tag a new `-ynhX` version for changes of the yunohost integration or we'll want to release a new version of flohmarkt or both.
+Once in a while we'll reach the point to tag a new `~ynhX` version for changes of the yunohost integration or we'll want to release a new version of flohmarkt or both.
 
 To do so we'll push the according changes to the [flohmarkt repository at github](https://github.com/YunoHost-Apps/flohmarkt_ynh) to make upgrades available to the yunohost community.
 
@@ -40,10 +40,11 @@ Because of https://github.com/YunoHost-Apps/flohmarkt_ynh/pull/2#issuecomment-20
 ### pushing to github
 
 * make sure the local git and the codeberg git are in sync on their testing branch
-* tag a new version on codeberg `<major>.<minor>-ynh<X>`, e.g. `0.01-ynh5`. `<major>.<minor>` is the flohmarkt version. `ynhX` is the version of the integration into flohmarkt (this repo).
-  * new flohmarkt version: only `manifest.toml` changed to point to the newer source archive
-    → change `<major>.<minor>-ynh<X>` according to the new flohmarkt version
-  * changes in integration: scripts, conf files or `doc/*` changed
+* tag a new version on codeberg `<major>.<minor>~ynh<X>`, e.g. `0.01~ynh5`. `<major>.<minor>` is the flohmarkt version. `ynhX` is the version of the integration into flohmarkt (this repo).
+  * new flohmarkt version: `manifest.toml` changed to point to the newer source archive
+    → change `<major>.<minor>~ynh<X>` according to the new flohmarkt version
+    → reset `X` in `~ynh<X>` to `0`
+  * **only** changes in integration, **no new flohmarkt version in manifest.toml**
     → increment `<X>` to signal a new version of the yunohost integration
 * push the local testing branch to github, if this fails:
   * there might for some reason exist an old testing branch that had not been deleted after the PR to the github master branch - check carefully and delete the existing testing branch

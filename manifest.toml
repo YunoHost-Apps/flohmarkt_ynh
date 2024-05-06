@@ -108,8 +108,8 @@ ram.runtime = "100M"
     # This will pre-fetch the asset which can then be deployed during the install/upgrade scripts with :
     #    ynh_setup_source --dest_dir="$install_dir"
     # You can also define other assets than "main" and add --source_id="foobar" in the previous command
-    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/6b396428ee52acba99483487e34eb0b258e339eb.tar.gz"
-    sha256 = "2167a94e209764fd7fde06b77e6b2fe845ed493f0fdab1dc19053ecd7d89d60f"
+    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/2c5ea313d9b04dad25649335f415af5ca484f262.tar.gz"
+    sha256 = "ce08228e2e9e650925c53094bf9c02bac8cdcb03a931f262034802ce6541e1f7"
 
     # These infos are used by https://github.com/YunoHost/apps/blob/master/tools/autoupdate_app_sources/autoupdate_app_sources.py
     # to auto-update the previous asset urls and sha256sum + manifest version
@@ -134,9 +134,8 @@ ram.runtime = "100M"
     [resources.install_dir]
     dir = "/opt/flohmarkt"
 
-    [resources.data_dir]
-    # This will create/remove the data dir as /home/yunohost.app/$app
-    # and store the corresponding setting $data_dir
+    # [resources.data_dir]
+    # we'll take care of this inside the install script and save it to the settings
 
     [resources.permissions]
     # This will configure SSOwat permission for $domain/$path/
