@@ -14,24 +14,24 @@ if [[ "__${url_path}__" == '____' ]]; then
 else
   flohmarkt_filename="$domain-${url_path}"
 fi
-# just in case we append $app to make it really unique
 # this filename is used for logfile name and systemd.service name
-flohmarkt_filename="${flohmarkt_filename//[^A-Za-z0-9._-]/_}_${app}"
-#
+# and for symlinking install_dir and data_dir
+flohmarkt_filename="${YNH_APP_ID}_${flohmarkt_filename//[^A-Za-z0-9._-]/_}"
 # directory flohmarkts software is installed to
 # contains ./venv and ./src as sub-directories
-flohmarkt_install="/opt/${id}/${domain}/${url_path}"
+flohmarkt_install="$install_dir"
+flohmarkt_sym_install="$( dirname $flohmarkt_install )/$flohmarkt_filename"
 flohmarkt_venv_dir="${flohmarkt_install}/venv"
 flohmarkt_app_dir="${flohmarkt_install}/app"
 # directory containing logfiles
-flohmarkt_log_dir="/var/log/${id}/${flohmarkt_filename}"
+flohmarkt_log_dir="/var/log/${YNH_APP_ID}/${flohmarkt_filename}"
 # filename for logfiles - ¡ojo! if not ends with .log will be interpreted
 # as a directory by ynh_use_logrotate
 # https://github.com/YunoHost/issues/issues/2383
 flohmarkt_logfile="${flohmarkt_log_dir}/${app}.log"
-# flohmarkt data_dir follows the naming convention above
-# its saved to settings during install
-flohmarkt_data_dir="/home/yunohost.app/${flohmarkt_filename}"
+# flohmarkt data_dir
+flohmarkt_data_dir="$data_dir"
+flohmarkt_sym_data_dir="$( dirname $flohmarkt_data_dir )/$flohmarkt_filename"
 
 ## old filenames before 0.00~ynh5 - for reference and needed to
 # migrate (see below)
@@ -57,15 +57,6 @@ flohmarkt_ynh_upgrade_path_ynh5() {
   
   false
   # there's still some work open - see above
-}
-
-# to follow the naming convention including information about domain
-# and path we do create the data_dir here and save it during install 
-# to the settings of this flohmarkt instance
-flohmarkt_ynh_create_data_dir() {
-  mkdir -p $data_dir
-  chown $app: $data_dir
-  chmod 750 $data_dir
 }
 
 #=================================================

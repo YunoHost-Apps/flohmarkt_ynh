@@ -27,23 +27,13 @@ then
 	yunohost service remove $flohmarkt_filename
 fi
 
-## This needs to be rewritten: Only delete the database of the instance being removed
 # https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/12
-# ynh_script_progression --message="Stopping couchdb..." --weight=2
-# systemctl stop couchdb
-# 
-# ynh_script_progression --message="Removing databases..." --weight=2
-# # remove flohmarkt database and database user
-# # ynh_script_progression --message="removing flohmarkt couchdb user and database" --weight=2
-# # @@ wie komme ich hier an das admin-password, falls ich es brauche?
-# #      * brauche ich es? → ja
-# # db:
-# # curl -X DELETE 'http://127.0.0.1:5984/flohmarkt' --user '<admin-user>:<admin-password>'
-# # user:
-# # curl -X DELETE "http://127.0.0.1:5984/_users/org.couchdb.user%3Aflohmarkt?rev=`curl -sX GET 'http://127.0.0.1:5984/_users/org.couchdb.user%3Aflohmarkt' --user 'admin:bla42fasel' | jq -r ._rev`" --user '<admin-user>:<admin-password>'
-# # @@ todo improve this like above
-# # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/12
-# ynh_secure_remove --file=/var/lib/couchdb
+ynh_script_progression --message="Removing database and database user..." --weight=2
+# remove DB
+curl -s -X DELETE 'http://127.0.0.1:5984/flohmarkt' --user "admin:${password_couchdb_admin}"
+# remove DB user for this instance:
+#   get rev for the user and then delete user/rev
+curl -s -X DELETE "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}?rev=$( curl -sX GET "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}" --user "admin:${password_couchdb_admin}" | jq -r ._rev)" --user "admin:${password_couchdb_admin}"
 
 # Remove the app-specific logrotate config
 ynh_remove_logrotate
@@ -67,6 +57,10 @@ ynh_secure_remove --file=$data_dir
 # remove systemd service
 ynh_script_progression --message="Removing data directory..." --weight=2
 ynh_remove_systemd_config
+
+# remove symlinks
+ynh_secure_remove "$flohmarkt_sym_install"
+ynh_secure_remove "$flohmarkt_sym_data_dir"
 
 #=================================================
 # END OF SCRIPT
