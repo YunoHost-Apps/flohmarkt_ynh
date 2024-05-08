@@ -28,7 +28,7 @@ Registered users can access a simple form to publish there small ads. The small 
 
 ## Federation
 
-To communicate with someone who published a small ad the server hints to an unregistred user _"To answer this offer please log in or create an account. OR use another fediverse-account".
+To communicate with someone who published a small ad the server hints to an unregistred user _"To answer this offer please log in or create an account. OR use another fediverse-account"._
 
 The small add visited turns out to be a _note_ in the fediverse. It's url can be opened with your favourite fediverse client at the server you're already registered to. You then can boost the small ad like any other note you read.
 
@@ -53,13 +53,38 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 * [Service compatibility chart](https://codeberg.org/flohmarkt/flohmarkt/wiki/Service-compatibility-chart)
 
 
-**Versión proporcionada:** 0.0~ynh3
+**Versión proporcionada:** 0.0~ynh4
 
 **Demo:** <https://flohmarkt.ween.de/>
 
 ## Capturas de pantalla
 
 ![Captura de pantalla de flohmarkt](./doc/screenshots/screenshot.png)
+
+## Avisos / información importante
+
+## support
+
+For questions about running flohmarkt on yunohost please use the [yunohost support matrix channel](https://yunohost.org/en/chat_rooms#help-and-support-chat-roo) or the [forum](https://forum.yunohost.org/t/ynh-flohmarkt-flohmarkt-as-an-app-for-yunohost/28455?u=chrichri).
+
+To get help for **flohmarkt** itself please look at its [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki), [open an issue](https://codeberg.org/flohmarkt/flohmarkt/issues) with your request or join the [IRC channel flohmarkt](https://web.libera.chat/?nick=GithubGuest?#flohmarkt) on [libera.chat](https://libera.chat/).
+
+## bugs, requesting features
+
+Please use the issue tracker at https://codeberg.org/flohmarkt/flohmarkt_ynh/issues
+
+## upstream repository
+
+The yunohost integration of **flohmarkt** is developed by the flohmarkt organization on https://codeberg.org/ .
+
+Please refer to https://codeberg.org/flohmarkt/flohmarkt_ynh/ to take part in development.
+
+More about development of **flohmarkt**s yunohost integration can be found in [DEVELOPMENT.md](DEVELOPMENT.md)
+
+## :red_circle: Caraterísticas cuestionables
+
+- **Alpha software**: Early development stage. May contain changing or unstable features, bugs, and security vulnerability.
+- **Arbitrary limitations**: Features arbitrary limitations. Please refer to the README.
 
 ## Documentación e recursos
 
