@@ -11,7 +11,7 @@ ynh_backup --src_path="/etc/fail2ban/filter.d/$app.conf"
 ynh_backup --src_path="/etc/logrotate.d/$app"
 ynh_backup --src_path="/opt/couchdb/etc/local.d/05-flohmarkt.ini"
 ynh_backup --src_path="/etc/systemd/system/$flohmarkt_filename.service"
-ynh_backup --src_path="${flohmarkt_logfile}*"
+ynh_backup --src_path="${flohmarkt_log_dir}"
 
 # for the following backups we'll want to stop flohmarkt and couchdb
 # to guarentee a consistant state
@@ -34,6 +34,6 @@ ynh_backup --src_path="/var/lib/couchdb"
 
 ynh_print_info --message="...done. Starting couchdb and flohmarkt."
 systemctl start couchdb
-yunohost service start flohmarkt
+flohmarkt_ynh_start_service
 
 ynh_print_info --message="Backup script completed for $app. (YunoHost will then actually copy those files to the archive)."

@@ -5,6 +5,7 @@ source /usr/share/yunohost/helpers
 
 # restore couchdb directory
 ynh_script_progression --message="Restoring couchdb directory..." --weight=1
+# argh, need this for a single database
 ynh_restore_file --origin_path="/var/lib/couchdb"
 
 # reinstall couchdb
@@ -42,11 +43,11 @@ systemctl status couchdb
 
 # RESTORE THE APP MAIN DIR
 ynh_script_progression --message="Restoring the app main directory..." --weight=10
-ynh_restore_file --origin_path="$install_dir"
+ynh_restore_file --origin_path="$flohmarkt_install"
 
 # RESTORE THE DATA DIRECTORY
 ynh_script_progression --message="Restoring the data directory..." --weight=1
-ynh_restore_file --origin_path="$data_dir" --not_mandatory
+ynh_restore_file --origin_path="$flohmarkt_data_dir=" --not_mandatory
 mkdir -p $data_dir
 
 # restore logfiles
@@ -64,8 +65,8 @@ chmod 640 "$flohmarkt_logfile"
 
 # RESTORE FAIL2BAN CONFIGURATION
 ynh_script_progression --message="Restoring the Fail2Ban configuration..." --weight=2
-ynh_restore_file --origin_path="/etc/fail2ban/jail.d/$flohmarkt_logfile.conf"
-ynh_restore_file --origin_path="/etc/fail2ban/filter.d/$flohmarkt_logfile.conf"
+ynh_restore_file --origin_path="/etc/fail2ban/jail.d/$app.conf"
+ynh_restore_file --origin_path="/etc/fail2ban/filter.d/$app.conf"
 ynh_systemd_action --action=restart --service_name=fail2ban
 
 # RESTORE THE NGINX CONFIGURATION
@@ -79,9 +80,9 @@ ynh_restore_file --origin_path="/etc/logrotate.d/$app"
 # restore flohmarkt systemd service and integrate service into yunohost
 ynh_script_progression --message="Restoring flohmarkt.service and integrating service into YunoHost..." --weight=1
 ynh_restore_file --origin_path="/etc/systemd/system/$flohmarkt_filename.service"
-ynh_systemd_action --action=enable
+ynh_systemd_action --action=enable --service_name=$flohmarkt_filename
 yunohost service add $app --description="A decentral federated small advertisement platform" --log="$flohmarkt_logfile"
-ynh_systemd_action --action=start --line_match="INFO:     Application startup complete."
+flohmarkt_ynh_start_service
 
 # RELOAD NGINX
 ynh_script_progression --message="Reloading NGINX web server..." --weight=1

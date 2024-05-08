@@ -1,17 +1,17 @@
-## Warning: Exclusive use of couchdb 
+## use of couchdb 
 
-flohmarkt expects to install CouchDB from the Apache repository for its own, exclusive use. Installation might break already existing installs of CouchDB.
+flohmarkt expects to install CouchDB from the Apache repository for its use. Installation of flohmarkt might break already existing installs of CouchDB.
 
 **flohmarkt will probably not install if you're already running an instance of a couchdb**
 
 https://codeberg.org/flohmarkt/flohmarkt_ynh/src/commit/7721103bac61787f31a4b2f2ae695c65d4f26fc9/scripts/install#L9
 https://codeberg.org/ChriChri/flohmarkt_ynh/issues/9
 
-## Exclusive use of (sub)domain 
+## multiple flohmarkt on the same subdomain
 
-flohmarkt expects to bei installed on its own (sub)domain.
+The installation will allow you to **test** this. The feature is not well tested, yet, and installing multiple productive flohmarkts in the same domain might not work on the fediverse.
 
-https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4 .
+Feedback is more than welcome!
 
 ## No integration in yunohost user database"
 
@@ -19,7 +19,7 @@ flohmarkt mainanins its own user database in CouchDB. Users have to register to 
 
 https://codeberg.org/ChriChri/flohmarkt_ynh/issues/5 .
 
-## removing after installation
+## removing
 
 **Warning:** This might break any existing installation of couchdb (there's an couchdb app to install just couchdb and expose its port via nginx reverse-proxy and possibly other software installing a couchdb). This could happen if you installed the couchdb app after you installed flohmarkt.
 

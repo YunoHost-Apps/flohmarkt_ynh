@@ -46,6 +46,23 @@ flohmarkt_old_service="flohmarkt"
 # PERSONAL HELPERS
 #=================================================
 
+# set file permissions and owner for installation
+flohmarkt_ynh_set_permission() {
+  # install dir - only root needs to write and $app reads
+  chown root:$app -R "$flohmarkt_install"
+  chmod g-w,o-rwx -R "$flohmarkt_install"
+}
+
+flohmarkt_ynh_start_service() {
+  ynh_systemd_action --service_name=$flohmarkt_filename --action="start"  \
+    --line_match='INFO: *Application startup complete.' --log_path="$flohmarkt_logfile" \
+    --timeout=30
+}
+
+flohmarkt_ynh_stop_service() {
+  ynh_systemd_action --service_name=$app --action="stop"
+}
+
 # create venv
 flohmarkt_ynh_create_venv() {
   python3 -m venv --without-pip "$flohmarkt_venv_dir"
