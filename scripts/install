@@ -67,18 +67,8 @@ ynh_setup_source --dest_dir="$flohmarkt_app_dir"
 
 # setup python environment for flohmarkt
 ynh_secure_remove "$flohmarkt_venv_dir"
-
-python3 -m venv --without-pip "$flohmarkt_venv_dir"
-
-# install python dependencies
-(
-    set +o nounset
-    source "$flohmarkt_venv_dir/bin/activate"
-    set -o nounset
-    set -x
-    $flohmarkt_venv_dir/bin/python3 -m ensurepip
-    $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_app_dir/requirements.txt"
-)
+flohmarkt_ynh_create_venv
+flohmarkt_ynh_venv_requirements
 
 # JwtSecret
 # workaround for https://github.com/YunoHost/issues/issues/2379
@@ -126,8 +116,6 @@ touch "$flohmarkt_logfile"
 chmod 640 "$flohmarkt_logfile"
 # start service
 ynh_systemd_action --service_name=$flohmarkt_filename --action="start"  --line_match='INFO: *Application startup complete.' --log_path="$flohmarkt_logfile" --timeout=30
-# https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/44
-# --line_match="INFO:     Application startup complete."
 
 # SETUP FAIL2BAN
 ynh_script_progression --message="Configuring Fail2Ban..." --weight=3

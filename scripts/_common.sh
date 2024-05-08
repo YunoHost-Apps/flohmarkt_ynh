@@ -35,28 +35,75 @@ flohmarkt_sym_data_dir="$( dirname $flohmarkt_data_dir )/$flohmarkt_filename"
 
 ## old filenames before 0.00~ynh5 - for reference and needed to
 # migrate (see below)
-flohmarkt_old_install="$install_dir/$app/"
-flohmarkt_old_venv_dir="$install_dir/venv"
-flohmarkt_old_log_dir="/var/log/$app/"
-flohmarkt_old_logfile="$app"
-flohmarkt_old_service="$app"
+flohmarkt_old_install="/opt/flohmarkt"
+flohmarkt_old_venv_dir="${flohmarkt_old_install}/venv"
+flohmarkt_old_app_dir="${flohmarkt_old_install}/flohmarkt"
+flohmarkt_old_log_dir="/var/log/flohmarkt/"
+flohmarkt_old_logfile="flohmarkt"
+flohmarkt_old_service="flohmarkt"
 
 #=================================================
 # PERSONAL HELPERS
 #=================================================
 
+# create venv
+flohmarkt_ynh_create_venv() {
+  python3 -m venv --without-pip "$flohmarkt_venv_dir"
+}
+
+# install requirements.txt in venv
+flohmarkt_ynh_venv_requirements() {
+  (
+    set +o nounset
+    source "$flohmarkt_venv_dir/bin/activate"
+    set -o nounset
+    set -x
+    $flohmarkt_venv_dir/bin/python3 -m ensurepip
+    $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_app_dir/requirements.txt"
+  )
+}
+
 # move files and directories to their new places
 flohmarkt_ynh_upgrade_path_ynh5() {
   # flohmarkt and couchdb are already stopped in upgrade script
-  # move install_dir
-  # move venv_dir
-  # move data_dir
-  # move systemd.service
-  # move logfiles
+
+  # move app_dir into new 'app' folder
+  mv "$flohmarkt_install/flohmarkt" "$flohmarkt_app_dir"
+
+  # yunohost seems to move the venv dir automatically, but this
+  # doesn't work, because the paths inside the venv are not adjusted
+  # delete the old, not working venv and create a new one:
+  ynh_secure_remove --file="$flohmarkt_venv_dir"
+  flohmarkt_ynh_create_venv
+  flohmarkt_ynh_venv_requirements
+  # remove old $install_dir
+  ynh_secure_remove --file="$flohmarkt_old_install"
+
+  # move logfile directory
+  mkdir -p "$flohmarkt_log_dir"
+  mv ${flohmarkt_old_log_dir}/${flohmarkt_old_logfile}.* "$flohmarkt_log_dir"
+
   # update settings for above
-  
-  false
-  # there's still some work open - see above
+  # @@ automatically done? maybe?
+
+  # remove systemd.service - will be generated newly by upgrade
+  # ynh_remove_systemd_config --service="$flohmarkt_old_service"
+  ynh_systemd_action --action=stop --service_name="$flohmarkt_old_service"
+  ynh_systemd_action --action=disable --service_name="$flohmarkt_old_service"
+  ynh_secure_remove --file="/etc/systemd/system/multi-user.target.wants/flohmarkt.service"
+  ynh_secure_remove --file="/etc/systemd/system/flohmarkt.service"
+  # funktioniert nicht? issue?
+  #ynh_systemd_action --action=daemon-reload
+  # DEBUG + systemctl daemon-reload flohmarkt
+  # WARNING Too many arguments.
+  systemctl daemon-reload
+  # unit flohmarkt is automatically appended and therefor this fails:
+  #ynh_systemd_action --action=reset-failed
+  systemctl reset-failed
+ 
+  # create symlinks
+  ln -s "$flohmarkt_install" "$flohmarkt_sym_install"
+  ln -s "$flohmarkt_data_dir" "$flohmarkt_sym_data_dir"
 }
 
 #=================================================
