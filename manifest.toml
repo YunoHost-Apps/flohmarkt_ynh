@@ -6,7 +6,7 @@ id = "flohmarkt"
 name = "flohmarkt"
 description.en = "A decentral federated small ads platform"
 
-version = "0.0~ynh4"
+version = "0.0~ynh5"
 
 maintainers = ["Chris Vogel"]
 
