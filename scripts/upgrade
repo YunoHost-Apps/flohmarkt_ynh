@@ -22,7 +22,7 @@ ynh_systemd_action --service_name=couchdb --action="stop"
 # Upgrade ynh4 → ynh5, change of paths and filenames
 # https://matrix.to/#/!PauySEslPVuJCJCwlZ:matrix.org/$auU_rSL6MACt9wkyFGlCQbO8ivFlU0ztYW74TimZdcM?via=matrix.org&via=aria-net.org&via=sans-nuage.fr
 # and follow-ups
-if ynh_compare_current_package_version --comparison lt --version 0.00~ynh5 &&
+if ynh_compare_current_package_version --comparison lt --version 0.0~ynh5 &&
   ( [[ "$upgrade_type" == UPGRADE_PACKAGE ]] || [[ "$upgrade_type" == UPGRADE_APP ]] )
 then
   flohmarkt_ynh_upgrade_path_ynh5
