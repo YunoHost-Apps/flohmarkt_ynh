@@ -3,15 +3,15 @@ NOTA: Este README foi creado automáticamente por <https://github.com/YunoHost/a
 NON debe editarse manualmente.
 -->
 
-# flohmarkt para YunoHost
+# Flohmarkt para YunoHost
 
 [![Nivel de integración](https://dash.yunohost.org/integration/flohmarkt.svg)](https://dash.yunohost.org/appci/app/flohmarkt) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/flohmarkt.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/flohmarkt.maintain.svg)
 
-[![Instalar flohmarkt con YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=flohmarkt)
+[![Instalar Flohmarkt con YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=flohmarkt)
 
 *[Le este README en outros idiomas.](./ALL_README.md)*
 
-> *Este paquete permíteche instalar flohmarkt de xeito rápido e doado nun servidor YunoHost.*  
+> *Este paquete permíteche instalar Flohmarkt de xeito rápido e doado nun servidor YunoHost.*  
 > *Se non usas YunoHost, le a [documentación](https://yunohost.org/install) para saber como instalalo.*
 
 ## Vista xeral
@@ -59,7 +59,7 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 
 ## Capturas de pantalla
 
-![Captura de pantalla de flohmarkt](./doc/screenshots/screenshot.png)
+![Captura de pantalla de Flohmarkt](./doc/screenshots/screenshot.png)
 
 ## :red_circle: Debes considerar
 

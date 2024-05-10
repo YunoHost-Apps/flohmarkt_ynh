@@ -3,15 +3,15 @@ Ohart ongi: README hau automatikoki sortu da <https://github.com/YunoHost/apps/t
 EZ editatu eskuz.
 -->
 
-# flohmarkt YunoHost-erako
+# Flohmarkt YunoHost-erako
 
 [![Integrazio maila](https://dash.yunohost.org/integration/flohmarkt.svg)](https://dash.yunohost.org/appci/app/flohmarkt) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/flohmarkt.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/flohmarkt.maintain.svg)
 
-[![Instalatu flohmarkt YunoHost-ekin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=flohmarkt)
+[![Instalatu Flohmarkt YunoHost-ekin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=flohmarkt)
 
 *[Irakurri README hau beste hizkuntzatan.](./ALL_README.md)*
 
-> *Pakete honek flohmarkt YunoHost zerbitzari batean azkar eta zailtasunik gabe instalatzea ahalbidetzen dizu.*  
+> *Pakete honek Flohmarkt YunoHost zerbitzari batean azkar eta zailtasunik gabe instalatzea ahalbidetzen dizu.*  
 > *YunoHost ez baduzu, kontsultatu [gida](https://yunohost.org/install) nola instalatu ikasteko.*
 
 ## Aurreikuspena
@@ -59,7 +59,7 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 
 ## Pantaila-argazkiak
 
-![flohmarkt(r)en pantaila-argazkia](./doc/screenshots/screenshot.png)
+![Flohmarkt(r)en pantaila-argazkia](./doc/screenshots/screenshot.png)
 
 ## :red_circle: Ezaugarri zalantzagarriak
 
