@@ -100,11 +100,13 @@ ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
 yunohost service add $flohmarkt_filename --description="A decentral federated small advertisement platform" --log="$flohmarkt_logfile"
 
 #  logfile contains possibly the secret setup URL
+ynh_script_progression --message="Setting permissions on logfile..." --weight=2
 mkdir -m755 -p "$flohmarkt_log_dir"
 touch "$flohmarkt_logfile"
 chmod 640 "$flohmarkt_logfile"
 
 # set file permissions for install dir
+ynh_script_progression --message="Setting permissions on install directory..." --weight=2
 flohmarkt_ynh_set_permission
 
 # SETUP FAIL2BAN
@@ -113,10 +115,14 @@ ynh_add_fail2ban_config --logpath="$flohmarkt_logfile" --failregex='INFO: +<HOST
 
 # symlink data_dir and install_dir to make it easier to find the
 # files for a certain domain/path
+ynh_script_progression --message="Creating symlinks..." --weight=1
 ln -s "$flohmarkt_install" "$flohmarkt_sym_install"
 ln -s "$flohmarkt_data_dir" "$flohmarkt_sym_data_dir"
 
 # start service
+ynh_script_progression --message="Debug before starting flohmarkt..." --weight=1
+ls -l $flohmarkt_logfile /bin/bash /usr/bin/bash || true
+ynh_script_progression --message="Starting flohmarkt..." --weight=10
 flohmarkt_ynh_start_service
 
 ynh_script_progression --message="Installation of $id completed" --last
