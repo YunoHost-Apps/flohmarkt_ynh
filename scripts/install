@@ -102,8 +102,9 @@ yunohost service add $flohmarkt_filename --description="A decentral federated sm
 #  logfile contains possibly the secret setup URL
 ynh_script_progression --message="Setting permissions on logfile..." --weight=2
 mkdir -m755 -p "$flohmarkt_log_dir"
-touch "$flohmarkt_logfile"
-chmod 640 "$flohmarkt_logfile"
+touch "$flohmarkt_logfile"a
+chown root:$app "$flohmarkt_logfile"
+chmod 660 "$flohmarkt_logfile"
 
 # set file permissions for install dir
 ynh_script_progression --message="Setting permissions on install directory..." --weight=2
@@ -121,6 +122,7 @@ ln -s "$flohmarkt_data_dir" "$flohmarkt_sym_data_dir"
 
 # start service
 ynh_script_progression --message="Debug before starting flohmarkt..." --weight=1
+ps axuf
 ls -l $flohmarkt_logfile /bin/bash /usr/bin/bash || true
 ynh_script_progression --message="Starting flohmarkt..." --weight=10
 flohmarkt_ynh_start_service
