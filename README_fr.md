@@ -18,11 +18,11 @@ Il NE doit PAS être modifié à la main.
 
 ## A decentral federated small advertisement platform
 
-flohmarkt provides its own http server that can be used stand-alone to show small ads that registered users may publish. 
+Flohmarkt provides its own http server that can be used stand-alone to show small ads that registered users may publish. 
 
 Registration works through the server itself and can be switched off (to run a server for e.g. only one person or only the persons that had been registered until that moment).
 
-To register it's necessary to provide an email address to which a confirmation link is send.
+To register it's necessary to provide an e-mail address to which a confirmation link is send.
 
 Registered users can access a simple form to publish there small ads. The small ads can be looked at by anybody who is able to reach the website.
 
@@ -34,13 +34,13 @@ The small add visited turns out to be a _note_ in the fediverse. It's url can be
 
 Or you can use your account to answer the author of the small ad if - and only if - you mark your note as 'private' aka 'direct'. This way you can contact the person.
 
-It's also possible to follow accounts on flohmarkt servers like any other account in the fediverse to get new small ads published by that account in your timeline.
+It's also possible to follow accounts on Flohmarkt servers like any other account in the fediverse to get new small ads published by that account in your timeline.
 
-## Federation between flohmarkts
+## Federation between Flohmarkts
 
 At time of installation the software asks for the coordinates of the community it should be for and the radius it should be used in.
 
-This is an offer to help make the goods that might be offered travel less far. A flohmarkt can manually federate with other flohmarkts in its range showing all their goods on its page.
+This is an offer to help make the goods that might be offered travel less far. A flohmarkt can manually federate with other Flohmarkts in its range showing all their goods on its page.
 
 This is not ment to be a restriction, but a nudging to build local communities. These would have the advantage that people could trust each other more, because trades face-to-face could be more common.
 
