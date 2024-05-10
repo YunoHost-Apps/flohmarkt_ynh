@@ -3,8 +3,9 @@
 packaging_format = 2
 
 id = "flohmarkt"
-name = "flohmarkt"
-description.en = "A decentral federated small ads platform"
+name = "Flohmarkt"
+description.en = "Decentralized federated small ads platform"
+description.fr = "Plateforme de petites annonces fédérées décentralisée"
 
 version = "0.0~ynh5"
 
@@ -25,7 +26,7 @@ code = "https://codeberg.org/flohmarkt/flohmarkt"
 # fund = "???"
 
 [integration]
-yunohost = ">= 11.2.11"
+yunohost = ">= 11.2"
 architectures = "all"
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/11
 multi_instance = true
@@ -58,7 +59,7 @@ ram.runtime = "100M"
     # e.g. 'https://doma.in/path' - might not work, needs to be tested:
     # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
     type = "path"
-    default = "/"
+    default = "/flohmarkt"
 
     [install.init_main_permission]
     # who will be able to access the apps URL after installation?
@@ -78,9 +79,9 @@ ram.runtime = "100M"
     default = "flohmarkt"
     type = "string"
     ask.en = "mail sender local part"
-    help.en = "flohmarkt will send emails using the sender <mail_user>@<mail_domain>. Please provide the <mail_user> part."
+    help.en = "Flohmarkt will send emails using the sender <mail_user>@<mail_domain>. Please provide the <mail_user> part."
     ask.de = "E-Mail-Absender Benutzername"
-    help.de = "flohmarkt verschickt emails unter dem Absender <mail_user>@<mail_domain>. Bitte gib Deinen <mail_user> ein."
+    help.de = "Flohmarkt verschickt emails unter dem Absender <mail_user>@<mail_domain>. Bitte gib Deinen <mail_user> ein."
 
     [install.mail_domain]
     # @@ is there a 'type' that makes sure that on this domain email service is enabled?
@@ -93,8 +94,8 @@ ram.runtime = "100M"
     [install.flohmarkt_name]
     # flohmarkt.conf: "InstanceName"
     type = "string"
-    default = "my yunohost flohmarkt"
-    ask.en = "name of your flohmarkt instance"
+    default = "my yunohost Flohmarkt"
+    ask.en = "name of your Flohmarkt instance"
     ask.de = "Name des Flohmarkts"
 
 [resources]
@@ -155,7 +156,7 @@ ram.runtime = "100M"
     [resources.apt]
     # python dependencies shall be installed in a venv using pip.
 	# moreutils is needed for `ts` used in systemd.service
-    packages = "python3-pip python3-full curl apt-transport-https gnupg moreutils curl"
+    packages = "python3-pip, python3-full, curl, apt-transport-https, gnupg, moreutils, curl"
     # repo for couchdb - doesn't work, yet
     # extras.couchdb.repo = "deb https://apache.jfrog.io/artifactory/couchdb-deb/ __YNH_DEBIAN_VERSION__ main"
     # extras.couchdb.key = "https://couchdb.apache.org/repo/keys.asc"
