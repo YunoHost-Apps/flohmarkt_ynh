@@ -53,14 +53,49 @@ flohmarkt_ynh_set_permission() {
   chmod g-w,o-rwx -R "$flohmarkt_install"
 }
 
+# start flohmarkt service
 flohmarkt_ynh_start_service() {
   ynh_systemd_action --service_name=$flohmarkt_filename --action="start"  \
     --line_match='INFO: *Application startup complete.' --log_path="$flohmarkt_logfile" \
     --timeout=30
 }
 
+# stop flohmarkt service
 flohmarkt_ynh_stop_service() {
-  ynh_systemd_action --service_name=$app --action="stop"
+  ynh_systemd_action --service_name=$flohmarkt_filename --action="stop"
+}
+
+# start couchdb and wait for success
+flohmarkt_ynh_start_couchdb() {
+  ynh_systemd_action --service_name=couchdb --action="start" --timeout=30 \
+    --log_path="/var/log/couchdb/couchdb.log" \
+    --line_match='Apache CouchDB has started on http://127.0.0.1'
+}
+
+# stop couchdb
+flohmarkt_ynh_stop_couchdb() {
+  ynh_systemd_action --service_name=couchdb --action="stop" --timeout=30 \
+    --log_path="/var/log/couchdb/couchdb.log" \
+    --line_match='SIGTERM received - shutting down'
+}
+
+# install or upgrade couchdb
+flohmarkt_ynh_up_inst_couchdb() {
+  echo "\
+  couchdb couchdb/mode select standalone
+  couchdb couchdb/mode seen true
+  couchdb couchdb/bindaddress string 127.0.0.1
+  couchdb couchdb/bindaddress seen true
+  couchdb couchdb/cookie string $couchdb_magic_cookie
+  couchdb couchdb/adminpass password $password_couchdb_admin
+  couchdb couchdb/adminpass seen true
+  couchdb couchdb/adminpass_again password $password_couchdb_admin
+  couchdb couchdb/adminpass_again seen true" | debconf-set-selections
+  DEBIAN_FRONTEND=noninteractive # apt-get install -y --force-yes couchdb
+  ynh_install_extra_app_dependencies \
+          --repo="deb https://apache.jfrog.io/artifactory/couchdb-deb/ $(lsb_release -c -s) main" \
+          --key="https://couchdb.apache.org/repo/keys.asc" \
+          --package="couchdb"
 }
 
 # create venv

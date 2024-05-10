@@ -33,22 +33,11 @@ ynh_script_progression --message="Installing CouchDB..." --weight=60
 couchdb_magic_cookie=$(ynh_string_random --length=23 --filter='A-Za-z0-9_')
 ynh_app_setting_set --app=$app --key=couchdb_magic_cookie --value="$couchdb_magic_cookie"
 
-echo "\
-couchdb couchdb/mode select standalone
-couchdb couchdb/mode seen true
-couchdb couchdb/bindaddress string 127.0.0.1
-couchdb couchdb/bindaddress seen true
-couchdb couchdb/cookie string $couchdb_magic_cookie
-couchdb couchdb/adminpass password $password_couchdb_admin
-couchdb couchdb/adminpass seen true
-couchdb couchdb/adminpass_again password $password_couchdb_admin
-couchdb couchdb/adminpass_again seen true" | debconf-set-selections
-DEBIAN_FRONTEND=noninteractive # apt-get install -y --force-yes couchdb
+# update couchdb dpkg
+flohmarkt_ynh_up_inst_couchdb
 
-ynh_install_extra_app_dependencies \
-    --repo="deb https://apache.jfrog.io/artifactory/couchdb-deb/ $(lsb_release -c -s) main" \
-    --key="https://couchdb.apache.org/repo/keys.asc" \
-    --package="couchdb"
+# stop couchdb
+flohmarkt_ynh_stop_couchdb
 
 # add couchdb configuration
 ynh_script_progression --message="Adding a configuration file..." --weight=2
@@ -58,8 +47,7 @@ chown root:couchdb /opt/couchdb/etc/local.d/05-flohmarkt.ini
 chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
 
 # restart couchdb to pick up changes
-systemctl restart couchdb
-systemctl status couchdb
+flohmarkt_ynh_start_couchdb
 
 # get flohmarkt
 # suspecting that this deletes all other sources for YNH_APP_ID
