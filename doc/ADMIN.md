@@ -1,11 +1,3 @@
-After installation, look at /var/log/flohmarkt/flohmarkt.log to find the setup URL. The message should look like this:
-
-```
-Flohmarkt is not initialized yet. Please go to 
-            https://flohmarkt.test/setup/<secret string>
-            in order to complete the setup process
-``` 
-
 ## support
 
 For questions about running flohmarkt on yunohost please use the [yunohost support matrix channel](https://yunohost.org/en/chat_rooms#help-and-support-chat-roo) or the [forum](https://forum.yunohost.org/t/ynh-flohmarkt-flohmarkt-as-an-app-for-yunohost/28455?u=chrichri).
