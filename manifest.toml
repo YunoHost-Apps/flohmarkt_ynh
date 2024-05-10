@@ -44,7 +44,7 @@ ldap = false
 sso = false
 
 # **estimate** minimum disk and RAM requirements
-disk = "100M"
+disk = "200M"
 ram.build = "200M"
 ram.runtime = "100M"
 
