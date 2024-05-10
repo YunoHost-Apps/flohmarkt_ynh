@@ -1,4 +1,4 @@
-## Flohmarkt lives on codeberg
+## Flohmarkt lives on Codeberg
 
 The Flohmarkt team decided to use https://codeberg.org/ as its home. As we embrace YunoHost integration of **Flohmarkt** we want to keep its development close to the core team in a repository under its organisation on Codeberg.
 
@@ -14,7 +14,7 @@ Your opinion is appreciated on this topic.
 
 **subject to change and discussion - think of this as an RFC**
 
-### Development on codeberg
+### Development on Codeberg
 
 * clone the [repo](https://codeberg.org/flohmarkt/flohmarkt_ynh) on codeberg
 * create your working branch
@@ -40,7 +40,7 @@ Because of https://github.com/YunoHost-Apps/flohmarkt_ynh/pull/2#issuecomment-20
 ### pushing to GitHub
 
 * make sure the local git and the codeberg git are in sync on their testing branch
-* tag a new version on codeberg `<major>.<minor>~ynh<X>`, e.g. `0.01~ynh5`. `<major>.<minor>` is the flohmarkt version. `ynhX` is the version of the integration into flohmarkt (this repo).
+* tag a new version on Codeberg `<major>.<minor>~ynh<X>`, e.g. `0.01~ynh5`. `<major>.<minor>` is the flohmarkt version. `ynhX` is the version of the integration into flohmarkt (this repo).
   * new flohmarkt version: `manifest.toml` changed to point to the newer source archive
     → change `<major>.<minor>~ynh<X>` according to the new flohmarkt version
     → reset `X` in `~ynh<X>` to `0`
