@@ -1,6 +1,6 @@
-## finishing setup
+## Finishing setup
 
-To finish your flohmarkt setup you'll need to open its setup URL. 
+To finish your Flohmarkt setup you'll need to open its setup URL. 
 
 You can find the setup URL in the logfile __FLOHMARKT_LOGFILE__ if you look for entries like this:
 

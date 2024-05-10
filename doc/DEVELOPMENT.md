@@ -1,27 +1,27 @@
-## flohmarkt lives on codeberg
+## Flohmarkt lives on codeberg
 
-The flohmarkt team decided to use https://codeberg.org/ as its home. As we embrace the yunohost integration of **flohmarkt** we want to keep its development close to the core team in a repository under its organisation on Codeberg.
+The Flohmarkt team decided to use https://codeberg.org/ as its home. As we embrace YunoHost integration of **Flohmarkt** we want to keep its development close to the core team in a repository under its organisation on Codeberg.
 
 We acknowledge that this is unusual for an yunohost app and are aware that this decision might lead to problems and additional organizational effort.
 
-But as much as we value yunohost and are willing to accept its decision to live on github we kindly ask everybody to accept and support our decision to organize the flohmarkt project on a different service.
+But as much as we value YunoHost and are willing to accept its decision to live on github we kindly ask everybody to accept and support our decision to organize the flohmarkt project on a different service.
 
-We hope that in the end the proximity between home repository and repository for yunohost integretion will be benefitial. If not there'll always be the option to move the repo completely into the yunohost-apps organization on github.
+We hope that in the end the proximity between home repository and repository for YunoHost integretion will be benefitial. If not there'll always be the option to move the repo completely into the yunohost-apps organization on GitHub.
 
 Your opinion is appreciated on this topic.
 
-## development workflow
+## Development workflow
 
 **subject to change and discussion - think of this as an RFC**
 
-### development on codeberg
+### Development on codeberg
 
 * clone the [repo](https://codeberg.org/flohmarkt/flohmarkt_ynh) on codeberg
 * create your working branch
 * once done with your changes / additions open a pull request to the main repo
 * your request will be reviewed, discussed and probably merged
 
-The codeberg repository is meant to be bleeding edge and we'll try to follow the HEAD of [flohmarkts](https://codeberg.org/flohmarkt/flohmarkt) repository closely.
+The Codeberg repository is meant to be bleeding edge and we'll try to follow the HEAD of [Flohmarkts](https://codeberg.org/flohmarkt/flohmarkt) repository closely.
 
 Once in a while we'll reach the point to tag a new `~ynhX` version for changes of the yunohost integration or we'll want to release a new version of flohmarkt or both.
 
@@ -29,15 +29,15 @@ To do so we'll push the according changes to the [flohmarkt repository at github
 
 One **pitfall** doing so is that we can't rely on the yunohost CI for testing for our codeberg repository this way. If need'll be and developers would like to use yunohost as their base for active work on flohmarkt we might release another app **flohmarkt-devel_ynh** in future that closely follows the repository we use for development.
 
-#### master, main and testing
+#### Master, main and testing
 
-The development startet on codeberg on a branch named **main**. That worked all the way until the repository got mirrored to github to be included into the yunohost app catalog. The last change that needed to be done for flohmarkt to appear on the catalog has been to change the name of the branch to **master** for the workflows on github to recognize it for catalog inclusion.
+The development startet on codeberg on a branch named **main**. That worked all the way until the repository got mirrored to GitHub to be included into the yunohost app catalog. The last change that needed to be done for flohmarkt to appear on the catalog has been to change the name of the branch to **master** for the workflows on GitHub to recognize it for catalog inclusion.
 
 Short: for **historic** reason we use the branch **main** on codeberg and publish the versions for the catalog as **master** on github.
 
 Because of https://github.com/YunoHost-Apps/flohmarkt_ynh/pull/2#issuecomment-2081108150 we decided to name the working branch on codeberg **testing** which also signals that this is not the place to install from if testing and development is not wanted.
 
-### pushing to github
+### pushing to GitHub
 
 * make sure the local git and the codeberg git are in sync on their testing branch
 * tag a new version on codeberg `<major>.<minor>~ynh<X>`, e.g. `0.01~ynh5`. `<major>.<minor>` is the flohmarkt version. `ynhX` is the version of the integration into flohmarkt (this repo).

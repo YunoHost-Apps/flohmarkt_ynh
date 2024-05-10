@@ -1,5 +1,5 @@
 [Unit]
-Description=flohmarkt server
+Description=Flohmarkt server
 After=network.target couchdb.service
 
 [Service]
