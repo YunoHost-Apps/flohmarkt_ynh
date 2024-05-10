@@ -3,15 +3,15 @@
 请勿手动编辑。
 -->
 
-# YunoHost 上的 flohmarkt
+# YunoHost 上的 Flohmarkt
 
 [![集成程度](https://dash.yunohost.org/integration/flohmarkt.svg)](https://dash.yunohost.org/appci/app/flohmarkt) ![工作状态](https://ci-apps.yunohost.org/ci/badges/flohmarkt.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/flohmarkt.maintain.svg)
 
-[![使用 YunoHost 安装 flohmarkt](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=flohmarkt)
+[![使用 YunoHost 安装 Flohmarkt](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=flohmarkt)
 
 *[阅读此 README 的其它语言版本。](./ALL_README.md)*
 
-> *通过此软件包，您可以在 YunoHost 服务器上快速、简单地安装 flohmarkt。*  
+> *通过此软件包，您可以在 YunoHost 服务器上快速、简单地安装 Flohmarkt。*  
 > *如果您还没有 YunoHost，请参阅[指南](https://yunohost.org/install)了解如何安装它。*
 
 ## 概况
@@ -59,7 +59,7 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 
 ## 截图
 
-![flohmarkt 的截图](./doc/screenshots/screenshot.png)
+![Flohmarkt 的截图](./doc/screenshots/screenshot.png)
 
 ## :red_circle: 负面特征
 
