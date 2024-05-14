@@ -5,6 +5,7 @@ packaging_format = 2
 id = "flohmarkt"
 name = "flohmarkt"
 description.en = "A decentral federated small ads platform"
+description.fr = "Plateforme de petites annonces fédérées décentralisées"
 
 version = "0.0~ynh5"
 
