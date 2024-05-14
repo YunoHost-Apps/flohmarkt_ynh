@@ -101,7 +101,7 @@ flohmarkt_ynh_up_inst_couchdb() {
 flohmarkt_ynh_dump_couchdb() {
   ls -l ../settings/scripts/couchdb-dump/couchdb-dump.sh # debug
   ../settings/scripts/couchdb-dump/couchdb-dump.sh -b -H 127.0.0.1 -d "${app}" \
-    -u admin -p "${password_couchdb_admin}" > "${YNH_CWD}/${app}.json" || true
+    -u admin -p "${password_couchdb_admin}" -f "${YNH_CWD}/${app}.json"
 }
 
 flohmarkt_ynh_delete_couchdb_user() {
@@ -119,7 +119,7 @@ flohmarkt_ynh_delete_couchdb_db() {
 flohmarkt_ynh_import_couchdb() {
   ls -l ../settings/scripts/couchdb-dump/couchdb-dump.sh # debug
   ../settings/scripts/couchdb-dump/couchdb-dump.sh -r -c -H 127.0.0.1 -d "${app}" \
-    -u admin -p "${password_couchdb_admin}" > "${YNH_CWD}/${app}.json" || true
+    -u admin -p "${password_couchdb_admin}" -f "${YNH_CWD}/${app}.json"
 }
 
 flohmarkt_ynh_create_couchdb_user() {
