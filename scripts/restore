@@ -3,24 +3,29 @@
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-# restore couchdb directory
-ynh_script_progression --message="Restoring couchdb directory..." --weight=1
-# argh, need this for a single database
-ynh_restore_file --origin_path="/var/lib/couchdb"
-
 # reinstall couchdb
 ynh_script_progression --message="Reinstalling couchdb..." --weight=40
 flohmarkt_ynh_up_inst_couchdb
-flohmarkt_ynh_stop_couchdb
 
 # add couchdb configuration
-ynh_script_progression --message="Adding a configuration file..." --weight=2
-ynh_restore_file --origin_path="/opt/couchdb/etc/local.d/05-flohmarkt.ini"
-chown root:couchdb /opt/couchdb/etc/local.d/05-flohmarkt.ini
-chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
+if ![[ -e /opt/couchdb/etc/local.d/05-flohmarkt.ini ]]; then
+  ynh_script_progression --message="Adding a configuration file..." --weight=2
 
-# start couchdb
-flohmarkt_ynh_start_couchdb
+  flohmarkt_ynh_stop_couchdb
+
+  ynh_restore_file --origin_path="/opt/couchdb/etc/local.d/05-flohmarkt.ini"
+  chown root:couchdb /opt/couchdb/etc/local.d/05-flohmarkt.ini
+  chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
+
+  ynh_script_progression --message="Starting couchdb..." --weight=4
+  flohmarkt_ynh_start_couchdb
+else
+  ynh_script_progression --message="CouchDB configuration file already exists." --weight=1
+fi
+
+# restore couchdb from json
+ynh_script_progression --message="Importing couchdb from json backup..." --weight=8
+flohmarkt_ynh_restore_couchdb
 
 # RESTORE THE APP MAIN DIR
 ynh_script_progression --message="Restoring the app main directory..." --weight=10

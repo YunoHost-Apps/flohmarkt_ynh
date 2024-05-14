@@ -98,6 +98,53 @@ flohmarkt_ynh_up_inst_couchdb() {
           --package="couchdb"
 }
 
+flohmarkt_ynh_dump_couchdb() {
+  ls -l ../settings/scripts/couchdb-dump/couchdb-dump.sh # debug
+  ../settings/scripts/couchdb-dump/couchdb-dump.sh -b -H 127.0.0.1 -d "${app}" \
+    -u admin -p "${password_couchdb_admin}" > "${YNH_CWD}/${app}.json" || true
+}
+
+flohmarkt_ynh_delete_couchdb_user() {
+  # https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/46 - more than one revision?
+  local couchdb_user_revision=$( curl -sX GET "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}" \
+    --user "admin:${password_couchdb_admin}" | jq -r ._rev )
+  curl -s -X DELETE "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}?rev=${couchdb_user_revision}" \
+    --user "admin:${password_couchdb_admin}"
+}
+
+flohmarkt_ynh_delete_couchdb_db() {
+  curl -s -X DELETE "http://127.0.0.1:5984/${app}" --user "admin:${password_couchdb_admin}"
+}
+
+flohmarkt_ynh_import_couchdb() {
+  ls -l ../settings/scripts/couchdb-dump/couchdb-dump.sh # debug
+  ../settings/scripts/couchdb-dump/couchdb-dump.sh -r -c -H 127.0.0.1 -d "${app}" \
+    -u admin -p "${password_couchdb_admin}" > "${YNH_CWD}/${app}.json" || true
+}
+
+flohmarkt_ynh_create_couchdb_user() {
+  curl -X PUT "http://127.0.0.1:5984/_users/org.couchdb.user:${app}" --user "admin:${password_couchdb_admin}"\
+    -H "Accept: application/json" -H "Content-Type: application/json" \
+    -d "\{\"name\": \"${app}\", \"${password_couchdb_flohmarkt}\": \"\", \"roles\": \[\], \"type\": \"user\"\}"
+}
+
+flohmarkt_ynh_couchdb_user_permissions() {
+  curl -X PUT "http://127.0.0.1:5984/${app}/_security" --user "admin:${password_couchdb_admin}"\
+    -H "Accept: application/json" -H "Content-Type: application/json" \
+    -d "\{\"members\":\{\"names\": \[\"${app}\"\],\"roles\": \[\"editor\"\]\}\}"
+
+}
+
+flohmarkt_ynh_restore_couchdb() {
+  # @@ todo for now we'll make sure dbuser and db do not exist
+  flohmarkt_ynh_delete_couchdb_user || true
+  flohmarkt_ynh_delete_couchdb_db || true
+
+  flohmarkt_ynh_import_couchdb
+  flohmarkt_ynh_create_couchdb_user
+  flohmarkt_ynh_couchdb_user_permissions
+}
+
 # create venv
 flohmarkt_ynh_create_venv() {
   python3 -m venv --without-pip "$flohmarkt_venv_dir"

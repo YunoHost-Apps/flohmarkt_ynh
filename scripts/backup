@@ -16,8 +16,8 @@ ynh_backup --src_path="${flohmarkt_log_dir}"
 # for the following backups we'll want to stop flohmarkt and couchdb
 # to guarentee a consistant state
 ynh_print_info --message="Stopping flohmarkt and couchdb to backup data..."
-yunohost service stop $flohmarkt_filename
-systemctl stop couchdb
+flohmarkt_ynh_stop_service
+flohmarkt_ynh_stop_couchdb
 
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/24
 # since this might be re-installed as a dependency during 'remove' and 
@@ -28,12 +28,15 @@ systemctl stop couchdb
 # 
 # if this becomes a pain we'll need to stop deleting this directories on 'remove'
 # ynh_backup --src_path="$data_dir" --is_big
-# ynh_backup --src_path="/var/lib/couchdb" --is_big
 ynh_backup --src_path="$flohmarkt_data_dir"
-ynh_backup --src_path="/var/lib/couchdb"
 
-ynh_print_info --message="...done. Starting couchdb and flohmarkt."
-systemctl start couchdb
+ynh_print_info --message="Starting couchdb..."
+flohmarkt_ynh_start_couchdb
+
+ynh_print_info --message="Dumping couchdb..."
+flohmarkt_ynh_dump_couchdb
+
+ynh_print_info --message="Starting flohmarkt..."
 flohmarkt_ynh_start_service
 
-ynh_print_info --message="Backup script completed for $app. (YunoHost will then actually copy those files to the archive)."
+ynh_print_info --message="Backup script completed for $app."

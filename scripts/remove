@@ -31,10 +31,9 @@ fi
 # https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/12
 ynh_script_progression --message="Removing database and database user..." --weight=2
 # remove DB
-curl -s -X DELETE 'http://127.0.0.1:5984/flohmarkt' --user "admin:${password_couchdb_admin}"
+flohmarkt_ynh_remove_couchdb
 # remove DB user for this instance:
-#   get rev for the user and then delete user/rev
-curl -s -X DELETE "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}?rev=$( curl -sX GET "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}" --user "admin:${password_couchdb_admin}" | jq -r ._rev)" --user "admin:${password_couchdb_admin}"
+flohmarkt_ynh_delete_dbuser
 
 # Remove the app-specific logrotate config
 ynh_remove_logrotate
@@ -68,6 +67,3 @@ ynh_secure_remove "$flohmarkt_sym_data_dir"
 #=================================================
 
 ynh_script_progression --message="Removal of $app completed" --last
-
-# debug
-ps -axf
