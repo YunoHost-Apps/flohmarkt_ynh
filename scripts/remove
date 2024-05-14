@@ -31,22 +31,26 @@ fi
 # https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/12
 ynh_script_progression --message="Removing database and database user..." --weight=2
 # remove DB
-flohmarkt_ynh_remove_couchdb
+flohmarkt_ynh_delete_couchdb_db
 # remove DB user for this instance:
-flohmarkt_ynh_delete_dbuser
+flohmarkt_ynh_delete_couchdb_user
 
 # Remove the app-specific logrotate config
+ynh_script_progression --message="Removing logrotate configuration..." --weight=2
 ynh_remove_logrotate
 
 # remove logfiles directory
 # https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/29
 # can only remove a subdir or one file
+ynh_script_progression --message="Removing logfiles..." --weight=2
 ynh_secure_remove --file="${flohmarkt_log_dir}"
 
 # Remove the dedicated NGINX config
+ynh_script_progression --message="Removing nginx configuration..." --weight=2
 ynh_remove_nginx_config
 
 # Remove the dedicated Fail2Ban config
+ynh_script_progression --message="Removing fail2ban configuration..." --weight=2
 ynh_remove_fail2ban_config
 
 # Remove home
