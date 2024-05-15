@@ -63,8 +63,10 @@ ynh_script_progression --message="Removing data directory..." --weight=2
 ynh_remove_systemd_config
 
 # remove symlinks
+ynh_script_progression --message="Removing symlinks..." --weight=2
 ynh_secure_remove --file="$flohmarkt_sym_install"
 ynh_secure_remove --file="$flohmarkt_sym_data_dir"
+ynh_secure_remove --file="$flohmarkt_sym_log_dir"
 
 #=================================================
 # END OF SCRIPT

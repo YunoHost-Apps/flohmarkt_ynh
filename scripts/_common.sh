@@ -24,11 +24,12 @@ flohmarkt_sym_install="$( dirname $flohmarkt_install )/$flohmarkt_filename"
 flohmarkt_venv_dir="${flohmarkt_install}/venv"
 flohmarkt_app_dir="${flohmarkt_install}/app"
 # directory containing logfiles
-flohmarkt_log_dir="/var/log/${YNH_APP_ID}/${flohmarkt_filename}"
+flohmarkt_log_dir="/var/log/${app}"
+flohmarkt_sym_log_dir="/var/log/${flohmarkt_filename}"
 # filename for logfiles - ¡ojo! if not ends with .log will be interpreted
 # as a directory by ynh_use_logrotate
 # https://github.com/YunoHost/issues/issues/2383
-flohmarkt_logfile="${flohmarkt_log_dir}/${app}.log"
+flohmarkt_logfile="${flohmarkt_log_dir}/app.log"
 # flohmarkt data_dir
 flohmarkt_data_dir="$data_dir"
 flohmarkt_sym_data_dir="$( dirname $flohmarkt_data_dir )/$flohmarkt_filename"

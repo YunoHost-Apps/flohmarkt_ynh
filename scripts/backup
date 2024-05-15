@@ -12,6 +12,10 @@ ynh_backup --src_path="/etc/logrotate.d/$app"
 ynh_backup --src_path="/opt/couchdb/etc/local.d/05-flohmarkt.ini"
 ynh_backup --src_path="/etc/systemd/system/$flohmarkt_filename.service"
 ynh_backup --src_path="${flohmarkt_log_dir}"
+ynh_backup --src_path="$flohmarkt_sym_install"
+ynh_backup --src_path="$flohmarkt_sym_data_dir"
+ynh_backup --src_path="$flohmarkt_sym_log_dir"
+
 
 # for the following backups we'll want to stop flohmarkt and couchdb
 # to guarentee a consistant state
