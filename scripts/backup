@@ -15,9 +15,8 @@ ynh_backup --src_path="${flohmarkt_log_dir}"
 
 # for the following backups we'll want to stop flohmarkt and couchdb
 # to guarentee a consistant state
-ynh_print_info --message="Stopping flohmarkt and couchdb to backup data..."
+ynh_print_info --message="Stopping flohmarkt to backup data..."
 flohmarkt_ynh_stop_service
-flohmarkt_ynh_stop_couchdb
 
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/24
 # since this might be re-installed as a dependency during 'remove' and 
@@ -29,9 +28,6 @@ flohmarkt_ynh_stop_couchdb
 # if this becomes a pain we'll need to stop deleting this directories on 'remove'
 # ynh_backup --src_path="$data_dir" --is_big
 ynh_backup --src_path="$flohmarkt_data_dir"
-
-ynh_print_info --message="Starting couchdb..."
-flohmarkt_ynh_start_couchdb
 
 ynh_print_info --message="Dumping couchdb..."
 flohmarkt_ynh_dump_couchdb
