@@ -8,7 +8,7 @@ ynh_script_progression --message="Reinstalling couchdb..." --weight=40
 flohmarkt_ynh_up_inst_couchdb
 
 # add couchdb configuration
-if ![[ -e /opt/couchdb/etc/local.d/05-flohmarkt.ini ]]; then
+if ! [[ -e /opt/couchdb/etc/local.d/05-flohmarkt.ini ]]; then
   ynh_script_progression --message="Adding a configuration file..." --weight=2
 
   flohmarkt_ynh_stop_couchdb

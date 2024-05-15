@@ -10,7 +10,7 @@ source /usr/share/yunohost/helpers
 # had been installed by flohmarkt and we thus can savely do whatever we want to it
 # with the resulting damage hopefully only influencing flohmarkt instances
 if [[ -e /opt/couchdb ]] || pgrep epmd > /dev/null || pgrep beam.smp || dpkg-query -W couchdb > /dev/null 2>&1 \
-  && ![[ -e /opt/couchdb/etc/local.d/05-flohmarkt.ini ]];
+  && ! [[ -e /opt/couchdb/etc/local.d/05-flohmarkt.ini ]];
 then
   ynh_die --message="CouchDB already installed on this host - will not proceed."
   exit 1
