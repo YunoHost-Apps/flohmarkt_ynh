@@ -47,13 +47,16 @@ chown root:couchdb /opt/couchdb/etc/local.d/05-flohmarkt.ini
 chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
 
 # restart couchdb to pick up changes
+ynh_script_progression --message="Starting CouchDB..." --weight=2
 flohmarkt_ynh_start_couchdb
 
 # get flohmarkt
 # suspecting that this deletes all other sources for YNH_APP_ID
+ynh_script_progression --message="Downloading flohmarkt..." --weight=2
 ynh_setup_source --dest_dir="$flohmarkt_app_dir"
 
 # setup python environment for flohmarkt
+ynh_script_progression --message="Creating python venv..." --weight=2
 ynh_secure_remove "$flohmarkt_venv_dir"
 flohmarkt_ynh_create_venv
 flohmarkt_ynh_venv_requirements
@@ -67,9 +70,12 @@ password_couchdb_flohmarkt=$(ynh_string_random --length=31 --filter='A-Za-z0-9_.
 ynh_app_setting_set --app=$app --key=password_couchdb_flohmarkt --value="$password_couchdb_flohmarkt"
 
 # generate flohmarkt.conf
+ynh_script_progression --message="Adding flohmarkt.conf configuration..." --weight=2
 ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_app_dir/flohmarkt.conf"
 
 # setup couchdb
+ynh_script_progression --message="Setup couchdb database and user for flohmarkt..." --weight=2
+flohmarkt_ynh_check_old_couchdb
 (
     set +o nounset
     source "$flohmarkt_venv_dir/bin/activate"

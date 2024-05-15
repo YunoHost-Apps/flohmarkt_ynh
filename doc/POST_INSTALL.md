@@ -2,7 +2,7 @@
 
 To finish your flohmarkt setup you'll need to open its setup URL. 
 
-You can find the setup URL in the logfile __FLOHMARKT_LOGFILE__ if you look for entries like this:
+You can find the setup URL in flohmarkts logfile in /var/log/flohmarkt… if you look for entries like this:
 
 ```
 2024-05-06 16:30:24 Flohmarkt is not initialized yet. Please go to 

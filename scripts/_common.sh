@@ -40,7 +40,6 @@ flohmarkt_old_install="/opt/flohmarkt"
 flohmarkt_old_venv_dir="${flohmarkt_old_install}/venv"
 flohmarkt_old_app_dir="${flohmarkt_old_install}/flohmarkt"
 flohmarkt_old_log_dir="/var/log/flohmarkt/"
-flohmarkt_old_logfile="flohmarkt"
 flohmarkt_old_service="flohmarkt"
 
 #=================================================
@@ -126,6 +125,8 @@ flohmarkt_ynh_create_couchdb_user() {
   curl -s -X PUT "http://127.0.0.1:5984/_users/org.couchdb.user:${app}" --user "admin:${password_couchdb_admin}"\
     -H "Accept: application/json" -H "Content-Type: application/json" \
     -d "{\"name\": \"${app}\", \"password\": \"${password_couchdb_flohmarkt}\", \"roles\": [], \"type\": \"user\"}"
+  # @@ check answer something like
+  # {"ok":true,"id":"org.couchdb.user:flohmarkt","rev":"35-9865694604ab384388eea0f978a6e728"}
 }
 
 flohmarkt_ynh_couchdb_user_permissions() {
@@ -135,14 +136,38 @@ flohmarkt_ynh_couchdb_user_permissions() {
 
 }
 
+flohmarkt_ynh_exists_couchdb_user() {
+  if [[ $( curl -sX GET "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}" \
+    --user "admin:${password_couchdb_admin}" | jq .error ) == '"not_found"' ]]
+  then
+    false
+  else
+    true
+  fi
+}
+
+flohmarkt_ynh_exists_couchdb_db() {
+  if [[ $( curl -sX GET "http://127.0.0.1:5984/flohmarkt__22" --user admin:blafasel \
+    | jq .error ) == '"not_found"' ]]
+  then
+    false
+  else
+    true
+  fi
+  
+}
+
+# check whether old couchdb user or database exist before creating the new ones
+flohmarkt_ynh_check_old_couchdb() {
+  if flohmarkt_ynh_exists_couchdb_user; then
+    ynh_die --ret_code=100 --message="CouchDB user '$app' exists already. Stopping install."
+  elif flohmarkt_ynh_exists_couchdb_db; then
+    ynh_die --ret_code=100 --message="CouchDB database '$app' exists already. Stopping install."
+  fi  
+}
+
 flohmarkt_ynh_restore_couchdb() {
-  # @@ todo for now we'll make sure dbuser and db do not exist
-  # matrix:
-  # Is there a way to interact with the admin during the scripts/* run?
-  # absolutely not, and it's by design.
-  # at bear minimum if you use the manifest v2 and app helpers, the script should fail.
-  flohmarkt_ynh_delete_couchdb_user || true
-  flohmarkt_ynh_delete_couchdb_db || true
+  flohmarkt_ynh_check_old_couchdb
 
   flohmarkt_ynh_import_couchdb
   flohmarkt_ynh_create_couchdb_user
@@ -184,10 +209,6 @@ flohmarkt_ynh_upgrade_path_ynh5() {
 
   # move logfile directory
   mkdir -p "$flohmarkt_log_dir"
-  mv ${flohmarkt_old_log_dir}/${flohmarkt_old_logfile}.* "$flohmarkt_log_dir"
-
-  # update settings for above
-  # @@ automatically done? maybe?
 
   # remove systemd.service - will be generated newly by upgrade
   # ynh_remove_systemd_config --service="$flohmarkt_old_service"
