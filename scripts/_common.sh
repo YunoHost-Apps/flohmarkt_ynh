@@ -147,7 +147,7 @@ flohmarkt_ynh_exists_couchdb_user() {
 }
 
 flohmarkt_ynh_exists_couchdb_db() {
-  if [[ $( curl -sX GET "http://127.0.0.1:5984/flohmarkt__22" --user admin:blafasel \
+  if [[ $( curl -sX GET "http://127.0.0.1:5984/flohmarkt__22" --user "admin:${password_couchdb_admin}" \
     | jq .error ) == '"not_found"' ]]
   then
     false
