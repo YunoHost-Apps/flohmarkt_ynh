@@ -6,7 +6,11 @@ source /usr/share/yunohost/helpers
 
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/9
 # check if couchdb is already installed
-if [[ -e /opt/couchdb ]] || pgrep epmd > /dev/null || pgrep beam.smp || dpkg-query -W couchdb > /dev/null 2>&1; 
+# if there's a couchdb configuration file for flohmarkt we'll assume that couchdb
+# had been installed by flohmarkt and we thus can savely do whatever we want to it
+# with the resulting damage hopefully only influencing flohmarkt instances
+if [[ -e /opt/couchdb ]] || pgrep epmd > /dev/null || pgrep beam.smp || dpkg-query -W couchdb > /dev/null 2>&1 \
+  && ! [[ -e /opt/couchdb/etc/local.d/05-flohmarkt.ini ]];
 then
   ynh_die --message="CouchDB already installed on this host - will not proceed."
   exit 1
@@ -29,22 +33,11 @@ ynh_script_progression --message="Installing CouchDB..." --weight=60
 couchdb_magic_cookie=$(ynh_string_random --length=23 --filter='A-Za-z0-9_')
 ynh_app_setting_set --app=$app --key=couchdb_magic_cookie --value="$couchdb_magic_cookie"
 
-echo "\
-couchdb couchdb/mode select standalone
-couchdb couchdb/mode seen true
-couchdb couchdb/bindaddress string 127.0.0.1
-couchdb couchdb/bindaddress seen true
-couchdb couchdb/cookie string $couchdb_magic_cookie
-couchdb couchdb/adminpass password $password_couchdb_admin
-couchdb couchdb/adminpass seen true
-couchdb couchdb/adminpass_again password $password_couchdb_admin
-couchdb couchdb/adminpass_again seen true" | debconf-set-selections
-DEBIAN_FRONTEND=noninteractive # apt-get install -y --force-yes couchdb
+# update couchdb dpkg
+flohmarkt_ynh_up_inst_couchdb
 
-ynh_install_extra_app_dependencies \
-    --repo="deb https://apache.jfrog.io/artifactory/couchdb-deb/ $(lsb_release -c -s) main" \
-    --key="https://couchdb.apache.org/repo/keys.asc" \
-    --package="couchdb"
+# stop couchdb
+flohmarkt_ynh_stop_couchdb
 
 # add couchdb configuration
 ynh_script_progression --message="Adding a configuration file..." --weight=2
@@ -54,25 +47,19 @@ chown root:couchdb /opt/couchdb/etc/local.d/05-flohmarkt.ini
 chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
 
 # restart couchdb to pick up changes
-systemctl restart couchdb
-systemctl status couchdb
+ynh_script_progression --message="Starting CouchDB..." --weight=2
+flohmarkt_ynh_start_couchdb
 
 # get flohmarkt
-ynh_setup_source --dest_dir="$install_dir/$app/"
+# suspecting that this deletes all other sources for YNH_APP_ID
+ynh_script_progression --message="Downloading flohmarkt..." --weight=2
+ynh_setup_source --dest_dir="$flohmarkt_app_dir"
 
 # setup python environment for flohmarkt
-ynh_secure_remove "$install_dir/venv"
-python3 -m venv --without-pip "$install_dir/venv"
-
-# install python dependencies
-(
-    set +o nounset
-    source "$install_dir/venv/bin/activate"
-    set -o nounset
-    set -x
-    $install_dir/venv/bin/python3 -m ensurepip
-    $install_dir/venv/bin/pip3 install -r "$install_dir/$app/requirements.txt"
-)
+ynh_script_progression --message="Creating python venv..." --weight=2
+ynh_secure_remove "$flohmarkt_venv_dir"
+flohmarkt_ynh_create_venv
+flohmarkt_ynh_venv_requirements
 
 # JwtSecret
 # workaround for https://github.com/YunoHost/issues/issues/2379
@@ -83,24 +70,27 @@ password_couchdb_flohmarkt=$(ynh_string_random --length=31 --filter='A-Za-z0-9_.
 ynh_app_setting_set --app=$app --key=password_couchdb_flohmarkt --value="$password_couchdb_flohmarkt"
 
 # generate flohmarkt.conf
-ynh_add_config --template="../conf/flohmarkt.conf" --destination="$install_dir/$app/flohmarkt.conf"
+ynh_script_progression --message="Adding flohmarkt.conf configuration..." --weight=2
+ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_app_dir/flohmarkt.conf"
 
 # setup couchdb
+ynh_script_progression --message="Setup couchdb database and user for flohmarkt..." --weight=2
+flohmarkt_ynh_check_old_couchdb
 (
     set +o nounset
-    source "$install_dir/venv/bin/activate"
+    source "$flohmarkt_venv_dir/bin/activate"
     set -o nounset
-    cd "$install_dir/$app"
+    cd "$flohmarkt_app_dir"
     # initialize_couchdb seems to re-try on connect problems endlessly blocking the yunohost api
     # give it 45 seconds to finish and then fail
     # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/13
-    timeout 45 python3 initialize_couchdb.py $password_couchdb_admin $password_couchdb_flohmarkt
+    timeout 45 python3 initialize_couchdb.py $password_couchdb_admin
 )
 
 # SETUP LOGROTATE
 ynh_script_progression --message="Configuring log rotation..." --weight=2
 # Use logrotate to manage application logfile(s)
-ynh_use_logrotate
+ynh_use_logrotate --logfile=$flohmarkt_logfile
 
 # NGINX CONFIGURATION
 ynh_script_progression --message="Configuring NGINX web server..." --weight=3
@@ -110,19 +100,37 @@ ynh_add_nginx_config
 # systemd.service
 ynh_script_progression --message="Configuring a systemd service..." --weight=1
 # Create a dedicated systemd config
-ynh_add_systemd_config
+ynh_add_systemd_config --service=$flohmarkt_filename
 # integrate into yunohost
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=1
-yunohost service add $app --description="A decentral federated small advertisement platform" --log="/var/log/$app/$app.log"
+yunohost service add $flohmarkt_filename --description="A decentral federated small advertisement platform" --log="$flohmarkt_logfile"
+
 #  logfile contains possibly the secret setup URL
-mkdir -m755 -p "/var/log/$app"
-touch "/var/log/$app/$app.log"
-chmod 640 "/var/log/$app/$app.log"
-# start service
-ynh_systemd_action --service_name=$app --action="start"
+ynh_script_progression --message="Setting permissions on logfile..." --weight=2
+mkdir -m755 -p "$flohmarkt_log_dir"
+touch "$flohmarkt_logfile"
+chown root:$app "$flohmarkt_logfile"
+chmod 660 "$flohmarkt_logfile"
+
+# set file permissions for install dir
+ynh_script_progression --message="Setting permissions on install directory..." --weight=2
+flohmarkt_ynh_set_permission
 
 # SETUP FAIL2BAN
 ynh_script_progression --message="Configuring Fail2Ban..." --weight=3
-ynh_add_fail2ban_config --logpath="/var/log/$app/$app.log" --failregex='INFO: +<HOST>:\d+ - "POST /token HTTP/\d+\.\d+" 403 Forbidden' --max_retry=5
+ynh_add_fail2ban_config --logpath="$flohmarkt_logfile" --failregex='INFO: +<HOST>:\d+ - "POST /token HTTP/\d+\.\d+" 403 Forbidden' --max_retry=5
 
-ynh_script_progression --message="Installation of $app completed" --last
+# symlink data_dir and install_dir to make it easier to find the
+# files for a certain domain/path
+ynh_script_progression --message="Creating symlinks..." --weight=1
+ln -s "$flohmarkt_install" "$flohmarkt_sym_install"
+ln -s "$flohmarkt_data_dir" "$flohmarkt_sym_data_dir"
+ln -s "$flohmarkt_log_dir" "$flohmarkt_sym_log_dir"
+
+# start service
+ynh_script_progression --message="Debug before starting flohmarkt..." --weight=1
+ls -l $flohmarkt_logfile /bin/bash /usr/bin/bash || true
+ynh_script_progression --message="Starting flohmarkt..." --weight=10
+flohmarkt_ynh_start_service
+
+ynh_script_progression --message="Installation of $id completed" --last

@@ -9,29 +9,32 @@ source /usr/share/yunohost/helpers
 # UPGRADE_SAME
 upgrade_type=$(ynh_check_app_version_changed)
 
+# show variables - used from installed or from to be upgraded version?
+# variables of the new upgrade version are used
+# env
+
 ynh_script_progression --message="Stopping flohmarkt and CouchDB..." --weight=5
 # stop flohmarkt
-ynh_systemd_action --service_name=$app --action="stop"
+flohmarkt_ynh_stop_service
 # stop couchdb
-ynh_systemd_action --service_name=couchdb --action="stop"
+flohmarkt_ynh_stop_couchdb
+
+# Upgrade ynh4 → ynh5, change of paths and filenames
+# https://matrix.to/#/!PauySEslPVuJCJCwlZ:matrix.org/$auU_rSL6MACt9wkyFGlCQbO8ivFlU0ztYW74TimZdcM?via=matrix.org&via=aria-net.org&via=sans-nuage.fr
+# and follow-ups
+if ynh_compare_current_package_version --comparison lt --version 0.0~ynh5 &&
+  ( [[ "$upgrade_type" == UPGRADE_PACKAGE ]] || [[ "$upgrade_type" == UPGRADE_APP ]] )
+then
+  flohmarkt_ynh_upgrade_path_ynh5
+fi
 
 # upgrade couchdb
 ynh_script_progression --message="Upgrading CouchDB..." --weight=50
-echo "\
-couchdb couchdb/mode select standalone
-couchdb couchdb/mode seen true
-couchdb couchdb/bindaddress string 127.0.0.1
-couchdb couchdb/bindaddress seen true
-couchdb couchdb/cookie string $couchdb_magic_cookie
-couchdb couchdb/adminpass password $password_couchdb_admin
-couchdb couchdb/adminpass seen true
-couchdb couchdb/adminpass_again password $password_couchdb_admin
-couchdb couchdb/adminpass_again seen true" | debconf-set-selections
-DEBIAN_FRONTEND=noninteractive # apt-get install -y --force-yes couchdb
-ynh_install_extra_app_dependencies \
-	--repo="deb https://apache.jfrog.io/artifactory/couchdb-deb/ $(lsb_release -c -s) main" \
-	--key="https://couchdb.apache.org/repo/keys.asc" \
-	--package="couchdb"
+flohmarkt_ynh_up_inst_couchdb
+
+# stop couchdb
+ynh_script_progression --message="Stop couchdb before updating configuration file..." --weight=1
+flohmarkt_ynh_stop_couchdb
 
 # upgrade couchdb config
 ynh_script_progression --message="Updating couchdb configuration file..." --weight=1
@@ -39,49 +42,44 @@ ynh_add_config --template="../conf/05-flohmarkt.ini" --destination="/opt/couchdb
 chown root:couchdb /opt/couchdb/etc/local.d/05-flohmarkt.ini
 chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
 
-# start couchdb to pick up changes
+# start couchdb
 ynh_script_progression --message="Starting couchdb..." --weight=1
-ynh_systemd_action --service_name=couchdb --action="start"
-systemctl status couchdb
+flohmarkt_ynh_start_couchdb
 
 # install upgrade for flohmarkt
 ynh_script_progression --message="Upgrading flohmarkt..." --weight=4
-ynh_setup_source --dest_dir="$install_dir/$app/"
+ynh_setup_source --dest_dir="$flohmarkt_app_dir/"
 
-ynh_script_progression --message="Upgrading flohmarkt python dependencies..." --weight=5
+ynh_script_progression --message="Upgrading flohmarkt python dependencies..." --weight=6
 # upgrade python environment / install new dependencies
-(
-    set +o nounset
-    source "$install_dir/venv/bin/activate"
-    set -o nounset
-    set -x
-    $install_dir/venv/bin/python3 -m ensurepip
-    $install_dir/venv/bin/pip3 install -r "$install_dir/$app/requirements.txt"
-)
+flohmarkt_ynh_venv_requirements
 
 # upgrade flohmarkt.conf
 ynh_script_progression --message="Upgrading flohmarkt configuration..." --weight=1
-ynh_add_config --template="../conf/flohmarkt.conf" --destination="$install_dir/$app/flohmarkt.conf"
+ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_app_dir/flohmarkt.conf"
 
 ynh_script_progression --message="Upgrading flohmarkt couchdb..." --weight=10
 # run initialize_couchdb.py
 (
     set +o nounset
-    source "$install_dir/venv/bin/activate"
+    source "$flohmarkt_venv_dir/bin/activate"
     set -o nounset
-    cd "$install_dir/$app"
+    cd "$flohmarkt_app_dir"
     # initialize_couchdb seems to re-try on connect problems endlessly blocking the yunohost api
     # give it 45 seconds to finish and then fail
     # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/13
     timeout 45 python3 initialize_couchdb.py $password_couchdb_admin $password_couchdb_flohmarkt
 )
 
+# set file permissions for install dir
+flohmarkt_ynh_set_permission
+
 # systemd service upgrade
 ynh_script_progression --message="Upgrading flohmarkt systemd service..." --weight=1
-ynh_add_systemd_config
+ynh_add_systemd_config --service=$flohmarkt_filename
 # INTEGRATE SERVICE IN YUNOHOST
 ynh_script_progression --message="Integrating service in YunoHost..." --weight=2
-yunohost service add $app --description="A decentral federated small advertisement platform" --log="/var/log/$app/$app.log"
+yunohost service add $flohmarkt_filename --description="A decentral federated small advertisement platform" --log="$flohmarkt_logfile"
 
 # upgrade logrotate
 ynh_script_progression --message="Upgrading logrotate configuration..." --weight=1
@@ -94,10 +92,10 @@ ynh_add_nginx_config
 
 # UPGRADE FAIL2BAN
 ynh_script_progression --message="Reconfiguring Fail2Ban..." --weight=3
-ynh_add_fail2ban_config --logpath="/var/log/$app/$app.log" --failregex='INFO: +<HOST>:\d+ - "POST /token HTTP/\d+\.\d+" 403 Forbidden' --max_retry=5
+ynh_add_fail2ban_config --logpath="$flohmarkt_logfile" --failregex='INFO: +<HOST>:\d+ - "POST /token HTTP/\d+\.\d+" 403 Forbidden' --max_retry=5
 
 # start flohmarkt
 ynh_script_progression --message="Starting flohmarkt..." --weight=3
-ynh_systemd_action --service_name=$app --action="start" --line_match="INFO:     Application startup complete."
+flohmarkt_ynh_start_service
 
 ynh_script_progression --message="Upgrade of $app completed" --last

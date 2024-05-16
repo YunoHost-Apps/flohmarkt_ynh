@@ -4,20 +4,23 @@ source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
 ynh_print_info --message="Declaring files to be backed up..."
-ynh_backup --src_path="$install_dir"
+ynh_backup --src_path="$flohmarkt_install"
 ynh_backup --src_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 ynh_backup --src_path="/etc/fail2ban/jail.d/$app.conf"
 ynh_backup --src_path="/etc/fail2ban/filter.d/$app.conf"
 ynh_backup --src_path="/etc/logrotate.d/$app"
 ynh_backup --src_path="/opt/couchdb/etc/local.d/05-flohmarkt.ini"
-ynh_backup --src_path="/etc/systemd/system/$app.service"
-ynh_backup --src_path="/var/log/$app"
+ynh_backup --src_path="/etc/systemd/system/$flohmarkt_filename.service"
+ynh_backup --src_path="${flohmarkt_log_dir}"
+ynh_backup --src_path="$flohmarkt_sym_install"
+ynh_backup --src_path="$flohmarkt_sym_data_dir"
+ynh_backup --src_path="$flohmarkt_sym_log_dir"
+
 
 # for the following backups we'll want to stop flohmarkt and couchdb
 # to guarentee a consistant state
-ynh_print_info --message="Stopping flohmarkt and couchdb to backup data..."
-yunohost service stop flohmarkt
-systemctl stop couchdb
+ynh_print_info --message="Stopping flohmarkt to backup data..."
+flohmarkt_ynh_stop_service
 
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/24
 # since this might be re-installed as a dependency during 'remove' and 
@@ -28,12 +31,12 @@ systemctl stop couchdb
 # 
 # if this becomes a pain we'll need to stop deleting this directories on 'remove'
 # ynh_backup --src_path="$data_dir" --is_big
-# ynh_backup --src_path="/var/lib/couchdb" --is_big
-ynh_backup --src_path="$data_dir"
-ynh_backup --src_path="/var/lib/couchdb"
+ynh_backup --src_path="$flohmarkt_data_dir"
 
-ynh_print_info --message="...done. Starting couchdb and flohmarkt."
-systemctl start couchdb
-yunohost service start flohmarkt
+ynh_print_info --message="Dumping couchdb..."
+flohmarkt_ynh_dump_couchdb
 
-ynh_print_info --message="Backup script completed for $app. (YunoHost will then actually copy those files to the archive)."
+ynh_print_info --message="Starting flohmarkt..."
+flohmarkt_ynh_start_service
+
+ynh_print_info --message="Backup script completed for $app."

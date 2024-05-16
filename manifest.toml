@@ -5,8 +5,9 @@ packaging_format = 2
 id = "flohmarkt"
 name = "flohmarkt"
 description.en = "A decentral federated small ads platform"
+description.fr = "Plateforme de petites annonces fédérées décentralisées"
 
-version = "0.0~ynh4"
+version = "0.0~ynh5"
 
 maintainers = ["Chris Vogel"]
 
@@ -28,8 +29,7 @@ code = "https://codeberg.org/flohmarkt/flohmarkt"
 yunohost = ">= 11.2.11"
 architectures = "all"
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/11
-# multi_instance = true
-multi_instance = false
+multi_instance = true
 
 # the "ldap" key corresponds to wether or not a user *can* login on the app using
 # its YunoHost credentials.
@@ -45,7 +45,7 @@ ldap = false
 sso = false
 
 # **estimate** minimum disk and RAM requirements
-disk = "100M"
+disk = "200M"
 ram.build = "200M"
 ram.runtime = "100M"
 
@@ -54,13 +54,12 @@ ram.runtime = "100M"
     # ask admin on which domain to run flohmarkt
     type = "domain"
 
-# https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
-#     [install.path]
-#     # ask admin under which path flohmarkt will be reachable
-#     # e.g. 'https://doma.in/path' - might not work, needs to be tested:
-#     # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
-#     type = "path"
-#     default = "/"
+    [install.path]
+    # ask admin under which path flohmarkt will be reachable
+    # e.g. 'https://doma.in/path' - might not work, needs to be tested:
+    # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/4
+    type = "path"
+    default = "/"
 
     [install.init_main_permission]
     # who will be able to access the apps URL after installation?
@@ -109,8 +108,8 @@ ram.runtime = "100M"
     # This will pre-fetch the asset which can then be deployed during the install/upgrade scripts with :
     #    ynh_setup_source --dest_dir="$install_dir"
     # You can also define other assets than "main" and add --source_id="foobar" in the previous command
-    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/4a3f243d090549c66ffece46222b0f1cc358e91e.tar.gz"
-    sha256 = "d59bb3bbbaf7c98d9f8bae46d9a2b2ccc407d674f51140a3d868a6afdf862e73"
+    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/78b2cc137d7c88d961e12dcb5017b17257bc4a71.tar.gz"
+    sha256 = "4acbfe20372583fdf75f4eea7b9c29d9ae20d04283559578f5e33f8347570c33"
 
     # These infos are used by https://github.com/YunoHost/apps/blob/master/tools/autoupdate_app_sources/autoupdate_app_sources.py
     # to auto-update the previous asset urls and sha256sum + manifest version
@@ -133,11 +132,8 @@ ram.runtime = "100M"
     # @@ how to create a couchdb user if needed? in install-script manually?
 
     [resources.install_dir]
-    dir = "/opt/flohmarkt"
 
     [resources.data_dir]
-    # This will create/remove the data dir as /home/yunohost.app/$app
-    # and store the corresponding setting $data_dir
 
     [resources.permissions]
     # This will configure SSOwat permission for $domain/$path/
@@ -151,13 +147,16 @@ ram.runtime = "100M"
     # uvicorn running the flohmarkt app will be started listening to this port
     # if 'main.default' is already in use another random port will be used
     main.default = 8000
-    couchdb.default = 5984
+    # we'll rely on couchdb choosing the default port to listen to
+    # otherwise I'll set a new port for each flohmarkt that will be installed until the
+    # installation of couchdb is reworked by making it possible to do as a pure dependency
+    # couchdb.default = 5984
     
 
     [resources.apt]
     # python dependencies shall be installed in a venv using pip.
 	# moreutils is needed for `ts` used in systemd.service
-    packages = "python3-pip python3-full curl apt-transport-https gnupg moreutils"
+    packages = "python3-pip python3-full curl apt-transport-https gnupg moreutils curl"
     # repo for couchdb - doesn't work, yet
     # extras.couchdb.repo = "deb https://apache.jfrog.io/artifactory/couchdb-deb/ __YNH_DEBIAN_VERSION__ main"
     # extras.couchdb.key = "https://couchdb.apache.org/repo/keys.asc"
