@@ -122,10 +122,7 @@ ynh_add_fail2ban_config --logpath="$flohmarkt_logfile" --failregex='INFO: +<HOST
 
 # symlink data_dir and install_dir to make it easier to find the
 # files for a certain domain/path
-ynh_script_progression --message="Creating symlinks..." --weight=1
-ln -s "$flohmarkt_install" "$flohmarkt_sym_install"
-ln -s "$flohmarkt_data_dir" "$flohmarkt_sym_data_dir"
-ln -s "$flohmarkt_log_dir" "$flohmarkt_sym_log_dir"
+flohmarkt_ynh_create_symlinks
 
 # start service
 ynh_script_progression --message="Debug before starting flohmarkt..." --weight=1

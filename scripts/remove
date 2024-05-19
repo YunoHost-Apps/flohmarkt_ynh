@@ -64,11 +64,10 @@ ynh_remove_systemd_config
 
 # remove symlinks
 ynh_script_progression --message="Removing symlinks..." --weight=2
-ynh_secure_remove --file="$flohmarkt_sym_install"
+# no ynh_secure_remove: 
+# https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/52
 rm "$flohmarkt_sym_install" || true
-ynh_secure_remove --file="$flohmarkt_sym_data_dir"
 rm "$flohmarkt_sym_data_dir" || true
-ynh_secure_remove --file="$flohmarkt_sym_log_dir"
 rm "$flohmarkt_sym_log_dir" || true
 
 #=================================================

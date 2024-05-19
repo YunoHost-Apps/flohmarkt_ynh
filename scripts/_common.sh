@@ -46,6 +46,77 @@ flohmarkt_old_service="flohmarkt"
 # PERSONAL HELPERS
 #=================================================
 
+# local copy of ynh_local_curl() to test some improvement
+# https://github.com/YunoHost/issues/issues/2396
+# https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/51
+flohmarkt_ynh_local_curl() {
+# Curl abstraction to help with POST requests to local pages (such as installation forms)
+#
+# usage: ynh_local_curl "page_uri" "key1=value1" "key2=value2" ...
+# | arg: page_uri    - Path (relative to `$path_url`) of the page where POST data will be sent
+# | arg: key1=value1 - (Optionnal) POST key and corresponding value
+# | arg: key2=value2 - (Optionnal) Another POST key and corresponding value
+# | arg: ...         - (Optionnal) More POST keys and values
+#
+# example: ynh_local_curl "/install.php?installButton" "foo=$var1" "bar=$var2"
+#
+# For multiple calls, cookies are persisted between each call for the same app
+#
+# `$domain` and `$path_url` should be defined externally (and correspond to the domain.tld and the /path (of the app?))
+#
+# Requires YunoHost version 2.6.4 or higher.
+    # Define url of page to curl
+    local local_page=$(ynh_normalize_url_path $1)
+    local full_path=$path_url$local_page
+
+    if [ "${path_url}" == "/" ]; then
+        full_path=$local_page
+    fi
+
+    local full_page_url=https://localhost$full_path
+
+    # Concatenate all other arguments with '&' to prepare POST data
+    local POST_data=""
+    local arg=""
+    for arg in "${@:2}"; do
+        POST_data="${POST_data}${arg}&"
+    done
+    if [ -n "$POST_data" ]; then
+        # Add --data arg and remove the last character, which is an unecessary '&'
+        POST_data="--data ${POST_data::-1}"
+    fi
+
+    # Wait untils nginx has fully reloaded (avoid curl fail with http2)
+    sleep 2
+
+    local cookiefile=/tmp/ynh-$app-cookie.txt
+    touch $cookiefile
+    chown root $cookiefile
+    chmod 700 $cookiefile
+
+    # Temporarily enable visitors if needed...
+    local visitors_enabled=$(ynh_permission_has_user "main" "visitors" && echo yes || echo no)
+    if [[ $visitors_enabled == "no" ]]; then
+        ynh_permission_update --permission "main" --add "visitors"
+    fi
+
+    # Curl the URL
+    curl --silent --show-error --insecure --location --header "Host: $domain" --resolve $domain:443:127.0.0.1 $POST_data "$full_page_url" --cookie-jar $cookiefile --cookie $cookiefile
+
+    if [[ $visitors_enabled == "no" ]]; then
+        ynh_permission_update --permission "main" --remove "visitors"
+    fi
+}
+
+# create symlinks containing domain and path for install, data and log directories
+flohmarkt_ynh_create_symlinks() {
+  ynh_script_progression --message="Creating symlinks..." --weight=1
+  ln -s "$flohmarkt_install" "$flohmarkt_sym_install"
+  ln -s "$flohmarkt_data_dir" "$flohmarkt_sym_data_dir"
+  ln -s "$flohmarkt_log_dir" "$flohmarkt_sym_log_dir"
+  true
+}
+
 # set file permissions and owner for installation
 flohmarkt_ynh_set_permission() {
   # install dir - only root needs to write and $app reads

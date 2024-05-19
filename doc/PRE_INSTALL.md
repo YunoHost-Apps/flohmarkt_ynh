@@ -13,11 +13,12 @@ flohmarkt will send email and you'll be asked for an address used as the sender 
 
 This [issue](https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/50) contains information about the problem.
 
-## multiple flohmarkt on the same subdomain
+## multiple flohmarkt on the same subdomain will not work
 
-The installation will allow you to **test** this. The feature is not well tested, yet, and installing multiple productive flohmarkts in the same domain might not work on the fediverse.
+flohmarkt **needs its own subdomain** to be installed on. Some of the discussion about this can be found here:
 
-Feedback is more than welcome!
+https://codeberg.org/flohmarkt/flohmarkt/issues/251
+https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/53
 
 ## No integration in yunohost user database
 

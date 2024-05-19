@@ -74,4 +74,7 @@ flohmarkt_ynh_start_service
 ynh_script_progression --message="Reloading NGINX web server..." --weight=1
 ynh_systemd_action --service_name=nginx --action=reload
 
+# create symlinks
+flohmarkt_ynh_create_symlinks
+
 ynh_script_progression --message="Restoration completed for $app" --last
