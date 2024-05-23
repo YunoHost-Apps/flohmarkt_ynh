@@ -46,7 +46,7 @@ flohmarkt_old_service="flohmarkt"
 # PERSONAL HELPERS
 #=================================================
 
-# Redesign:
+# Redisgn of ynh_handle_getopts_args for flohmarkt to be tested as `flohmarkt_ynh_handle_getopts_args`
 # Internal helper design to allow helpers to use getopts to manage their arguments
 #
 # [internal]
@@ -67,7 +67,7 @@ flohmarkt_old_service="flohmarkt"
 # | arg: $@    - Simply "$@" to tranfert all the positionnal arguments to the function
 #
 # This helper need an array, named "args_array" with all the arguments used by the helper
-# 	that want to use ynh_handle_getopts_args
+#   that want to use ynh_handle_getopts_args
 # Be carreful, this array has to be an associative array, as the following example:
 # local -A args_array=( [a]=arg1 [b]=arg2= [c]=arg3 )
 # Let's explain this array:
@@ -95,15 +95,22 @@ flohmarkt_old_service="flohmarkt"
 #
 # @@ TODO: explain $legacy_args and '--'
 # @@ '--'          start processing the rest of the arguments as positional parameters in legacy mode
-# @@ $legacy_args  the arguments positional parameters will be assign to
+# @@ $legacy_args  The arguments positional parameters will be assign to
+#                  Needs to be composed of array keys of args_array. If a key for a predefined variable
+#                  is used multiple times the assigned values will be concatenated delimited by ';'.
+#                  If the long option variable to contain the data is predefined as an array (e.g. using
+#                  `local -a arg1` then multiple values will be assigned to its cells.
+#                  If the last positional parameter defined in legacy_args is defined as an array all 
+#                  the leftover positional parameters will be assigned to its cells.
 #
 # Requires YunoHost version 3.2.2 or higher.
-ynh_handle_getopts_args() {
+flohmarkt_ynh_handle_getopts_args() {
+    ## TODO: replace use of term 'legacy arg' throughout comments by 'positional parameter' if this works
     # Manage arguments only if there's some provided
     set +o xtrace # set +x
     if [ $# -eq 0 ]; then
-	  ynh_print_warn --message="ynh_handle_getopts_args called without arguments"
-	  return
+      ynh_print_warn --message="ynh_handle_getopts_args called without arguments"
+      return
     fi
 
     # Store arguments in an array to keep each argument separated
@@ -114,64 +121,64 @@ ynh_handle_getopts_args() {
     # ${!args_array[@]} is the list of all option_flags in the array (An option_flag is 'u' in [u]=user, user is a value)
     local getopts_parameters=""
     local option_flag=""
-	## go through all possible options and replace arguments with short versions
-	echo "debug: arguments = '${arguments[@]}"
-	echo "debug: args_array = '${!args_array[@]}'"
+    ## go through all possible options and replace arguments with short versions
+    echo "debug: arguments = '${arguments[@]}"
+    echo "debug: args_array = '${!args_array[@]}'"
     for option_flag in "${!args_array[@]}"; do
         echo "debug: option_flag = $option_flag"
         # Concatenate each option_flags of the array to build the string of arguments for getopts
         # Will looks like 'abcd' for -a -b -c -d
         # If the value of an option_flag finish by =, it's an option with additionnal values. (e.g. --user bob or -u bob)
         # Check the last character of the value associate to the option_flag
-		echo "debug: compare to '${args_array[$option_flag]: -1}'"
+        echo "debug: compare to '${args_array[$option_flag]: -1}'"
         if [ "${args_array[$option_flag]: -1}" = "=" ]; then
             # For an option with additionnal values, add a ':' after the letter for getopts.
             getopts_parameters="${getopts_parameters}${option_flag}:"
         else
             getopts_parameters="${getopts_parameters}${option_flag}"
         fi
-		echo "debug: getopts_parameters = ${getopts_parameters}"
+        echo "debug: getopts_parameters = ${getopts_parameters}"
         # Check each argument given to the function
         local arg=""
         # ${#arguments[@]} is the size of the array
-		## for one possible option: look at each argument supplied:
+        ## for one possible option: look at each argument supplied:
         for arg in $(seq 0 $((${#arguments[@]} - 1))); do
-		    echo "debug: arg = '$arg', argument = '${arguments[arg]}'"
+            echo "debug: arg = '$arg', argument = '${arguments[arg]}'"
             # Replace long option with = (match the beginning of the argument)
             arguments[arg]="$(printf '%s\n' "${arguments[arg]}" | sed "s/^--${args_array[$option_flag]}/-${option_flag}/")"
             echo "debug: sed - printf '%s\n' \"${arguments[arg]}\" | sed \"s/^--${args_array[$option_flag]}/-${option_flag} /\""
-		    echo "debug: arg = '$arg', argument = '${arguments[arg]}'"
+            echo "debug: arg = '$arg', argument = '${arguments[arg]}'"
             # And long option without = (match the whole line)
             arguments[arg]="$(printf '%s\n' "${arguments[arg]}" | sed "s/^--${args_array[$option_flag]%=}$/-${option_flag}/")"
             echo "debug: sed - printf '%s\n' \"${arguments[arg]}\" | sed \"s/^--${args_array[$option_flag]%=}$/-${option_flag} /\""
-		    echo "debug: arg = '$arg', argument = '${arguments[arg]}'"
+            echo "debug: arg = '$arg', argument = '${arguments[arg]}'"
         done
-		echo "debug: arguments = '${arguments[@]}'"
+        echo "debug: arguments = '${arguments[@]}'"
     done
-	echo 'debug: ================= end first loop ================='
+    echo 'debug: ================= end first loop ================='
     
     # Parse the first argument, return the number of arguments to be shifted off the arguments array
     # The function call is necessary here to allow `getopts` to use $@
     parse_arg() {
-		echo "debug: parse_arg started, arguments='$@', getopts_parameters: '$getopts_parameters'"
-		for ME in "$@"; do
-		  echo "debug:   '$ME'"
-		done
+        echo "debug: ========= parse_arg started ======== , arguments='$@', getopts_parameters: '$getopts_parameters'"
+        for ME in "$@"; do
+          echo "debug:   '$ME'"
+        done
         # Initialize the index of getopts
         OPTIND=1
         # getopts will fill $parameter with the letter of the option it has read.
         local parameter=""
         getopts ":$getopts_parameters" parameter || true
-		echo "debug: after getopts - parameter='$parameter', OPTIND='$OPTIND', OPTARG='$OPTARG'"
+        echo "debug: after getopts - parameter='$parameter', OPTIND='$OPTIND', OPTARG='$OPTARG'"
 
         if [ "$parameter" = "?" ]; then
             ynh_die --message="Invalid argument: -${OPTARG:-}"
-			echo "debug: Invalid argument: -${OPTARG:-}"
-			exit 255
+            echo "debug: Invalid argument: -${OPTARG:-}"
+            exit 255
         elif [ "$parameter" = ":" ]; then
             ynh_die --message="-$OPTARG parameter requires an argument."
-			echo "-$OPTARG parameter requires an argument."
-			exit 255
+            echo "-$OPTARG parameter requires an argument."
+            exit 255
         else
             # Use the long option, corresponding to the short option read by getopts, as a variable
             # (e.g. for [u]=user, 'user' will be used as a variable)
@@ -180,93 +187,121 @@ ynh_handle_getopts_args() {
             option_var="${args_array[$parameter]%=}"
             # if there's a '=' at the end of the long option name, this option takes values
             if [ "${args_array[$parameter]: -1}" != "=" ]; then
-			    # no argument expected for option - set option variable to '1'
+                # no argument expected for option - set option variable to '1'
                 # 'eval ${option_var}' will use the content of 'option_var'
-				echo "debug: option_var='${option_var}', option_value='1'"
+                echo "debug: option_var='${option_var}', option_value='1'"
                 option_value=1
                 return 1
             else
-			    # remove leading and trailing spaces from OPTARG
+                # remove leading and trailing spaces from OPTARG
                 OPTARG="$( printf '%s' ${OPTARG} | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
                 echo "debug: option_var='${option_var}', OPTARG='${OPTARG}'"
                 option_value="${OPTARG}"
-		        return 2
+                return 2
             fi
         fi
     }
 
     # iterate over the arguments: if first argument starts with a '-' feed arguments to getopts
-	# if first argument doesn't start with a '-' enter legacy mode and read positional parameters
+    # if first argument doesn't start with a '-' enter mode to read positional parameters
     local argument
-	local legacy_mode=0 # state is getopts mode, not legacy mode at the beginning
-    # for arg in $(seq 0 $((${#arguments[@]} - 1))); do
-	while [ ${#arguments} -ne 0 ]; do
-	    local shift_value=0
-        local option_var=''   # the variable name to be filled
-        local option_value='' # the value to be filled into ${!option_value}
-	    echo "debug: arg = '$arg', argument = '${arguments[arg]}'"
-	    argument=${arguments[0]}
-	    echo "debug: argument='$argument'"
-		# if state once changed to legacy mode, all the rest of the arguments will
-		# be interpreted in legacy mode even if they start with a '-'
-		if [ "${argument}" == '--' ];then
-		    echo "debug: found '--', start legacy mode"
-			legacy_mode=1
-			shift_value=1
-	    elif ! [ $legacy_mode == 1 ] && [ "${argument:0:1}" == '-' ]; then
-		    echo "debug: getopts, arguments='${arguments[@]}', starting parse_arg"
-	        parse_arg "${arguments[@]}"
-			shift_value=$?
-        else
-            legacy_mode=1 # set state for legacy_mode
-            # @@ set -x
-            echo "! Helper used in legacy mode !" >/dev/null
-            # @@ set +x
-		    echo "debug: legacy, argument='$argument'"
-	# @@ TODO
-    #       put positional parameters into variable - see below
+    local positional_mode=0 # state is getopts mode at the beginning, not positional parameters
+    local positional_count=0 # counter for legacy arguments
+    local option_var=''   # the variable name to be filled
+    # Try to use legacy_args as a list of option_flag of the array args_array
+    # Otherwise, fill it with getopts_parameters to get the option_flag. 
+    # (But an associative arrays isn't always sorted in the correct order...)
+    # Remove all ':' in getopts_parameters, if used.
+    legacy_args=${legacy_args:-${getopts_parameters//:/}}
+    while [ ${#arguments} -ne 0 ]; do
+        local shift_value=0
+        local option_value='' # the value to be filled into ${!option_var}
+        echo 'debug: ======= start while loop ======='
+        argument=${arguments[0]}
+        echo "debug: argument='$argument'"
+        # if state once changed to positional parameter mode, all the rest of the arguments will
+        # be interpreted in positional parameter mode even if they start with a '-'
+        if [ $positional_mode == 0 ] && [ "${argument}" == '--' ];then
+            echo "debug: found '--', start positional parameter mode"
+            positional_mode=1
             shift_value=1
-        fi
-		# bash shi(f)t
-		echo "debug: shifting '$shift_value' off arguments"
-		arguments=("${arguments[@]:${shift_value}}")
-		# @@ TODO fill values to ${option_var} here
-		# if ${option_var} is an array, fill mutiple values as array cells
-		# otherwise concatenate them seperated by ';'
-		echo "debug: fill option_var '$option_var' with option_value '$option_value'"
-		# But... ${!option_var} can't be used as left part of an assignation.
-		eval ${option_var}+='"${option_value};"'
-	done
-
-    return
+        elif [ $positional_mode == 0 ] && [ "${argument:0:1}" == '-' ]; then
+            echo "debug: getopts, arguments='${arguments[@]}', starting parse_arg"
+            parse_arg "${arguments[@]}"
+            shift_value=$?
+        else
+            positional_mode=1 # set state to positional parameter mode
+            # @@ set -x
+            # @@ echo "! Helper used in positional parameter  mode !" >/dev/null
+            # @@ set +x
+            echo "debug: positional parameter, argument='$argument'"
 
 
-        # If not, enter in legacy mode and manage the arguments as positionnal ones..
-        # Dot not echo, to prevent to go through a helper output. But print only in the log.
-        local i
-        for i in $(seq 0 $((${#arguments[@]} - 1))); do
-            # Try to use legacy_args as a list of option_flag of the array args_array
-            # Otherwise, fallback to getopts_parameters to get the option_flag. But an associative arrays 
-			# isn't always sorted in the correct order...
-            # Remove all ':' in getopts_parameters
-            getopts_parameters=${legacy_args:-${getopts_parameters//:/}}
-            # Get the option_flag from getopts_parameters, by using the option_flag according to the position of the argument.
-            option_flag=${getopts_parameters:$i:1}
-            if [ -z "$option_flag" ]; then
+            # Get the option_flag from getopts_parameters by using the option_flag according to the 
+            # position of the argument.
+            option_flag=${legacy_args:$positional_count:1}
+
+            # increment counter for legacy_args if still args left. If no args left check if the 
+            # last arg is a predefined array and let it cells be filled. Otherwise complain and 
+            # return.
+            echo "debug: positional_counter='$positional_count', max positional_counter='$(( ${#legacy_args} -1 ))'"
+            if [[ $positional_count -le $((${#legacy_args} - 1)) ]]; then
+                # set counter to for next option_flag to fill
+                positional_count=$((positional_count+1))
+                echo "debug: incremented positional_counter to '$positional_count'"
+
+                # Use the long option, corresponding to the option_flag, as a variable
+                # (e.g. for [u]=user, 'user' will be used as a variable)
+                # Also, remove '=' at the end of the long option
+                # The variable name will be stored in 'option_var'
+                option_var="${args_array[$option_flag]%=}"
+            elif [[ $positional_count -ge $((${#legacy_args} - 1)) ]] && 
+                ! declare -p ${option_var} | grep '^declare -a'
+            then
+                # no more legacy_args to fill - legacy behaviour: complain and return
                 ynh_print_warn --message="Too many arguments ! \"${arguments[$i]}\" will be ignored."
-                continue
+                return
+            else
+                echo "debug: array found - keep going"
             fi
-            # Use the long option, corresponding to the option_flag, as a variable
-            # (e.g. for [u]=user, 'user' will be used as a variable)
-            # Also, remove '=' at the end of the long option
-            # The variable name will be stored in 'option_var'
-            local option_var="${args_array[$option_flag]%=}"
+
 
             # Store each value given as argument in the corresponding variable
             # The values will be stored in the same order than $args_array
-            eval ${option_var}+='"${arguments[$i]}"'
-        done
-        unset legacy_args
+            # → eval ${option_var}+='"${arguments[$i]}"'
+            # I'll store it later (see below), but why do they use in the old
+            # routine '+=' to append if legacy mode would exclusively write one
+            # value to each option and then stop filling variables at all?
+            option_value=$argument
+
+            # shift off one positional parameter
+            shift_value=1
+        fi
+
+        # fill option_var with value found
+        # if ${option_var} is an array, fill mutiple values as array cells
+        # otherwise concatenate them seperated by ';'
+        echo "debug: option_var '$option_var', option_value '$option_value'"
+        if declare -p $option_var | grep '^declare -a ' > /dev/null; then
+          # hurray it's an array
+          echo "debug: hurray! '$option_var' is an array."
+          eval ${option_var}+='("${option_value}")'
+        elif [[ -z ${!option_var} ]]; then
+          eval ${option_var}='"${option_value}"'
+        else
+          eval ${option_var}+='";${option_value}"'
+        fi
+        echo "debug: option_var '$option_var', option_value '${!option_var}'"
+
+        # shift value off arguments array
+        echo "debug: shifting '$shift_value' off arguments"
+        arguments=("${arguments[@]:${shift_value}}")
+    done
+
+    # the former subroutine did this - no idea if it is expected somewhere
+    unset legacy_args
+
+    # re-enable trace
     set -o xtrace # set -x
 }
 
@@ -317,15 +352,17 @@ flohmarkt_ynh_local_curl() {
     # e.g. $header had been defined as an array: https://stackoverflow.com/questions/14525296/how-do-i-check-if-variable-is-an-array
     local header 
     local no_sleep
-    local data
+    local page
+    local -a data
     # Manage arguments with getopts
-    ynh_handle_getopts_args "$@"
+    flohmarkt_ynh_handle_getopts_args "$@"
 
     # @@ debug
-	local V
-	for V in line_match put header no_sleep data; do
-	  echo "---> debug $V = ${!V}"
-	done
+    set +x
+    local V
+    for V in line_match put header no_sleep page data; do
+      declare -p $V
+    done
 
 return
     # Define url of page to curl
@@ -353,7 +390,7 @@ return
     # Wait untils nginx has fully reloaded (avoid curl fail with http2) unless disabled
     if ! [[ $no_sleep == 1 ]]; then
       sleep 2
-	fi
+    fi
 
     local cookiefile=/tmp/ynh-$app-cookie.txt
     touch $cookiefile
