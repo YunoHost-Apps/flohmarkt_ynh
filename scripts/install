@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # IMPORT GENERIC HELPERS
-source _common.sh
 source /usr/share/yunohost/helpers
+source _common.sh
 
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/9
 # check if couchdb is already installed
