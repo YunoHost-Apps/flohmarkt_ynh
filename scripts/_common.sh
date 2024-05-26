@@ -46,6 +46,12 @@ flohmarkt_old_service="flohmarkt"
 # PERSONAL HELPERS
 #=================================================
 
+# debug output
+flohmarkt_debug=0
+flohmarkt_print_debug() {
+    if [[ $flohmarkt_debug -eq 1 ]]; then echo "$*"; fi
+}
+
 # Redisgn of ynh_handle_getopts_args for flohmarkt to be tested as `flohmarkt_ynh_handle_getopts_args`
 # Internal helper design to allow helpers to use getopts to manage their arguments
 #
@@ -92,20 +98,23 @@ flohmarkt_old_service="flohmarkt"
 # To keep a retrocompatibility, a package can still call a helper, using getopts, with positional arguments.
 # The "legacy mode" will manage the positional arguments and fill the variable in the same order than they are given 
 # in $args_array. e.g. for `my_helper "val1" val2`, arg1 will be filled with val1, and arg2 with val2.
-#
-# @@ TODO: explain $legacy_args and '--'
-# @@ '--'          start processing the rest of the arguments as positional parameters in legacy mode
-# @@ $legacy_args  The arguments positional parameters will be assign to
-#                  Needs to be composed of array keys of args_array. If a key for a predefined variable
-#                  is used multiple times the assigned values will be concatenated delimited by ';'.
-#                  If the long option variable to contain the data is predefined as an array (e.g. using
-#                  `local -a arg1` then multiple values will be assigned to its cells.
-#                  If the last positional parameter defined in legacy_args is defined as an array all 
-#                  the leftover positional parameters will be assigned to its cells.
+
+# Positional parameters (used to be the only way to use ynh_handle_getopts_args once upon a time) can be 
+# used also:
+# 
+# '--'          start processing the rest of the arguments as positional parameters
+# $legacy_args  The arguments positional parameters will be assign to
+#               Needs to be composed of array keys of args_array. If a key for a predefined variable
+#               is used multiple times the assigned values will be concatenated delimited by ';'.
+#               If the long option variable to contain the data is predefined as an array (e.g. using
+#               `local -a arg1` then multiple values will be assigned to its cells.
+#               If the last positional parameter defined in legacy_args is defined as an array all 
+#               the leftover positional parameters will be assigned to its cells.
+#               (it is named legacy_args, because the use of positional parameters was about to be
+#               deprecated before the last re-design of this sub)
 #
 # Requires YunoHost version 3.2.2 or higher.
 flohmarkt_ynh_handle_getopts_args() {
-    ## TODO: replace use of term 'legacy arg' throughout comments by 'positional parameter' if this works
     # Manage arguments only if there's some provided
     set +o xtrace # set +x
     if [ $# -eq 0 ]; then
@@ -122,58 +131,58 @@ flohmarkt_ynh_handle_getopts_args() {
     local getopts_parameters=""
     local option_flag=""
     ## go through all possible options and replace arguments with short versions
-    echo "debug: arguments = '${arguments[@]}"
-    echo "debug: args_array = '${!args_array[@]}'"
+    flohmarkt_print_debug "arguments = '${arguments[@]}"
+    flohmarkt_print_debug "args_array = '${!args_array[@]}'"
     for option_flag in "${!args_array[@]}"; do
-        echo "debug: option_flag = $option_flag"
+        flohmarkt_print_debug "option_flag = $option_flag"
         # Concatenate each option_flags of the array to build the string of arguments for getopts
         # Will looks like 'abcd' for -a -b -c -d
         # If the value of an option_flag finish by =, it's an option with additionnal values. (e.g. --user bob or -u bob)
         # Check the last character of the value associate to the option_flag
-        echo "debug: compare to '${args_array[$option_flag]: -1}'"
+        flohmarkt_print_debug "compare to '${args_array[$option_flag]: -1}'"
         if [ "${args_array[$option_flag]: -1}" = "=" ]; then
             # For an option with additionnal values, add a ':' after the letter for getopts.
             getopts_parameters="${getopts_parameters}${option_flag}:"
         else
             getopts_parameters="${getopts_parameters}${option_flag}"
         fi
-        echo "debug: getopts_parameters = ${getopts_parameters}"
+        flohmarkt_print_debug "getopts_parameters = ${getopts_parameters}"
         # Check each argument given to the function
         local arg=""
         # ${#arguments[@]} is the size of the array
         ## for one possible option: look at each argument supplied:
         for arg in $(seq 0 $((${#arguments[@]} - 1))); do
-            echo "debug: arg = '$arg', argument = '${arguments[arg]}'"
+            flohmarkt_print_debug "arg = '$arg', argument = '${arguments[arg]}'"
             # Replace long option with = (match the beginning of the argument)
             arguments[arg]="$(printf '%s\n' "${arguments[arg]}" | sed "s/^--${args_array[$option_flag]}/-${option_flag}/")"
-            echo "debug: sed - printf '%s\n' \"${arguments[arg]}\" | sed \"s/^--${args_array[$option_flag]}/-${option_flag} /\""
-            echo "debug: arg = '$arg', argument = '${arguments[arg]}'"
+            flohmarkt_print_debug "sed - printf '%s\n' \"${arguments[arg]}\" | sed \"s/^--${args_array[$option_flag]}/-${option_flag} /\""
+            flohmarkt_print_debug "arg = '$arg', argument = '${arguments[arg]}'"
             # And long option without = (match the whole line)
             arguments[arg]="$(printf '%s\n' "${arguments[arg]}" | sed "s/^--${args_array[$option_flag]%=}$/-${option_flag}/")"
-            echo "debug: sed - printf '%s\n' \"${arguments[arg]}\" | sed \"s/^--${args_array[$option_flag]%=}$/-${option_flag} /\""
-            echo "debug: arg = '$arg', argument = '${arguments[arg]}'"
+            flohmarkt_print_debug "sed - printf '%s\n' \"${arguments[arg]}\" | sed \"s/^--${args_array[$option_flag]%=}$/-${option_flag} /\""
+            flohmarkt_print_debug "arg = '$arg', argument = '${arguments[arg]}'"
         done
-        echo "debug: arguments = '${arguments[@]}'"
+        flohmarkt_print_debug "arguments = '${arguments[@]}'"
     done
-    echo 'debug: ================= end first loop ================='
+    flohmarkt_print_debug '================= end first loop ================='
     
     # Parse the first argument, return the number of arguments to be shifted off the arguments array
     # The function call is necessary here to allow `getopts` to use $@
     parse_arg() {
-        echo "debug: ========= parse_arg started ======== , arguments='$@', getopts_parameters: '$getopts_parameters'"
+        flohmarkt_print_debug "========= parse_arg started ======== , arguments='$@', getopts_parameters: '$getopts_parameters'"
         for ME in "$@"; do
-          echo "debug:   '$ME'"
+          flohmarkt_print_debug "  '$ME'"
         done
         # Initialize the index of getopts
         OPTIND=1
         # getopts will fill $parameter with the letter of the option it has read.
         local parameter=""
         getopts ":$getopts_parameters" parameter || true
-        echo "debug: after getopts - parameter='$parameter', OPTIND='$OPTIND', OPTARG='$OPTARG'"
+        flohmarkt_print_debug "after getopts - parameter='$parameter', OPTIND='$OPTIND', OPTARG='$OPTARG'"
 
         if [ "$parameter" = "?" ]; then
             ynh_die --message="Invalid argument: -${OPTARG:-}"
-            echo "debug: Invalid argument: -${OPTARG:-}"
+            flohmarkt_print_debug "Invalid argument: -${OPTARG:-}"
             exit 255
         elif [ "$parameter" = ":" ]; then
             ynh_die --message="-$OPTARG parameter requires an argument."
@@ -189,13 +198,13 @@ flohmarkt_ynh_handle_getopts_args() {
             if [ "${args_array[$parameter]: -1}" != "=" ]; then
                 # no argument expected for option - set option variable to '1'
                 # 'eval ${option_var}' will use the content of 'option_var'
-                echo "debug: option_var='${option_var}', option_value='1'"
+                flohmarkt_print_debug "option_var='${option_var}', option_value='1'"
                 option_value=1
                 return 1
             else
                 # remove leading and trailing spaces from OPTARG
-                OPTARG="$( printf '%s' ${OPTARG} | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
-                echo "debug: option_var='${option_var}', OPTARG='${OPTARG}'"
+                OPTARG="$( printf '%s' "${OPTARG}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')"
+                flohmarkt_print_debug "option_var='${option_var}', OPTARG='${OPTARG}'"
                 option_value="${OPTARG}"
                 return 2
             fi
@@ -206,7 +215,7 @@ flohmarkt_ynh_handle_getopts_args() {
     # if first argument doesn't start with a '-' enter mode to read positional parameters
     local argument
     local positional_mode=0 # state is getopts mode at the beginning, not positional parameters
-    local positional_count=0 # counter for legacy arguments
+    local positional_count=0 # counter for positional parameters
     local option_var=''   # the variable name to be filled
     # Try to use legacy_args as a list of option_flag of the array args_array
     # Otherwise, fill it with getopts_parameters to get the option_flag. 
@@ -216,26 +225,22 @@ flohmarkt_ynh_handle_getopts_args() {
     while [ ${#arguments} -ne 0 ]; do
         local shift_value=0
         local option_value='' # the value to be filled into ${!option_var}
-        echo 'debug: ======= start while loop ======='
+        flohmarkt_print_debug '======= start while loop ======='
         argument=${arguments[0]}
-        echo "debug: argument='$argument'"
+        flohmarkt_print_debug "argument='$argument'"
         # if state once changed to positional parameter mode, all the rest of the arguments will
         # be interpreted in positional parameter mode even if they start with a '-'
         if [ $positional_mode == 0 ] && [ "${argument}" == '--' ];then
-            echo "debug: found '--', start positional parameter mode"
+            flohmarkt_print_debug "found '--', start positional parameter mode"
             positional_mode=1
             shift_value=1
         elif [ $positional_mode == 0 ] && [ "${argument:0:1}" == '-' ]; then
-            echo "debug: getopts, arguments='${arguments[@]}', starting parse_arg"
+            flohmarkt_print_debug "getopts, arguments='${arguments[@]}', starting parse_arg"
             parse_arg "${arguments[@]}"
             shift_value=$?
         else
             positional_mode=1 # set state to positional parameter mode
-            # @@ set -x
-            # @@ echo "! Helper used in positional parameter  mode !" >/dev/null
-            # @@ set +x
-            echo "debug: positional parameter, argument='$argument'"
-
+            flohmarkt_print_debug "positional parameter, argument='$argument'"
 
             # Get the option_flag from getopts_parameters by using the option_flag according to the 
             # position of the argument.
@@ -244,11 +249,11 @@ flohmarkt_ynh_handle_getopts_args() {
             # increment counter for legacy_args if still args left. If no args left check if the 
             # last arg is a predefined array and let it cells be filled. Otherwise complain and 
             # return.
-            echo "debug: positional_counter='$positional_count', max positional_counter='$(( ${#legacy_args} -1 ))'"
+            flohmarkt_print_debug "positional_counter='$positional_count', max positional_counter='$(( ${#legacy_args} -1 ))'"
             if [[ $positional_count -le $((${#legacy_args} - 1)) ]]; then
                 # set counter to for next option_flag to fill
                 positional_count=$((positional_count+1))
-                echo "debug: incremented positional_counter to '$positional_count'"
+                flohmarkt_print_debug "incremented positional_counter to '$positional_count'"
 
                 # Use the long option, corresponding to the option_flag, as a variable
                 # (e.g. for [u]=user, 'user' will be used as a variable)
@@ -262,16 +267,10 @@ flohmarkt_ynh_handle_getopts_args() {
                 ynh_print_warn --message="Too many arguments ! \"${arguments[$i]}\" will be ignored."
                 return
             else
-                echo "debug: array found - keep going"
+                flohmarkt_print_debug "array found - keep going"
             fi
 
-
-            # Store each value given as argument in the corresponding variable
-            # The values will be stored in the same order than $args_array
-            # → eval ${option_var}+='"${arguments[$i]}"'
-            # I'll store it later (see below), but why do they use in the old
-            # routine '+=' to append if legacy mode would exclusively write one
-            # value to each option and then stop filling variables at all?
+            # value to be assigned to ${!option_var}
             option_value=$argument
 
             # shift off one positional parameter
@@ -281,20 +280,20 @@ flohmarkt_ynh_handle_getopts_args() {
         # fill option_var with value found
         # if ${option_var} is an array, fill mutiple values as array cells
         # otherwise concatenate them seperated by ';'
-        echo "debug: option_var '$option_var', option_value '$option_value'"
+        flohmarkt_print_debug "option_var '$option_var', option_value '$option_value'"
         if declare -p $option_var | grep '^declare -a ' > /dev/null; then
           # hurray it's an array
-          echo "debug: hurray! '$option_var' is an array."
+          flohmarkt_print_debug "hurray! '$option_var' is an array."
           eval ${option_var}+='("${option_value}")'
         elif [[ -z ${!option_var} ]]; then
           eval ${option_var}='"${option_value}"'
         else
           eval ${option_var}+='";${option_value}"'
         fi
-        echo "debug: option_var '$option_var', option_value '${!option_var}'"
+        flohmarkt_print_debug "option_var '$option_var', option_value '${!option_var}'"
 
         # shift value off arguments array
-        echo "debug: shifting '$shift_value' off arguments"
+        flohmarkt_print_debug "shifting '$shift_value' off arguments"
         arguments=("${arguments[@]:${shift_value}}")
     done
 
@@ -315,10 +314,11 @@ flohmarkt_ynh_local_curl() {
 # | arg: -l --line_match: check answer for a regex to return true
 # | arg: -P --put:        PUT instead of POST, requires --data (see below)
 # | arg: -H --header:     add a header to the request (can be used multiple times)
-# | arg: -n --no_sleep:   don't sleep 2 seconds https://github.com/YunoHost/yunohost/pull/547
-# | arg: -d --data:       data to be used with PUT: one long string
-# | arg:                  or to be POSTed: multiple 'key=value'
-# | arg: -p --page:       either the PAGE part in 'https://$domain/$path/PAGE' or an a
+# | arg: -n --no_sleep:   don't sleep 2 seconds (background: https://github.com/YunoHost/yunohost/pull/547)
+# | arg: -d --data:       data to be PUT or POSTed. Can be used multiple times.
+# | arg: -L --location:   either the PAGE part in 'https://$domain/$path/PAGE' or an URI 
+# | arg: -u --user:       login username (requires --password)
+# | arg: -p --password:   login password
 # | arg:                  URL like 'http://doma.in/path/file.ext'
 # | arg: page        - positional parameter legacy version of '--page'
 # | arg: key1=value1 - (Optional, POST only) legacy version of '--data' as positional parameter
@@ -342,7 +342,7 @@ flohmarkt_ynh_local_curl() {
 
     # Declare an array to define the options of this helper.
     local legacy_args=pd
-    local -A args_array=( [l]=line_match= [P]=put [H]=header= [n]=no_sleep [p]=page= [d]=data= )
+    local -A args_array=( [l]=line_match= [P]=put [H]=header= [n]=no_sleep [L]=location= [d]=data= [u]=user= [p]=password= )
     local line_match
     local put
     # @@ todo if the headers contain ';' somewhere it might be a problem to split them
@@ -350,41 +350,63 @@ flohmarkt_ynh_local_curl() {
     # ';' like 'header1: value;header2: value'.
     # might be a good improvement to 'ynh_handle_getopts_args' to act differently if
     # e.g. $header had been defined as an array: https://stackoverflow.com/questions/14525296/how-do-i-check-if-variable-is-an-array
-    local header 
+    local -a header 
     local no_sleep
-    local page
+    local location
+    local user
+    local password
     local -a data
+    local -a curl_opt_args # optional arguments to `curl`
     # Manage arguments with getopts
     flohmarkt_ynh_handle_getopts_args "$@"
 
-    # @@ debug
-    set +x
-    local V
-    for V in line_match put header no_sleep page data; do
-      declare -p $V
-    done
-
-return
     # Define url of page to curl
-    local local_page=$(ynh_normalize_url_path $1)
-    local full_path=$path_url$local_page
-
-    if [ "${path_url}" == "/" ]; then
-        full_path=$local_page
+    # $location contains either an URL or just a page
+    local full_page_url
+    if [[ "$location" =~ ^https?:// ]]; then
+        # if $location starts with an http-protocol use value as a complete URL
+        full_page_url="$location"
+    elif [ "${path_url}" == "/" ]; then
+        # if $path_url points to the webserver root just append $location to localhost URL
+        full_page_url="https://localhost$(ynh_normalize_url_path $location)"
+    else
+        # else append $path_url and $location to localhost URL
+        full_page_url="https://localhost${path_url}$(ynh_normalize_url_path $location)"
     fi
+    flohmarkt_print_debug "full_page_url='$full_page_url'"
 
-    local full_page_url=https://localhost$full_path
+    # Concatenate data
+    # POST: all elements of array $data in one string seperated by '&'
+    # PUT:  all elements of $data in one string seperated by space
+    local seperator='&'
+    if [[ $put -eq 1 ]]; then
+      seperator=' '
+    fi
+    join_by() { local IFS="$1"; shift; echo "$*"; }
+    local P_DATA=$( join_by "$seperator" ${data[@]} )
+    if [[ "$P_DATA" != '' ]]; then curl_opt_args+=('--data'); curl_opt_args+=("$P_DATA"); fi
 
-    # Concatenate all other arguments with '&' to prepare POST data
-    local POST_data=""
-    local arg=""
-    for arg in "${@:2}"; do
-        POST_data="${POST_data}${arg}&"
+    # prepend every element in header array with " -H "
+    local seq
+    while [[ $seq -lt ${#header[@]} ]]; do
+      curl_opt_args+=('-H')
+      curl_opt_args+=("${header[$seq]}")
+      seq=$(( $seq + 1 ))
     done
-    if [ -n "$POST_data" ]; then
-        # Add --data arg and remove the last character, which is an unecessary '&'
-        POST_data="--data ${POST_data::-1}"
+
+    # build --user for curl 
+    if [[ -n "$user" ]] && [[ -n "$password" ]]; then
+      curl_opt_args+=("--user $user:$password")
+    elif [[ -n "$user" ]] && [[ -z "$password" ]]; then
+      ynh_die --message="user provided via '-u/--user' needs password specified via '-p/--password'"
     fi
+
+    flohmarkt_print_debug "long string curl_opt_args='${curl_opt_args[@]}'"
+    seq=0
+    while [[ $seq -lt ${#curl_opt_args[@]} ]]; do
+      flohmarkt_print_debug "  opt[$seq]='${curl_opt_args[$seq]}'"
+      seq=$(( $seq + 1 ))
+    done
 
     # https://github.com/YunoHost/yunohost/pull/547
     # Wait untils nginx has fully reloaded (avoid curl fail with http2) unless disabled
@@ -397,20 +419,27 @@ return
     chown root $cookiefile
     chmod 700 $cookiefile
 
-# @@ debug disabled
-#     # Temporarily enable visitors if needed...
-#     local visitors_enabled=$(ynh_permission_has_user "main" "visitors" && echo yes || echo no)
-#     if [[ $visitors_enabled == "no" ]]; then
-#         ynh_permission_update --permission "main" --add "visitors"
-#     fi
+    # Temporarily enable visitors if needed...
+    # TODO maybe there's a way to do this using --user and --password instead?
+    #   would improve security
+    local visitors_enabled=$(ynh_permission_has_user "main" "visitors" && echo yes || echo no)
+    if [[ $visitors_enabled == "no" ]]; then
+        ynh_permission_update --permission "main" --add "visitors"
+    fi
 
     # Curl the URL
-    curl --silent --show-error --insecure --location --header "Host: $domain" --resolve $domain:443:127.0.0.1 $POST_data "$full_page_url" --cookie-jar $cookiefile --cookie $cookiefile
+    curl --silent --show-error --insecure --location --resolve "$domain:443:127.0.0.1" \
+      --header "Host: $domain" --cookie-jar $cookiefile --cookie $cookiefile \
+      "${curl_opt_args[@]}" "$full_page_url" 
+    flohmarkt_print_debug \
+    curl --silent --show-error --insecure --location --resolve "$domain:443:127.0.0.1" \
+      --header "Host: $domain" --cookie-jar $cookiefile --cookie $cookiefile \
+      "${curl_opt_args[@]}" "$full_page_url" 
 
-# @@ debug disabled
-#     if [[ $visitors_enabled == "no" ]]; then
-#         ynh_permission_update --permission "main" --remove "visitors"
-#     fi
+    # re-enable security
+    if [[ $visitors_enabled == "no" ]]; then
+        ynh_permission_update --permission "main" --remove "visitors"
+    fi
 }
 
 # create symlinks containing domain and path for install, data and log directories

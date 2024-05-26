@@ -24,7 +24,9 @@ data_dir=/root/tmp/data_dir
 # output. Performance impact: yes. But testing made very simple by real use and optional fallback
 # to old version.
 
-# flohmarkt_ynh_local_curl -n -d 'testdata' --line_match 'regex' -H 'Accept: application/json'
+flohmarkt_ynh_local_curl --location http://127.0.0.1/go_ahead -n --data blafasel -d foo -d bar -H 'header1: blafasel' --header 'header2: foobar'
+#  -u admin -p bla 
+# flohmarkt_ynh_local_curl -n -H '-header1' --header 'header2: bar' --header='-header3: ups' -- /path "key1=value1" "key2=value2"
 
-flohmarkt_ynh_local_curl -n -H '-header1' --header 'header2: bar' --header='-header3: ups' -- /path "key1=value1" "key2=value2"
-
+# ups...
+# flohmarkt_ynh_local_curl $*
