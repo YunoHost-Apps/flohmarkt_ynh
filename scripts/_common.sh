@@ -311,7 +311,7 @@ flohmarkt_ynh_local_curl() {
 # Curl abstraction to help with POST requests to local pages (such as installation forms)
 #
 # usage: ynh_local_curl "page" "key1=value1" "key2=value2" ...
-# | arg: -l --line_match: check answer for a regex to return true
+# | arg: -l --line_match: check answer against an extended regex
 # | arg: -P --put:        PUT instead of POST, requires --data (see below)
 # | arg: -H --header:     add a header to the request (can be used multiple times)
 # | arg: -n --no_sleep:   don't sleep 2 seconds (background: https://github.com/YunoHost/yunohost/pull/547)
@@ -337,6 +337,14 @@ flohmarkt_ynh_local_curl() {
 # For multiple calls, cookies are persisted between each call for the same app.
 #
 # `$domain` and `$path_url` need to be defined externally if the first form for the 'page' argument is used.
+# 
+# The return code of this function will vary depending of the use of --line_match:
+# 
+# If --line_match has been used the return code will be the one of the grep checking line_match
+# against the output of curl. The output of curl will not be returned.
+#
+# If --line_match has not been provided the return code will be the one of the curl command and
+# the output of curl will be echoed.
 #
 # Requires YunoHost version 2.6.4 or higher.
 
@@ -427,14 +435,26 @@ flohmarkt_ynh_local_curl() {
         ynh_permission_update --permission "main" --add "visitors"
     fi
 
+    flohmarkt_print_debug executing \'\
+    curl --silent --show-error --insecure --location --resolve "$domain:443:127.0.0.1" \
+      --header "Host: $domain" --cookie-jar $cookiefile --cookie $cookiefile \
+      "${curl_opt_args[@]}" "$full_page_url"\'
     # Curl the URL
-    curl --silent --show-error --insecure --location --resolve "$domain:443:127.0.0.1" \
+    local curl_result=$( curl --silent --show-error --insecure --location \
       --header "Host: $domain" --cookie-jar $cookiefile --cookie $cookiefile \
-      "${curl_opt_args[@]}" "$full_page_url" 
-    flohmarkt_print_debug \
-    curl --silent --show-error --insecure --location --resolve "$domain:443:127.0.0.1" \
-      --header "Host: $domain" --cookie-jar $cookiefile --cookie $cookiefile \
-      "${curl_opt_args[@]}" "$full_page_url" 
+      --resolve "$domain:443:127.0.0.1" "${curl_opt_args[@]}" "$full_page_url" )
+    local curl_error=$?
+    flohmarkt_print_debug "curl_result='$curl_result' ($curl_error)"
+    
+    # check result agains --line_match if provided
+    if [[ -n $line_match ]]; then
+      printf '%s' "$curl_result" | grep "$line_match" > /dev/null
+      # will return the error code of the above grep
+    else
+      # no --line_match, return curls error code and output
+      echo $curl_result
+      return $curl_error
+    fi
 
     # re-enable security
     if [[ $visitors_enabled == "no" ]]; then
