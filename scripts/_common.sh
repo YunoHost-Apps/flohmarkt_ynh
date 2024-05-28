@@ -47,9 +47,11 @@ flohmarkt_old_service="flohmarkt"
 #=================================================
 
 # debug output
-flohmarkt_debug=1
+flohmarkt_debug=0
 flohmarkt_print_debug() {
-    if [[ $flohmarkt_debug -eq 1 ]]; then echo "flohmarkt_debug: $*"; fi
+    set +x
+    if [[ $flohmarkt_debug -eq 1 ]]; then echo "flohmarkt_debug: $*" >&2; fi
+    set -x
 }
 
 # Redisgn of ynh_handle_getopts_args for flohmarkt to be tested as `flohmarkt_ynh_handle_getopts_args`
@@ -119,7 +121,6 @@ flohmarkt_print_debug() {
 ynh_handle_getopts_args() {
     # Manage arguments only if there's some provided
     # TODO set +o xtrace # set +x
-    set +x
     if [ $# -eq 0 ]; then
       ynh_print_warn --message="ynh_handle_getopts_args called without arguments"
       return
@@ -137,6 +138,16 @@ ynh_handle_getopts_args() {
     flohmarkt_print_debug "arguments = '${arguments[@]}"
     flohmarkt_print_debug "args_array = (${!args_array[@]})"
     for option_flag in "${!args_array[@]}"; do
+        # TODO refactor: Now I'm not sure anymore this part belongs here. To make the
+        # this all less hard to read and understand I'm thinking at the moment that it 
+        # would be good to split the different things done here into their own loops:
+        #
+        # 1. build the option string $getopts_parameters
+        # 2. go through the arguments and add empty arguments where needed to 
+        #    allow for cases like '--arg= --value' where 'value' is a valid option, too
+        # 3. replace long option names by short once
+        # 4. (possibly add empty parameters for '-a -v' in cases where -a expects a value
+        #    and -v is a valid option, too - but I dearly hope this will not be necessary)
         flohmarkt_print_debug "option_flag = $option_flag"
         # Concatenate each option_flags of the array to build the string of arguments for getopts
         # Will looks like 'abcd' for -a -b -c -d
@@ -156,7 +167,7 @@ ynh_handle_getopts_args() {
         # ${#arguments[@]} is the size of the array
         ## for one possible option: look at each argument supplied:
         for arg in $(seq 0 $((${#arguments[@]} - 1))); do
-            flohmarkt_print_debug "arg = '$arg', argument = '${arguments[arg]}'"
+            flohmarkt_print_debug "option_flag='$option_flag', arg = '$arg', argument = '${arguments[arg]}'"
             # the following cases need to be taken care of
             # '--arg=value'    → works
             # '--arg= value'   → works
@@ -171,21 +182,13 @@ ynh_handle_getopts_args() {
             #   solution:
             #   insert an empty arg into array arguments to be later interpreted by 
             #   getopts as the missing value to --arg=
-# TODO
-            flohmarkt_print_debug "TODO: {argument[arg]:-1}='${arguments[arg]: -1}'"
-            if [[ ${arguments[arg]: -1} == '=' ]] \
-                && [[ "$option_flag" == 'r' ]]
-                # TODO && ${arguments[arg]} is actual option_flag
-                Dieser Teil läuft für jedes argument x Mal (jeweils 1x für jedes Element von @args_array.
-                Wir wollen aber nur einmal die Änderung vornehmen, und zwar genau dann, wenn das aktuelle
-                option_flag zum aktuellen argument[arg] passt.
-            then
+            if [[ -v arguments[arg+1] ]] && [[ ${arguments[arg]: -1} == '=' ]]; then
                 # arg ends with a '='
                 local this_argument=${arguments[arg]}
                 local next_argument=${arguments[arg+1]}
                 # for looking up next_argument in args_array remove optionally trailing '='
                 next_argument=$( printf '%s' "$next_argument" | cut -d'=' -f1 )
-                flohmarkt_print_debug "this_argument='$this_argument', next_argument='$next_argument'"
+                flohmarkt_print_debug "MISSING PARAMETER: this_argument='$this_argument', next_argument='$next_argument'"
 
                 # check if next_argument is a value in args_array
                 # → starts with '--' and the rest of the argument excluding optional trailing '=' 
@@ -195,32 +198,28 @@ ynh_handle_getopts_args() {
                 flohmarkt_print_debug "args_array values='${args_array[@]}'"
                 flohmarkt_print_debug "args_array   keys='${!args_array[@]}'"
                 flohmarkt_print_debug "{next_argument:2}='${next_argument:2}'"
-                flohmarkt_print_debug "{next_argument:1:1}='${next_argument:1:1}'"
-                set -x
-                if [[ "${next_argument:0:2}" == '--' ]] \
-                    && [[ -n $( printf '%s ' "${args_array[@]}" | fgrep -w "${next_argument:2}" ) ]] \
-                || [[ "${next_argument:0:1}" == '-' ]] \
-                    && [[ -n $( printf '%s ' "\"${!args_array[@]}\"" | fgrep -w "${next_argument:1:1}" ) ]]
+                flohmarkt_print_debug "{next_argument:0:2}='${next_argument:0:2}'"
+                if ( [[ "${next_argument:0:2}" == '--' ]] \
+                    && printf '%s ' "${args_array[@]}" | fgrep -w "${next_argument:2}" > /dev/null ) \
+                || ( [[ "${next_argument:0:1}" == '-' ]] \
+                    && printf '%s ' "${!args_array[@]}" | fgrep -w "${next_argument:1:1}" > /dev/null )
                 then
                     # insert an empty value to array arguments to be interpreted as the value
                     # for argument[arg]
                     arguments=( ${arguments[@]:0:arg+1} '' ${arguments[@]:arg+1})
                     flohmarkt_print_debug "now arguments='${arguments[@]}'"
-                elif [[ ${arguments[arg]} == '--replace_string=' ]] && [[ $option_flag == 'r' ]]; then
-                  exit
                 fi
             fi
 
             # Replace long option with = (match the beginning of the argument)
             arguments[arg]="$(printf '%s\n' "${arguments[arg]}" \
                 | sed "s/^--${args_array[$option_flag]}/-${option_flag}/")"
-            flohmarkt_print_debug "arg = '$arg', argument = '${arguments[arg]}'"
             # And long option without = (match the whole line)
             arguments[arg]="$(printf '%s\n' "${arguments[arg]}" \
                 | sed "s/^--${args_array[$option_flag]%=}$/-${option_flag}/")"
-            flohmarkt_print_debug "arg = '$arg', argument = '${arguments[arg]}'"
+            flohmarkt_print_debug "                            arg = '$arg', argument = '${arguments[arg]}'"
         done
-        flohmarkt_print_debug "arguments = '${arguments[@]}'"
+        flohmarkt_print_debug "====> end loop: arguments = '${arguments[@]}'"
     done
     flohmarkt_print_debug '================= end first loop ================='
     
@@ -233,7 +232,7 @@ ynh_handle_getopts_args() {
         # getopts will fill $parameter with the letter of the option it has read.
         local parameter=""
         getopts ":$getopts_parameters" parameter || true
-        flohmarkt_print_debug "after getopts - parameter='$parameter', OPTIND='$OPTIND', OPTARG='$OPTARG'"
+        flohmarkt_print_debug "after getopts - parameter='$parameter', OPTIND='${OPTIND:-none}', OPTARG='${OPTARG:-none}'"
 
         if [ "$parameter" = "?" ]; then
             ynh_die --message="Invalid argument: -${OPTARG:-}"
@@ -378,6 +377,7 @@ ynh_local_curl() {
 # | arg: -L --location:   either the PAGE part in 'https://$domain/$path/PAGE' or an URI 
 # | arg: -u --user:       login username (requires --password)
 # | arg: -p --password:   login password
+# TODO I might need a mode to GET and --line_match...
 # | arg:                  URL like 'http://doma.in/path/file.ext'
 # | arg: page        - positional parameter legacy version of '--page'
 # | arg: key1=value1 - (Optional, POST only) legacy version of '--data' as positional parameter
