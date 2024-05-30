@@ -12,6 +12,8 @@ ynh_local_curl() {
 # | arg: -m --method:     request method to use: POST (default), PUT, GET, DELETE
 # | arg: -H --header:     add a header to the request (can be used multiple times)
 # | arg: -d --data:       data to be PUT or POSTed. Can be used multiple times.
+# | arg: -s --seperator:  seperator used to concatenate POST/PUT --date or key=value ('none'=no seperator)
+# | arg:                  (default for POST: '&', default for PUT: ' ')
 # | arg: -u --user:       login username (requires --password)
 # | arg: -p --password:   login password
 # | arg: -n --no_sleep:   don't sleep 2 seconds (background: https://github.com/YunoHost/yunohost/pull/547)
@@ -47,7 +49,7 @@ ynh_local_curl() {
     # Declare an array to define the options of this helper.a
     local -A supported_methods=( [PUT]=1 [POST]=1 [GET]=1 [DELETE]=1 )
     local legacy_args=Ld
-    local -A args_array=( [l]=line_match= [m]=method= [H]=header= [n]=no_sleep [L]=location= [d]=data= [u]=user= [p]=password= )
+    local -A args_array=( [l]=line_match= [m]=method= [H]=header= [n]=no_sleep [L]=location= [d]=data= [u]=user= [p]=password= [s]=seperator= )
     local line_match
     local method
     local -a header 
@@ -55,6 +57,7 @@ ynh_local_curl() {
     local location
     local user
     local password
+    local seperator
     local -a data
     local -a curl_opt_args # optional arguments to `curl`
     # Manage arguments with getopts
@@ -85,9 +88,13 @@ ynh_local_curl() {
     # PUT:  all elements of $data concatenated in one string
     # GET:  no data
     # DELETE: no data
-    local seperator='&'
-    if [[ "$method" == 'PUT' ]]; then
-      seperator=''
+    # if not defined by --seperator set default
+    if [[ -v seperator ]] && [[ "$seperator" == 'none' ]]; then
+        seperator=''
+    elif ! [[ -v seperator ]] && [[ "$method" == 'PUT' ]]; then
+        seperator=''
+    elif ! [[ -v seperator ]]; then
+        seperator='&'
     fi
     join_by() { local IFS="$1"; shift; echo "$*"; }
     local P_DATA=$( join_by "$seperator" ${data[@]} )
