@@ -168,7 +168,7 @@ flohmarkt_ynh_couchdb_user_permissions() {
   ynh_local_curl -n -m PUT -u admin -p "$password_couchdb_admin" \
     -H "Accept: application/json" -H "Content-Type: application/json" \
     -d "{\"members\":{\"names\": [\"${app}\"],\"roles\": [\"editor\"]}}" \
-    --line_match='ok' \
+    --line_match='"ok":true' \
     "http://127.0.0.1:5984/${app}/_security"
 }
 
@@ -183,8 +183,42 @@ flohmarkt_ynh_exists_couchdb_db() {
 }
 
 flohmarkt_ynh_delete_couchdb_db() {
+  local legacy_args='n'
+  local -A args_array=( [n]=name= )
+  ynh_handle_getopts_args "$@"
+  local name=${name:-${app}}
+
   ynh_local_curl -n -m DELETE -u admin -p "$password_couchdb_admin" \
-    --line_match='"ok":true' "http://127.0.0.1:5984/${app}"
+    --line_match='"ok":true' "http://127.0.0.1:5984/${name}"
+}
+
+# replicate couchdb to a new database
+flohmarkt_ynh_copy_couchdb() {
+  local legacy_args='on'
+  local -A args_array=( [o]=old_name= [n]=new_name= )
+  local new_name
+  local old_name
+  ynh_handle_getopts_args "$@"
+  old_name=${old_name:-${app}}
+
+  ynh_local_curl -n -m POST -u admin -p "$password_couchdb_admin" \
+    -H "Accept: application/json" -H "Content-Type: application/json" \
+    -d '{ "create_target":true,"source" : "' -d"${old_name}" -d'",' \
+    -d '"target":"' -d "${new_name}" -d'"}' --seperator=none \
+    --line_match='"ok":true' "http://127.0.0.1:5984/_replicate"
+}
+
+# copy couchdb to new name and delete source
+flohmarkt_ynh_rename_couchdb() {
+  local legacy_args='on'
+  local -A args_array=( [o]=old_name= [n]=new_name= )
+  local new_name
+  local old_name
+  ynh_handle_getopts_args "$@"
+  old_name=${old_name:-${app}}
+
+  flohmarkt_ynh_copy_couchdb -o "$old_name" -n "$new_name"
+  flohmarkt_ynh_delete_couchdb_db "$old_name"
 }
 
 # check whether old couchdb user or database exist before creating the new ones

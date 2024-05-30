@@ -23,6 +23,16 @@ else
   ynh_script_progression --message="CouchDB configuration file already exists." --weight=1
 fi
 
+# check if couchdb already exists and if so rename it to make room for the restore
+if flohmarkt_ynh_exists_couchdb_db; then
+  flohmarkt_couchdb_rename_to="${app}_$(date '+%Y-%m-%d_%H-%M-%S_%N')"
+  if flohmarkt_ynh_rename_couchdb "${app}" "${flohmarkt_couchdb_rename_to}"; then
+    ynh_print_warn --message="renamed existing database ${app} to ${flohmarkt_couchdb_rename_to}"
+  else
+    ynh_die --message="could not rename existing couchdb database and cannot overwrite it"
+  fi
+fi
+
 # restore couchdb from json
 ynh_script_progression --message="Importing couchdb from json backup..." --weight=8
 flohmarkt_ynh_restore_couchdb
