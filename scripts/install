@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # IMPORT GENERIC HELPERS
-source _common.sh
 source /usr/share/yunohost/helpers
+source _common.sh
 
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/9
 # check if couchdb is already installed
@@ -17,7 +17,7 @@ then
 fi
 
 # INITIALIZE AND STORE SETTINGS
-# todo: do we need to store the password un-encrypted somewhere on the system?
+# TODO: do we need to store the password un-encrypted somewhere on the system?
 # → there's no way to get the admin password later if sometimes in the future deleting
 #   the app will delete its specific database only (instead of the whole couchdb server as
 #   of now in the earliest versions of the integration).
@@ -75,17 +75,7 @@ ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_app
 
 # setup couchdb
 ynh_script_progression --message="Setup couchdb database and user for flohmarkt..." --weight=2
-flohmarkt_ynh_check_old_couchdb
-(
-    set +o nounset
-    source "$flohmarkt_venv_dir/bin/activate"
-    set -o nounset
-    cd "$flohmarkt_app_dir"
-    # initialize_couchdb seems to re-try on connect problems endlessly blocking the yunohost api
-    # give it 45 seconds to finish and then fail
-    # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/13
-    timeout 45 python3 initialize_couchdb.py $password_couchdb_admin
-)
+flohmarkt_ynh_initialize_couchdb
 
 # SETUP LOGROTATE
 ynh_script_progression --message="Configuring log rotation..." --weight=2
@@ -123,9 +113,7 @@ ynh_add_fail2ban_config --logpath="$flohmarkt_logfile" --failregex='INFO: +<HOST
 # symlink data_dir and install_dir to make it easier to find the
 # files for a certain domain/path
 ynh_script_progression --message="Creating symlinks..." --weight=1
-ln -s "$flohmarkt_install" "$flohmarkt_sym_install"
-ln -s "$flohmarkt_data_dir" "$flohmarkt_sym_data_dir"
-ln -s "$flohmarkt_log_dir" "$flohmarkt_sym_log_dir"
+flohmarkt_ynh_create_symlinks
 
 # start service
 ynh_script_progression --message="Debug before starting flohmarkt..." --weight=1

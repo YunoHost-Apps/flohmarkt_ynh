@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source _common.sh
 source /usr/share/yunohost/helpers
+source _common.sh
 
 # UPGRADE_PACKAGE if only the YunoHost package has changed
 # UPGRADE_APP if the upstream app version has changed
@@ -59,17 +59,7 @@ ynh_script_progression --message="Upgrading flohmarkt configuration..." --weight
 ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_app_dir/flohmarkt.conf"
 
 ynh_script_progression --message="Upgrading flohmarkt couchdb..." --weight=10
-# run initialize_couchdb.py
-(
-    set +o nounset
-    source "$flohmarkt_venv_dir/bin/activate"
-    set -o nounset
-    cd "$flohmarkt_app_dir"
-    # initialize_couchdb seems to re-try on connect problems endlessly blocking the yunohost api
-    # give it 45 seconds to finish and then fail
-    # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/13
-    timeout 45 python3 initialize_couchdb.py $password_couchdb_admin $password_couchdb_flohmarkt
-)
+flohmarkt_ynh_initialize_couchdb
 
 # set file permissions for install dir
 flohmarkt_ynh_set_permission

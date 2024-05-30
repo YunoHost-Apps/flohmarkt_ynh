@@ -1,7 +1,7 @@
 #!/bin/bash
 
-source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
+source ../settings/scripts/_common.sh
 
 # reinstall couchdb
 ynh_script_progression --message="Reinstalling couchdb..." --weight=40
@@ -21,6 +21,16 @@ if ! [[ -e /opt/couchdb/etc/local.d/05-flohmarkt.ini ]]; then
   flohmarkt_ynh_start_couchdb
 else
   ynh_script_progression --message="CouchDB configuration file already exists." --weight=1
+fi
+
+# check if couchdb already exists and if so rename it to make room for the restore
+if flohmarkt_ynh_exists_couchdb_db; then
+  flohmarkt_couchdb_rename_to="${app}_$(date '+%Y-%m-%d_%H-%M-%S_%N')"
+  if flohmarkt_ynh_rename_couchdb "${app}" "${flohmarkt_couchdb_rename_to}"; then
+    ynh_print_warn --message="renamed existing database ${app} to ${flohmarkt_couchdb_rename_to}"
+  else
+    ynh_die --message="could not rename existing couchdb database and cannot overwrite it"
+  fi
 fi
 
 # restore couchdb from json
@@ -73,5 +83,9 @@ flohmarkt_ynh_start_service
 # RELOAD NGINX
 ynh_script_progression --message="Reloading NGINX web server..." --weight=1
 ynh_systemd_action --service_name=nginx --action=reload
+
+# create symlinks
+ynh_script_progression --message="Creating symlinks..." --weight=1
+flohmarkt_ynh_create_symlinks
 
 ynh_script_progression --message="Restoration completed for $app" --last
