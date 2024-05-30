@@ -17,7 +17,7 @@ then
 fi
 
 # INITIALIZE AND STORE SETTINGS
-# todo: do we need to store the password un-encrypted somewhere on the system?
+# TODO: do we need to store the password un-encrypted somewhere on the system?
 # → there's no way to get the admin password later if sometimes in the future deleting
 #   the app will delete its specific database only (instead of the whole couchdb server as
 #   of now in the earliest versions of the integration).
@@ -76,16 +76,7 @@ ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_app
 # setup couchdb
 ynh_script_progression --message="Setup couchdb database and user for flohmarkt..." --weight=2
 flohmarkt_ynh_check_old_couchdb
-(
-    set +o nounset
-    source "$flohmarkt_venv_dir/bin/activate"
-    set -o nounset
-    cd "$flohmarkt_app_dir"
-    # initialize_couchdb seems to re-try on connect problems endlessly blocking the yunohost api
-    # give it 45 seconds to finish and then fail
-    # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/13
-    timeout 45 python3 initialize_couchdb.py $password_couchdb_admin
-)
+flohmarkt_ynh_initialize_couchdb
 
 # SETUP LOGROTATE
 ynh_script_progression --message="Configuring log rotation..." --weight=2

@@ -120,6 +120,22 @@ flohmarkt_ynh_up_inst_couchdb() {
           --package="couchdb"
 }
 
+# (re)initialise database during install and upgrade
+flohmarkt_ynh_initialize_couchdb() {
+    # run in a sub shell to not source the venv activate to the rest of the script
+    (
+        set +o nounset
+        source "$flohmarkt_venv_dir/bin/activate"
+        set -o nounset
+        # change directory to where flohmarkt.conf is located
+        cd $flohmarkt_app_dir
+        # initialize_couchdb seems to re-try on connect problems endlessly blocking the yunohost api
+        # give it 45 seconds to finish and then fail
+        # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/13
+        timeout 45 python3 initialize_couchdb.py $password_couchdb_admin
+    )
+}
+
 flohmarkt_ynh_dump_couchdb() {
   ../settings/scripts/couchdb-dump/couchdb-dump.sh -b -H 127.0.0.1 -d "${app}" \
     -q -u admin -p "${password_couchdb_admin}" -f "${YNH_CWD}/${app}.json"
