@@ -546,7 +546,6 @@ flohmarkt_print_debug() {
 
 # create symlinks containing domain and path for install, data and log directories
 flohmarkt_ynh_create_symlinks() {
-  ynh_script_progression --message="Creating symlinks..." --weight=1
   ln -s "$flohmarkt_install" "$flohmarkt_sym_install"
   ln -s "$flohmarkt_data_dir" "$flohmarkt_sym_data_dir"
   ln -s "$flohmarkt_log_dir" "$flohmarkt_sym_log_dir"
