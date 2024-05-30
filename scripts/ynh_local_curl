@@ -1,4 +1,7 @@
+#!/bin/bash
+
 # local copy of ynh_local_curl() to test some improvement
+# https://github.com/YunoHost/yunohost/pull/1857
 # https://github.com/YunoHost/issues/issues/2396
 # https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/51
 ynh_local_curl() {

@@ -21,29 +21,30 @@ ynh_script_progression --message="Stopping $app..." --weight=2
 yunohost service stop $flohmarkt_filename
 
 # Remove the service from the list of services known by YunoHost (added from `yunohost service add`)
-if ynh_exec_warn_less yunohost service status $flohmarkt_filename >/dev/null
-then
+if ynh_exec_warn_less yunohost service status $flohmarkt_filename >/dev/null; then
 	ynh_script_progression --message="Removing $app service integration..." --weight=2
     ynh_remove_systemd_config --service=$flohmarkt_filename
     yunohost service remove $flohmarkt_filename
 fi
 
-# https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/12
-ynh_script_progression --message="Removing database and database user..." --weight=2
-# remove DB
-flohmarkt_ynh_delete_couchdb_db
-# remove DB user for this instance:
+# remove DB user for this instance - a new install will create a new user and permissions
+ynh_script_progression --message="Removing couchdb user..." --weight=2
 flohmarkt_ynh_delete_couchdb_user
+
+if [[ $YNH_APP_PURGE -eq 1 ]]; then
+  ynh_script_progression --message="Purging couchdb database ..." --weight=2
+  # remove DB
+  flohmarkt_ynh_delete_couchdb_db
+  # remove logfiles directory
+  ynh_script_progression --message="Purging logfiles..." --weight=2
+  ynh_secure_remove --file="${flohmarkt_log_dir}"
+else
+  ynh_script_progression --message="Purge not selected - not deleting couchdb and logfiles..." --weight=1
+fi
 
 # Remove the app-specific logrotate config
 ynh_script_progression --message="Removing logrotate configuration..." --weight=2
 ynh_remove_logrotate
-
-# remove logfiles directory
-# https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/29
-# can only remove a subdir or one file
-ynh_script_progression --message="Removing logfiles..." --weight=2
-ynh_secure_remove --file="${flohmarkt_log_dir}"
 
 # Remove the dedicated NGINX config
 ynh_script_progression --message="Removing nginx configuration..." --weight=2
@@ -53,13 +54,8 @@ ynh_remove_nginx_config
 ynh_script_progression --message="Removing fail2ban configuration..." --weight=2
 ynh_remove_fail2ban_config
 
-# Remove home
-# https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/29
-ynh_script_progression --message="Removing data directory..." --weight=2
-ynh_secure_remove --file=$data_dir
-
 # remove systemd service
-ynh_script_progression --message="Removing data directory..." --weight=2
+ynh_script_progression --message="Removing systemd.service directory..." --weight=2
 ynh_remove_systemd_config
 
 # remove symlinks

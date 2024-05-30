@@ -1,4 +1,7 @@
+#!/bin/bash
+
 # Redisgn of ynh_handle_getopts_args for flohmarkt to be tested as `flohmarkt_ynh_handle_getopts_args`
+# https://github.com/YunoHost/yunohost/pull/1856
 # Internal helper design to allow helpers to use getopts to manage their arguments
 #
 # [internal]

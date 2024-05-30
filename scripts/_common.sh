@@ -52,9 +52,7 @@ flohmarkt_old_service="flohmarkt"
 # otherwise not needed TODO delete after development of the two is done
 flohmarkt_debug=0
 flohmarkt_print_debug() {
-    set +x
     if [[ $flohmarkt_debug -eq 1 ]]; then echo "flohmarkt_debug: $*" >&2; fi
-    set -x
 }
 # source own development version of ynh_handle_getopts_args and ynh_local_curl
 source ynh_handle_getopts_args
@@ -135,9 +133,9 @@ flohmarkt_ynh_import_couchdb() {
 
 flohmarkt_ynh_delete_couchdb_user() {
   local couchdb_user_revision=$( ynh_local_curl -n -m GET -u admin -p "$password_couchdb_admin" \
-    "http://localhost:5984/_users/org.couchdb.user%3A${app}" | jq -r ._rev )
+    "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}" | jq -r ._rev )
   ynh_local_curl -n -m DELETE -u admin -p ${password_couchdb_admin} -l '"ok":true' \
-    "http://localhost:5984/_users/org.couchdb.user%3A${app}?rev=${couchdb_user_revision}"
+    "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}?rev=${couchdb_user_revision}"
 }
 
 flohmarkt_ynh_create_couchdb_user() {
