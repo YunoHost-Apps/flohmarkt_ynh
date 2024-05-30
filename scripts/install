@@ -75,7 +75,6 @@ ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_app
 
 # setup couchdb
 ynh_script_progression --message="Setup couchdb database and user for flohmarkt..." --weight=2
-flohmarkt_ynh_check_old_couchdb
 flohmarkt_ynh_initialize_couchdb
 
 # SETUP LOGROTATE
