@@ -650,7 +650,7 @@ flohmarkt_ynh_import_couchdb() {
 flohmarkt_ynh_delete_couchdb_user() {
   local couchdb_user_revision=$( flohmarkt_ynh_local_curl -n -m GET -u admin -p "$password_couchdb_admin" \
     "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}" | jq -r ._rev )
-  if [[ -v ${couchdb_user_revision} ]] && [[ -n ${couchdb_user_revision} ]]; then
+  if [[ -v couchdb_user_revision ]] && [[ -n "${couchdb_user_revision}" ]]; then
     flohmarkt_ynh_local_curl -n -m DELETE -u admin -p ${password_couchdb_admin} -l '"ok":true' \
       "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}?rev=${couchdb_user_revision}"
   else
