@@ -429,27 +429,34 @@ flohmarkt_ynh_local_curl() {
       ynh_die --message="method $method not supported by flohmarkt_ynh_local_curl"
     fi
 
-    # check that $location is a valid '/path'
-    if [[ -n "${location}" ]]; then
-	    if [ "${location:0:1}" != "/" ]; then
-            location="/${location}"
+    # linter doesn't want that the internal function is used anymore
+    # it's replaced here quick and dirty
+    flohmarkt_normalize_url_path() {
+        # check that $location is a valid '/path'
+        if [[ -n "${location}" ]]; then
+    	    if [ "${location:0:1}" != "/" ]; then
+                location="/${location}"
+            fi
+            if [ "${location:${#location}-1}" == "/" ]; then
+                location="${location:0:${#location}-1}"
+            fi
         fi
-        if [ "${location:${#location}-1}" == "/" ]; then
-            location="${location:0:${#location}-1}"
-        fi
-    fi
+    }
 
     # Define url of page to curl
     # $location contains either an URL or just a page
     local full_page_url
+    echo "################### location='$location' ###################"
     if [[ "$location" =~ ^https?:// ]]; then
         # if $location starts with an http-protocol use value as a complete URL
         full_page_url="$location"
     elif [ "${path_url}" == "/" ]; then
         # if $path_url points to the webserver root just append $location to localhost URL
+        flohmarkt_normalize_url_path
         full_page_url="https://localhost${location}"
     else
         # else append $path_url and $location to localhost URL
+        flohmarkt_normalize_url_path
         full_page_url="https://localhost${path_url}${location}"
     fi
     flohmarkt_print_debug "full_page_url='$full_page_url'"
