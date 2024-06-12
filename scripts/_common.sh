@@ -111,8 +111,8 @@ flohmarkt_old_service="flohmarkt"
 #               deprecated before the last re-design of this sub)
 #
 # Requires YunoHost version 3.2.2 or higher.
-# flohmarkt_ynh_handle_getopts_args() {
-ynh_handle_getopts_args() {
+# ynh_handle_getopts_args() {
+flohmarkt_ynh_handle_getopts_args() {
     # Manage arguments only if there's some provided
     set +o xtrace # set +x
     if [ $# -eq 0 ]; then
@@ -365,7 +365,7 @@ ynh_handle_getopts_args() {
 # https://github.com/YunoHost/yunohost/pull/1857
 # https://github.com/YunoHost/issues/issues/2396
 # https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/51
-ynh_local_curl() {
+flohmarkt_ynh_local_curl() {
 # Curl abstraction to help with POST requests to local pages (such as installation forms)
 #
 # usage: ynh_local_curl [--option [-other_option […]]] "page" "key1=value1" "key2=value2" ...
@@ -422,11 +422,21 @@ ynh_local_curl() {
     local -a data
     local -a curl_opt_args # optional arguments to `curl`
     # Manage arguments with getopts
-    ynh_handle_getopts_args "$@"
+    flohmarkt_ynh_handle_getopts_args "$@"
 
     # make sure method is a supported one
     if ! [[ -v supported_methods[$method] ]]; then
-      ynh_die --message="method $method not supported by ynh_local_curl"
+      ynh_die --message="method $method not supported by flohmarkt_ynh_local_curl"
+    fi
+
+    # check that $location is a valid '/path'
+    if [[ -n "${location}" ]]; then
+	    if [ "${location:0:1}" != "/" ]; then
+            location="/${location}"
+        fi
+        if [ "${location:${#location}-1}" == "/" ]; then
+            location="${location:0:${#location}-1}"
+        fi
     fi
 
     # Define url of page to curl
@@ -437,10 +447,10 @@ ynh_local_curl() {
         full_page_url="$location"
     elif [ "${path_url}" == "/" ]; then
         # if $path_url points to the webserver root just append $location to localhost URL
-        full_page_url="https://localhost$(ynh_normalize_url_path $location)"
+        full_page_url="https://localhost${location}"
     else
         # else append $path_url and $location to localhost URL
-        full_page_url="https://localhost${path_url}$(ynh_normalize_url_path $location)"
+        full_page_url="https://localhost${path_url}${location}"
     fi
     flohmarkt_print_debug "full_page_url='$full_page_url'"
 
@@ -537,7 +547,7 @@ ynh_local_curl() {
 # PERSONAL HELPERS
 #=================================================
 
-# debug output for ynh_handle_getopts_args and ynh_local_curl
+# debug output for flohmarkt_ynh_handle_getopts_args and flohmarkt_ynh_local_curl
 # otherwise not needed TODO delete after development of the two is done
 flohmarkt_debug=0
 flohmarkt_print_debug() {
@@ -632,14 +642,14 @@ flohmarkt_ynh_import_couchdb() {
 }
 
 flohmarkt_ynh_delete_couchdb_user() {
-  local couchdb_user_revision=$( ynh_local_curl -n -m GET -u admin -p "$password_couchdb_admin" \
+  local couchdb_user_revision=$( flohmarkt_ynh_local_curl -n -m GET -u admin -p "$password_couchdb_admin" \
     "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}" | jq -r ._rev )
-  ynh_local_curl -n -m DELETE -u admin -p ${password_couchdb_admin} -l '"ok":true' \
+  flohmarkt_ynh_local_curl -n -m DELETE -u admin -p ${password_couchdb_admin} -l '"ok":true' \
     "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}?rev=${couchdb_user_revision}"
 }
 
 flohmarkt_ynh_create_couchdb_user() {
-  ynh_local_curl -n -m PUT -u admin -p "${password_couchdb_admin}" \
+  flohmarkt_ynh_local_curl -n -m PUT -u admin -p "${password_couchdb_admin}" \
     -H "Accept: application/json" -H "Content-Type: application/json" \
     -d '{' \
     -d "\"name\": \"${app}\", \"password\": \"${password_couchdb_flohmarkt}\"," \
@@ -649,7 +659,7 @@ flohmarkt_ynh_create_couchdb_user() {
 }
 
 flohmarkt_ynh_couchdb_user_permissions() {
-  ynh_local_curl -n -m PUT -u admin -p "$password_couchdb_admin" \
+  flohmarkt_ynh_local_curl -n -m PUT -u admin -p "$password_couchdb_admin" \
     -H "Accept: application/json" -H "Content-Type: application/json" \
     -d "{\"members\":{\"names\": [\"${app}\"],\"roles\": [\"editor\"]}}" \
     --line_match='"ok":true' \
@@ -657,22 +667,22 @@ flohmarkt_ynh_couchdb_user_permissions() {
 }
 
 flohmarkt_ynh_exists_couchdb_user() {
-  ynh_local_curl -n -m GET  -u admin -p "$password_couchdb_admin" -l "\"_id\":\"org.couchdb.user:${app}\"" \
+  flohmarkt_ynh_local_curl -n -m GET  -u admin -p "$password_couchdb_admin" -l "\"_id\":\"org.couchdb.user:${app}\"" \
     "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}"
 }
 
 flohmarkt_ynh_exists_couchdb_db() {
-  ynh_local_curl -n -m GET -u admin -p "$password_couchdb_admin" -l "\"db_name\":\"${app}\"" \
+  flohmarkt_ynh_local_curl -n -m GET -u admin -p "$password_couchdb_admin" -l "\"db_name\":\"${app}\"" \
     "http://127.0.0.1:5984/${app}"
 }
 
 flohmarkt_ynh_delete_couchdb_db() {
   local legacy_args='n'
   local -A args_array=( [n]=name= )
-  ynh_handle_getopts_args "$@"
+  flohmarkt_ynh_handle_getopts_args "$@"
   local name=${name:-${app}}
 
-  ynh_local_curl -n -m DELETE -u admin -p "$password_couchdb_admin" \
+  flohmarkt_ynh_local_curl -n -m DELETE -u admin -p "$password_couchdb_admin" \
     --line_match='"ok":true' "http://127.0.0.1:5984/${name}"
 }
 
@@ -682,10 +692,10 @@ flohmarkt_ynh_copy_couchdb() {
   local -A args_array=( [o]=old_name= [n]=new_name= )
   local new_name
   local old_name
-  ynh_handle_getopts_args "$@"
+  flohmarkt_ynh_handle_getopts_args "$@"
   old_name=${old_name:-${app}}
 
-  ynh_local_curl -n -m POST -u admin -p "$password_couchdb_admin" \
+  flohmarkt_ynh_local_curl -n -m POST -u admin -p "$password_couchdb_admin" \
     -H "Accept: application/json" -H "Content-Type: application/json" \
     -d '{ "create_target":true,"source" : "' -d"${old_name}" -d'",' \
     -d '"target":"' -d "${new_name}" -d'"}' --seperator=none \
@@ -698,7 +708,7 @@ flohmarkt_ynh_rename_couchdb() {
   local -A args_array=( [o]=old_name= [n]=new_name= )
   local new_name
   local old_name
-  ynh_handle_getopts_args "$@"
+  flohmarkt_ynh_handle_getopts_args "$@"
   old_name=${old_name:-${app}}
 
   flohmarkt_ynh_copy_couchdb -o "$old_name" -n "$new_name"
