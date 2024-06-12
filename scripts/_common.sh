@@ -446,7 +446,6 @@ flohmarkt_ynh_local_curl() {
     # Define url of page to curl
     # $location contains either an URL or just a page
     local full_page_url
-    echo "################### location='$location' ###################"
     if [[ "$location" =~ ^https?:// ]]; then
         # if $location starts with an http-protocol use value as a complete URL
         full_page_url="$location"
@@ -651,8 +650,12 @@ flohmarkt_ynh_import_couchdb() {
 flohmarkt_ynh_delete_couchdb_user() {
   local couchdb_user_revision=$( flohmarkt_ynh_local_curl -n -m GET -u admin -p "$password_couchdb_admin" \
     "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}" | jq -r ._rev )
-  flohmarkt_ynh_local_curl -n -m DELETE -u admin -p ${password_couchdb_admin} -l '"ok":true' \
-    "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}?rev=${couchdb_user_revision}"
+  if [[ -v ${couchdb_user_revision} ]] && [[ -n ${couchdb_user_revision} ]]; then
+    flohmarkt_ynh_local_curl -n -m DELETE -u admin -p ${password_couchdb_admin} -l '"ok":true' \
+      "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}?rev=${couchdb_user_revision}"
+  else
+    ynh_die --message "couchdb_user_revision is empty (${couchdb_user_revision})"
+  fi
 }
 
 flohmarkt_ynh_create_couchdb_user() {
