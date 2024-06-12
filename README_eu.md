@@ -53,7 +53,7 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 * [Service compatibility chart](https://codeberg.org/flohmarkt/flohmarkt/wiki/Service-compatibility-chart)
 
 
-**Paketatutako bertsioa:** 0.0~ynh6
+**Paketatutako bertsioa:** 0.0~ynh7
 
 **Demoa:** <https://flohmarkt.ween.de/>
 
@@ -63,7 +63,7 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 
 ## :red_circle: Ezaugarri zalantzagarriak
 
-- **Alfa softwarea**: Garapenaren hasierako fasean dago. Ezaugarri aldakor edo ezegonkorrak, erroreak eta segurtasuneko arazoak izan ditzazke.
+- **Alfa softwarea**: Garapenaren hasierako fasean dago. Ezaugarri aldakor edo ezegonkorrak, erroreak eta segurtasun-arazoak izan ditzazke.
 - **Muga arbitrarioak**: Muga arbitrarioak ditu. Irakurri README fitxategia.
 
 ## Dokumentazioa eta baliabideak
