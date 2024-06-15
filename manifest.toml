@@ -98,6 +98,7 @@ ram.runtime = "100M"
     ask.de = "Name des Flohmarkts"
 
     [install.admin_mail]
+    type="email"
     ask.en = "email address of this flohmarkts admin"
     help.en = "you'll get notified about events like changes in the user database of flohmarkt"
     ask.de = "E-Mail Adresse des Administrators dieses flohmarkts"
