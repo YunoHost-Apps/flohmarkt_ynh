@@ -7,6 +7,7 @@ test_format = 1.0
 
     args.password_couchdb_admin = "TestPasswordCouchDBadmin"
     args.password_couchdb_flohmarkt = "TestPasswordCouchDBflohmarkt"
+    args.admin_mail = "admin@localhost"
 
     test_upgrade_from.217fc0e.name = "Upgrade from ynh4"
 
