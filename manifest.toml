@@ -97,6 +97,12 @@ ram.runtime = "100M"
     ask.en = "name of your flohmarkt instance"
     ask.de = "Name des Flohmarkts"
 
+    [install.admin_mail]
+    ask.en = "email address of this flohmarkts admin"
+    help.en = "you'll get notified about events like changes in the user database of flohmarkt"
+    ask.de = "E-Mail Adresse des Administrators dieses flohmarkts"
+    help.de = "an diese Adresse werden Informationen zu z.B. Änderungen an der Benutzerdatenbank geschickt"
+
 [resources]
     # See the packaging documentation for the full set
     # of explanation regarding the behavior and properties for each of those
@@ -155,7 +161,8 @@ ram.runtime = "100M"
     [resources.apt]
     # python dependencies shall be installed in a venv using pip.
 	# moreutils is needed for `ts` used in systemd.service
-    packages = "python3-pip python3-full curl apt-transport-https gnupg moreutils curl"
+    # urlwatch for email notifications
+    packages = "python3-pip python3-full curl apt-transport-https gnupg moreutils curl urlwatch"
     # repo for couchdb - doesn't work, yet
     # extras.couchdb.repo = "deb https://apache.jfrog.io/artifactory/couchdb-deb/ __YNH_DEBIAN_VERSION__ main"
     # extras.couchdb.key = "https://couchdb.apache.org/repo/keys.asc"

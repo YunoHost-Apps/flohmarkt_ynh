@@ -1,0 +1,9 @@
+#!/bin/sh
+# run urlwatch for flohmarkt
+PATH=/usr/sbin:/sbin:/usr/bin:/bin
+
+sleep $((RANDOM%111)) 
+sudo -u __APP__ urlwatch \
+    --config /var/www/__APP__/urlwatch/config.yaml \
+    --urls=/var/www/__APP__/urlwatch/urls.yaml \
+    --cache /var/www/__APP__/urlwatch/cache.file

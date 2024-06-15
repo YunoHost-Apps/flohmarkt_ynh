@@ -11,6 +11,7 @@ ynh_backup --src_path="/etc/fail2ban/filter.d/$app.conf"
 ynh_backup --src_path="/etc/logrotate.d/$app"
 ynh_backup --src_path="/opt/couchdb/etc/local.d/05-flohmarkt.ini"
 ynh_backup --src_path="/etc/systemd/system/$flohmarkt_filename.service"
+ynh_backup --src_path="/etc/cron.hourly/$flohmarkt_filename"
 ynh_backup --src_path="${flohmarkt_log_dir}"
 
 # for the following backups we'll want to stop flohmarkt and couchdb

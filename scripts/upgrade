@@ -88,4 +88,26 @@ ynh_add_fail2ban_config --logpath="$flohmarkt_logfile" --failregex='INFO: +<HOST
 ynh_script_progression --message="Starting flohmarkt..." --weight=3
 flohmarkt_ynh_start_service
 
+# check if admin_mail is already set and if not use a default
+if ! [[ -v admin_mail ]] || [[ -z "${admin_mail}" ]]; then
+  ynh_print_warn --message="new setting admin_mail - trying to set a default"
+  # try to read admin email address from flohmarkt installation
+  admin_mail=$( flohmarkt_ynh_local_curl -n -m POST -u admin -p "$password_couchdb_admin" \
+    -H "Accept: application/json" -H "Content-Type: application/json" -s none \
+    -d '{"selector": { "role": "User", "admin": true }, "fields": ["email"]}' \
+    --location 'http://127.0.0.1:5984/flohmarkt/_find' \
+    | jq -r '.docs[0] .email'
+  )
+  if [[ -z "${admin_mail}" ]] || [[ "${admin_mail}" == 'null' ]]; then
+    # use yunohost admin group
+    admin_mail="admin@$(yunohost domain main-domain | cut -d' ' -f2)"
+  fi
+  ynh_print_warn --message="using ${admin_mail} for new setting admin_mail"
+  ynh_app_setting_set --app=$app --key=admin_mail --value="${admin_mail}"
+fi
+
+# upgrade urlwatch configuration
+ynh_script_progression --message="Upgrade urlwatch configuration..." --weight=1
+flohmarkt_ynh_urlwatch_cron
+
 ynh_script_progression --message="Upgrade of $app completed" --last
