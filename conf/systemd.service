@@ -8,7 +8,7 @@ User=__APP__
 Group=__APP__
 WorkingDirectory=__FLOHMARKT_APP_DIR__
 Environment="VENV_DIR=__FLOHMARKT_VENV_DIR__"
-ExecStart=/bin/bash -c "__FLOHMARKT_VENV_DIR__/bin/uvicorn --factory --host 127.0.0.1 --port __PORT__ flohmarkt.web:start  2>&1 | /usr/bin/ts '%%Y-%%m-%%d %%H:%%M:%%S'"
+ExecStart=/bin/bash -c "set -o pipefail; __FLOHMARKT_VENV_DIR__/bin/uvicorn --factory --host 127.0.0.1 --port __PORT__ flohmarkt.web:start  2>&1 | /usr/bin/ts '%%Y-%%m-%%d %%H:%%M:%%S'"
 Restart=on-failure
 RestartSec=5s 
 # nicer logfile naming https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/38
