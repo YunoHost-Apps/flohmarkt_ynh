@@ -1,0 +1,16 @@
+version = "1.0"
+[notifications]
+    name = "notifications"
+    help.en = "The flohmarkt yunohost integration uses urlwatch to check for changes in the user database."
+    help.de = "Die flohmarkt yunohost Integration verwendet urlwatch um Änderungen an der Benutzerdatenbank zu überwachen."
+    [notifications.email]
+        name = "notify via email"
+        [notifications.email.admin_mail]
+        type = "email"
+        ask.en = "email address of this flohmarkts admin"
+        help.en = "you'll get notified about events like changes in the user database of flohmarkt"
+        ask.de = "E-Mail Adresse des Administrators dieses flohmarkts"
+        help.de = "an diese Adresse werden Informationen zu z.B. Änderungen an der Benutzerdatenbank geschickt"
+        bind = "email>to:__INSTALL_DIR__/urlwatch/config.yaml"
+
+
