@@ -776,6 +776,18 @@ flohmarkt_ynh_urlwatch_cron() {
     --cache /var/www/${app}/urlwatch/cache.file
 }
 
+flohmarkt_initialized() {
+    flohmarkt_ynh_local_curl -n -m GET -u admin -p "$password_couchdb_admin" \
+        -l '"initialized":true' \
+        "http://127.0.0.1:5984/${app}/instance_settings" 
+}
+
+flohmarkt_ynh_get_initialization_key() {
+    flohmarkt_ynh_local_curl -n -m GET -u admin -p "$password_couchdb_admin" \
+        "http://127.0.0.1:5984/${app}/instance_settings" \
+    | jq -r .initialization_key
+}
+
 # move files and directories to their new places
 flohmarkt_ynh_upgrade_path_ynh5() {
   # flohmarkt and couchdb are already stopped in upgrade script
