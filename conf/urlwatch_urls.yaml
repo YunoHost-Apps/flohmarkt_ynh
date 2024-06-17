@@ -1,0 +1,11 @@
+name: "watch for changes in user database"
+kind: "url"
+url: "http://__APP__:__PASSWORD_COUCHDB_FLOHMARKT__@127.0.0.1:5984/flohmarkt/_find"
+method: "POST"
+data: '{"selector": { "role": "User", "name": { "$ne": "instance" }}, 
+  "fields": ["name","email","active"], "sort": [ "name" ]}'
+headers: 
+  Content-Type: application/json
+  Accept: application/json
+filter:
+  - shellpipe: 'jq .docs'

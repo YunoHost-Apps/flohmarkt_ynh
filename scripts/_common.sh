@@ -373,7 +373,7 @@ flohmarkt_ynh_local_curl() {
 # | arg: -m --method:     request method to use: POST (default), PUT, GET, DELETE
 # | arg: -H --header:     add a header to the request (can be used multiple times)
 # | arg: -d --data:       data to be PUT or POSTed. Can be used multiple times.
-# | arg: -s --seperator:  seperator used to concatenate POST/PUT --date or key=value ('none'=no seperator)
+# | arg: -s --seperator:  seperator used to concatenate POST/PUT --data or key=value ('none'=no seperator)
 # | arg:                  (default for POST: '&', default for PUT: ' ')
 # | arg: -u --user:       login username (requires --password)
 # | arg: -p --password:   login password
@@ -642,9 +642,10 @@ flohmarkt_ynh_dump_couchdb() {
 }
 
 flohmarkt_ynh_import_couchdb() {
-  ls -l ../settings/scripts/couchdb-dump/couchdb-dump.sh ${YNH_CWD}/${app}.json
   ../settings/scripts/couchdb-dump/couchdb-dump.sh -r -c -H 127.0.0.1 -d "${app}" \
     -q -u admin -p "${password_couchdb_admin}" -f "${YNH_CWD}/${app}.json"
+  # TODO: This failed silently during tests when there were leftovers from a former
+  # install. Check couchdb-dump.sh restore for error codes and handling.
 }
 
 flohmarkt_ynh_delete_couchdb_user() {
@@ -725,6 +726,15 @@ flohmarkt_ynh_rename_couchdb() {
   flohmarkt_ynh_delete_couchdb_db "$old_name"
 }
 
+flohmarkt_ynh_backup_old_couchdb() {
+  flohmarkt_couchdb_rename_to="${app}_$(date '+%Y-%m-%d_%H-%M-%S_%N')"
+  if flohmarkt_ynh_rename_couchdb "${app}" "${flohmarkt_couchdb_rename_to}"; then
+    ynh_print_warn --message="renamed existing database ${app} to ${flohmarkt_couchdb_rename_to}"
+  else
+    ynh_die --message="could not rename existing couchdb database and cannot overwrite it"
+  fi
+}
+
 flohmarkt_ynh_restore_couchdb() {
   flohmarkt_ynh_import_couchdb
   flohmarkt_ynh_create_couchdb_user
@@ -746,6 +756,36 @@ flohmarkt_ynh_venv_requirements() {
     $flohmarkt_venv_dir/bin/python3 -m ensurepip
     $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_app_dir/requirements.txt"
   )
+}
+
+flohmarkt_ynh_urlwatch_cron() {
+    mkdir -m 770 -p "${flohmarkt_install}/urlwatch"
+    chown root:${app} "${flohmarkt_install}/urlwatch"
+    ynh_add_config --template="../conf/urlwatch_config.yaml" \
+        --destination="${flohmarkt_install}/urlwatch/config.yaml"
+    ynh_add_config --template="../conf/urlwatch_urls.yaml" \
+        --destination="${flohmarkt_install}/urlwatch/urls.yaml"
+    ynh_add_config --template="../conf/urlwatch.cron" \
+        --destination="/etc/cron.hourly/${flohmarkt_filename}"
+    chown root:root "/etc/cron.hourly/${flohmarkt_filename}"
+    chmod 755 "/etc/cron.hourly/${flohmarkt_filename}"
+    #  run it once to initialize
+    sudo -u ${app} urlwatch \
+    --config /var/www/${app}/urlwatch/config.yaml \
+    --urls=/var/www/${app}/urlwatch/urls.yaml \
+    --cache /var/www/${app}/urlwatch/cache.file
+}
+
+flohmarkt_initialized() {
+    flohmarkt_ynh_local_curl -n -m GET -u admin -p "$password_couchdb_admin" \
+        -l '"initialized":true' \
+        "http://127.0.0.1:5984/${app}/instance_settings" 
+}
+
+flohmarkt_ynh_get_initialization_key() {
+    flohmarkt_ynh_local_curl -n -m GET -u admin -p "$password_couchdb_admin" \
+        "http://127.0.0.1:5984/${app}/instance_settings" \
+    | jq -r .initialization_key
 }
 
 # move files and directories to their new places

@@ -121,4 +121,8 @@ ls -l $flohmarkt_logfile /bin/bash /usr/bin/bash || true
 ynh_script_progression --message="Starting flohmarkt..." --weight=10
 flohmarkt_ynh_start_service
 
+# integrate urlwatch
+ynh_script_progression --message="Configure urlwatch and its cron job..." --weight=1
+flohmarkt_ynh_urlwatch_cron
+
 ynh_script_progression --message="Installation of $id completed" --last

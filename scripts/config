@@ -1,0 +1,30 @@
+#!/bin/bash
+
+source /etc/yunohost/apps/$app/scripts/_common.sh
+source /usr/share/yunohost/helpers
+
+ynh_abort_if_errors
+
+# my code starts here:
+
+get__flohmarkt_initial_setup_url(){
+    local init_key="$(flohmarkt_ynh_get_initialization_key)"
+    # TODO: wenn leer, dann etwas anderes zurückgeben
+    if ! [[ -v init_key ]] || 
+        [[ "${init_key}" == 'null' ]] || 
+        [[ -z "${init_key}" ]]
+    then
+        if flohmarkt_initialized; then
+            echo '✅ <b>done already</b>'
+        else
+            echo "<b><font color=\"red\">error:</font></b> couldn't find the initialization key"
+        fi
+    else
+        echo -n "<b><a href=\"https://${domain}/setup/${init_key}\" target=\"_blank\">"
+        echo "https://${domain}/setup/${init_key}</a></b>"
+    fi
+}
+
+# https://yunohost.org/en/packaging_config_panels#custom-getter-setter
+# we're supposed to put this here, to fill variables with values from settings
+ynh_app_config_run $1
