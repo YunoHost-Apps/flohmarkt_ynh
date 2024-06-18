@@ -772,10 +772,10 @@ flohmarkt_ynh_urlwatch_cron() {
     chown root:root "/etc/cron.hourly/${flohmarkt_filename}"
     chmod 755 "/etc/cron.hourly/${flohmarkt_filename}"
     # run urlwatch once to initialize if cache file does not exist, 
-    # but if sending email fails (like on CI) just warn
-    local urlwatch_error
+    # but if sending email fails (like on CI) just warn. We do not want
+    # to show the output that might contain passwords
     if ! [[ -s /var/www/${app}/urlwatch/cache.file ]] &&
-        ! ynh_exec_warn sudo -u ${app} urlwatch \
+        ! ynh_exec_fully_quiet sudo -u ${app} urlwatch \
         --config=/var/www/${app}/urlwatch/config.yaml \
         --urls=/var/www/${app}/urlwatch/urls.yaml \
         --cache=/var/www/${app}/urlwatch/cache.file 
