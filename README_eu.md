@@ -64,7 +64,6 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 ## :red_circle: Ezaugarri zalantzagarriak
 
 - **Alfa softwarea**: Garapenaren hasierako fasean dago. Ezaugarri aldakor edo ezegonkorrak, erroreak eta segurtasun-arazoak izan ditzazke.
-- **Muga arbitrarioak**: Muga arbitrarioak ditu. Irakurri README fitxategia.
 
 ## Dokumentazioa eta baliabideak
 

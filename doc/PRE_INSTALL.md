@@ -7,14 +7,6 @@ flohmarkt expects to install CouchDB from the Apache repository for its use. Ins
 https://codeberg.org/flohmarkt/flohmarkt_ynh/src/commit/7721103bac61787f31a4b2f2ae695c65d4f26fc9/scripts/install#L9
 https://codeberg.org/ChriChri/flohmarkt_ynh/issues/9
 
-## choosing a sender email address
-
-flohmarkt will send email and you'll be asked for an address used as the sender in these emails. yunohost will try to configure your chosen address as an allowed sender, but for the time being **this will only work if the sender address is not in use otherwise** - e.g. as an alias.
-
-This [issue](https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/50) contains information about the problem.
-
-There's a [pull request to yunohost](https://github.com/YunoHost/yunohost/pull/1843) open that should solve the problem.
-
 ## multiple flohmarkt on the same subdomain will not work
 
 flohmarkt **needs its own subdomain** to be installed on. Some of the discussion about this can be found here:

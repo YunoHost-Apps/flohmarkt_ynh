@@ -59,6 +59,7 @@ ynh_setup_source --dest_dir="$flohmarkt_app_dir"
 ynh_script_progression --message="Creating python venv..." --weight=2
 ynh_secure_remove "$flohmarkt_venv_dir"
 flohmarkt_ynh_create_venv
+flohmarkt_ynh_venv_upgrade
 flohmarkt_ynh_venv_requirements
 
 # JwtSecret

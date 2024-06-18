@@ -48,6 +48,7 @@ ynh_setup_source --dest_dir="$flohmarkt_app_dir/"
 
 ynh_script_progression --message="Upgrading flohmarkt python dependencies..." --weight=6
 # upgrade python environment / install new dependencies
+flohmarkt_ynh_venv_upgrade
 flohmarkt_ynh_venv_requirements
 
 # upgrade flohmarkt.conf
