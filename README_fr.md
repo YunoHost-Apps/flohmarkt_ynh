@@ -64,7 +64,6 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 ## :red_circle: Anti-fonctionnalités
 
 - **Logiciel en version alpha **: Le logiciel est au tout début de son développement. Il pourrait contenir des fonctionnalités changeantes ou instables, des bugs, et des failles de sécurité.
-- **Limitations arbitraires **: Contient des limitations arbitraires. Se référer au fichier README.
 
 ## Documentations et ressources
 
