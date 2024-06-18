@@ -25,6 +25,8 @@ flohmarkt_install="$install_dir"
 flohmarkt_sym_install="$( dirname $flohmarkt_install )/$flohmarkt_filename"
 flohmarkt_venv_dir="${flohmarkt_install}/venv"
 flohmarkt_app_dir="${flohmarkt_install}/app"
+flohmarkt_cron_job="/etc/cron.hourly/${app}"
+flohmarkt_urlwatch_dir="${flohmarkt_install}/urlwatch"
 # directory containing logfiles
 flohmarkt_log_dir="/var/log/${app}"
 flohmarkt_sym_log_dir="/var/log/${flohmarkt_filename}"
@@ -770,24 +772,24 @@ flohmarkt_ynh_venv_requirements() {
 }
 
 flohmarkt_ynh_urlwatch_cron() {
-    mkdir -m 750 -p "${flohmarkt_install}/urlwatch"
-    chown ${app}:root "${flohmarkt_install}/urlwatch"
+    mkdir -m 750 -p "${flohmarkt_urlwatch_dir}"
+    chown ${app}:root "${flohmarkt_urlwatch_dir}"
     ynh_add_config --template="../conf/urlwatch_config.yaml" \
-        --destination="${flohmarkt_install}/urlwatch/config.yaml"
+        --destination="${flohmarkt_urlwatch_dir}/config.yaml"
     ynh_add_config --template="../conf/urlwatch_urls.yaml" \
-        --destination="${flohmarkt_install}/urlwatch/urls.yaml"
+        --destination="${flohmarkt_urlwatch_dir}/urls.yaml"
     ynh_add_config --template="../conf/urlwatch.cron" \
-        --destination="/etc/cron.hourly/${app}"
-    chown root:root "/etc/cron.hourly/${app}"
-    chmod 755 "/etc/cron.hourly/${app}"
+        --destination="${flohmarkt_cron_job}"
+    chown root:root "${flohmarkt_cron_job}"
+    chmod 755 "${flohmarkt_cron_job}"
     # run urlwatch once to initialize if cache file does not exist, 
     # but if sending email fails (like on CI) just warn. We do not want
     # to show the output that might contain passwords
-    if ! [[ -s /var/www/${app}/urlwatch/cache.file ]] &&
+    if ! [[ -s ${flohmarkt_urlwatch_dir}/cache.file ]] &&
         ! ynh_exec_fully_quiet sudo -u ${app} urlwatch \
-        --config=/var/www/${app}/urlwatch/config.yaml \
-        --urls=/var/www/${app}/urlwatch/urls.yaml \
-        --cache=/var/www/${app}/urlwatch/cache.file 
+        --config=${flohmarkt_urlwatch_dir}/config.yaml \
+        --urls=${flohmarkt_urlwatch_dir}/urls.yaml \
+        --cache=${flohmarkt_urlwatch_dir}/cache.file 
     then
         ynh_print_warn --message="initial call to urlwatch failed"
     fi
