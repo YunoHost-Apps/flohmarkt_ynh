@@ -748,6 +748,15 @@ flohmarkt_ynh_create_venv() {
   python3 -m venv --without-pip "$flohmarkt_venv_dir"
 }
 
+flohmarkt_ynh_venv_upgrade() {
+  ynh_print_warn --message="flohmarkt_ynh_venv_upgrade: I'll sit here and do nothing without @grindholds confirmation"
+  true
+  (
+    $flohmarkt_venv_dir/bin/python3 -m venv --upgrade-deps
+  )
+}
+  
+
 # install requirements.txt in venv
 flohmarkt_ynh_venv_requirements() {
   (
