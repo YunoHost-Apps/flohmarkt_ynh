@@ -64,7 +64,6 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 ## :red_circle: 负面特征
 
 - **Alpha software**: Early development stage. May contain changing or unstable features, bugs, and security vulnerability.
-- **Arbitrary limitations**: Features arbitrary limitations. Please refer to the README.
 
 ## 文档与资源
 
