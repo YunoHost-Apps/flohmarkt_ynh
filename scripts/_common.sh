@@ -771,11 +771,17 @@ flohmarkt_ynh_urlwatch_cron() {
         --destination="/etc/cron.hourly/${flohmarkt_filename}"
     chown root:root "/etc/cron.hourly/${flohmarkt_filename}"
     chmod 755 "/etc/cron.hourly/${flohmarkt_filename}"
-    #  run it once to initialize
-    sudo -u ${app} urlwatch \
-    --config=/var/www/${app}/urlwatch/config.yaml \
-    --urls=/var/www/${app}/urlwatch/urls.yaml \
-    --cache=/var/www/${app}/urlwatch/cache.file
+    # run urlwatch once to initialize if cache file does not exist, 
+    # but if sending email fails (like on CI) just warn
+    local urlwatch_error
+    if ! [[ -s /var/www/${app}/urlwatch/cache.file ]] &&
+        ! ynh_exec_warn sudo -u ${app} urlwatch \
+        --config=/var/www/${app}/urlwatch/config.yaml \
+        --urls=/var/www/${app}/urlwatch/urls.yaml \
+        --cache=/var/www/${app}/urlwatch/cache.file 
+    then
+        ynh_print_warn --message="initial call to urlwatch failed"
+    fi
 }
 
 flohmarkt_initialized() {
