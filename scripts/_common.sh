@@ -770,7 +770,7 @@ flohmarkt_ynh_urlwatch_cron() {
     ynh_add_config --template="../conf/urlwatch.cron" \
         --destination="/etc/cron.hourly/${app}"
     chown root:root "/etc/cron.hourly/${app}"
-    chmod 755 "/etc/cron.hourly/${flohmarkt_filename}"
+    chmod 755 "/etc/cron.hourly/${app}"
     # run urlwatch once to initialize if cache file does not exist, 
     # but if sending email fails (like on CI) just warn. We do not want
     # to show the output that might contain passwords
