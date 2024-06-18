@@ -13,6 +13,8 @@ flohmarkt will send email and you'll be asked for an address used as the sender 
 
 This [issue](https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/50) contains information about the problem.
 
+There's a [pull request to yunohost](https://github.com/YunoHost/yunohost/pull/1843) open that should solve the problem.
+
 ## multiple flohmarkt on the same subdomain will not work
 
 flohmarkt **needs its own subdomain** to be installed on. Some of the discussion about this can be found here:
@@ -27,12 +29,6 @@ flohmarkt mainanins its own user database in CouchDB. Users have to register to 
 https://codeberg.org/ChriChri/flohmarkt_ynh/issues/5 .
 
 ## removing
-
-Removing a flohmarkt instance will **delete all of its data** for the time being. If you remove a flohmarkt **we strongly suggest to make a backup** beforehand. This [issue](https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/29) describes how we'll handle `remove` with and without `--purge` in the future.
-
-**Warning:** This might break any existing installation of couchdb (there's an couchdb app to install just couchdb and expose its port via nginx reverse-proxy and possibly other software installing a couchdb). This could happen if you installed the couchdb app after you installed flohmarkt.
-
-https://codeberg.org/flohmarkt/flohmarkt_ynh/src/commit/7721103bac61787f31a4b2f2ae695c65d4f26fc9/scripts/remove#L44
 
 When installing flohmarkt on a a domain and letting it talk to other ActivityPub instances it will propagate a key associated to your domain. If you remove your flohmarkt from that domain and loose that key other instances might not want to talk to you anymore after you installed flohmarkt again on the same domain generating a new key.
 
