@@ -24,10 +24,3 @@ version = "1.0"
         help.en = "open this url to finish your flohmarkt setup"
         help.de = "öffne die URL um flohmarkt fertig zu konfigurieren"
 
-#[flohmarkt_setup]
-#    name = "setup"
-#    [flohmarkt_setup.flohmarkt_initial_setup_url]
-#        name = "initial setup url"
-#        type = "string"
-#        ask = "open this url to initially setup flohmarkt"
-#        help = "you can't change this value"

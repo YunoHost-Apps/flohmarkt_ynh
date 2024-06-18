@@ -9,10 +9,6 @@ source /usr/share/yunohost/helpers
 # UPGRADE_SAME
 upgrade_type=$(ynh_check_app_version_changed)
 
-# show variables - used from installed or from to be upgraded version?
-# variables of the new upgrade version are used
-# env
-
 ynh_script_progression --message="Stopping flohmarkt and CouchDB..." --weight=5
 # stop flohmarkt
 flohmarkt_ynh_stop_service
