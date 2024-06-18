@@ -570,9 +570,11 @@ flohmarkt_ynh_create_symlinks() {
 
 # set file permissions and owner for installation
 flohmarkt_ynh_set_permission() {
-  # install dir - only root needs to write and $app reads
-  chown root:$app -R "$flohmarkt_install"
-  chmod g-w,o-rwx -R "$flohmarkt_install"
+  # venv and app - only root needs to write and $app reads
+  chown root:$app -R "$flohmarkt_venv_dir"
+  chmod g-w,o-rwx -R "$flohmarkt_venv_dir"
+  chown root:$app -R "$flohmarkt_app_dir"
+  chmod g-w,o-rwx -R "$flohmarkt_app_dir"
 }
 
 # start flohmarkt service
@@ -759,8 +761,8 @@ flohmarkt_ynh_venv_requirements() {
 }
 
 flohmarkt_ynh_urlwatch_cron() {
-    mkdir -m 770 -p "${flohmarkt_install}/urlwatch"
-    chown root:${app} "${flohmarkt_install}/urlwatch"
+    mkdir -m 750 -p "${flohmarkt_install}/urlwatch"
+    chown ${app}:root "${flohmarkt_install}/urlwatch"
     ynh_add_config --template="../conf/urlwatch_config.yaml" \
         --destination="${flohmarkt_install}/urlwatch/config.yaml"
     ynh_add_config --template="../conf/urlwatch_urls.yaml" \
@@ -771,9 +773,9 @@ flohmarkt_ynh_urlwatch_cron() {
     chmod 755 "/etc/cron.hourly/${flohmarkt_filename}"
     #  run it once to initialize
     sudo -u ${app} urlwatch \
-    --config /var/www/${app}/urlwatch/config.yaml \
+    --config=/var/www/${app}/urlwatch/config.yaml \
     --urls=/var/www/${app}/urlwatch/urls.yaml \
-    --cache /var/www/${app}/urlwatch/cache.file
+    --cache=/var/www/${app}/urlwatch/cache.file
 }
 
 flohmarkt_initialized() {
