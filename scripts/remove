@@ -1,11 +1,5 @@
 #!/bin/bash
 
-#=================================================
-# GENERIC START
-#=================================================
-# IMPORT GENERIC HELPERS
-#=================================================
-
 source _common.sh
 source /usr/share/yunohost/helpers
 
@@ -14,53 +8,54 @@ source /usr/share/yunohost/helpers
 #=================================================
 # REMOVE SERVICE INTEGRATION IN YUNOHOST
 #=================================================
-ynh_script_progression --message="Removing system configurations related to $app..." --weight=5
+ynh_script_progression "Removing system configurations related to $app..."
 
 # Stop flohmarkt service
-ynh_script_progression --message="Stopping $app..." --weight=2
+ynh_script_progression "Stopping $app..."
 yunohost service stop $flohmarkt_filename
 
 # Remove the service from the list of services known by YunoHost (added from `yunohost service add`)
-if ynh_exec_warn_less yunohost service status $flohmarkt_filename >/dev/null; then
-	ynh_script_progression --message="Removing $app service integration..." --weight=2
-    ynh_remove_systemd_config --service=$flohmarkt_filename
+if ynh_hide_warnings yunohost service status $flohmarkt_filename >/dev/null; then
+	ynh_script_progression "Removing $app service integration..."
+    ynh_config_remove_systemd$flohmarkt_filename
     yunohost service remove $flohmarkt_filename
 fi
 
 # remove DB user for this instance - a new install will create a new user and permissions
-ynh_script_progression --message="Removing couchdb user..." --weight=2
+ynh_script_progression "Removing couchdb user..."
 flohmarkt_ynh_delete_couchdb_user
 
 if [[ $YNH_APP_PURGE -eq 1 ]]; then
-  ynh_script_progression --message="Purging couchdb database ..." --weight=2
+  ynh_script_progression "Purging couchdb database ..."
   # remove DB
   flohmarkt_ynh_delete_couchdb_db
   # remove logfiles directory
-  ynh_script_progression --message="Purging logfiles..." --weight=2
-  ynh_secure_remove --file="${flohmarkt_log_dir}"
+  ynh_script_progression "Purging logfiles..."
+  ynh_safe_rm "${flohmarkt_log_dir}"
 else
-  ynh_script_progression --message="Purge not selected - not deleting couchdb and logfiles..." --weight=1
+  ynh_script_progression "Purge not selected - not deleting couchdb and logfiles..."
 fi
 
 # Remove the app-specific logrotate config
-ynh_script_progression --message="Removing logrotate configuration..." --weight=2
-ynh_remove_logrotate
+ynh_script_progression "Removing logrotate configuration..."
+ynh_config_remove_logrotate
 
 # Remove the dedicated NGINX config
-ynh_script_progression --message="Removing nginx configuration..." --weight=2
-ynh_remove_nginx_config
+ynh_script_progression "Removing nginx configuration..."
+ynh_config_remove_nginx
 
 # Remove the dedicated Fail2Ban config
-ynh_script_progression --message="Removing fail2ban configuration..." --weight=2
-ynh_remove_fail2ban_config
+ynh_script_progression "Removing fail2ban configuration..."
+ynh_config_remove_fail2ban
 
 # remove systemd service
-ynh_script_progression --message="Removing systemd.service directory..." --weight=2
-ynh_remove_systemd_config
+ynh_script_progression "Removing systemd.service directory..."
+ynh_config_remove_systemd
 
 # remove symlinks
-ynh_script_progression --message="Removing symlinks..." --weight=2
-# no ynh_secure_remove: 
+ynh_script_progression "Removing symlinks..."
+# no ynh_safe_rm :
+
 # https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/52
 rm "$flohmarkt_sym_install" || true
 rm "$flohmarkt_sym_data_dir" || true
@@ -70,4 +65,4 @@ rm "$flohmarkt_sym_log_dir" || true
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Removal of $app completed" --last
+ynh_script_progression "Removal of $app completed"

@@ -26,7 +26,8 @@ code = "https://codeberg.org/flohmarkt/flohmarkt"
 # fund = "???"
 
 [integration]
-yunohost = ">= 11.2.11"
+yunohost = ">= 11.2.18"
+helpers_version = "2.1"
 architectures = "all"
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/11
 multi_instance = true
