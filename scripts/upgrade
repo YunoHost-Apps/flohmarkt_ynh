@@ -7,9 +7,8 @@ source /usr/share/yunohost/helpers
 # UPGRADE_APP if the upstream app version has changed
 # DOWNGRADE
 # UPGRADE_SAME
-upgrade_type=$(ynh_check_app_version_changed)
 
-ynh_script_progression --message="Stopping flohmarkt and CouchDB..." --weight=5
+ynh_script_progression "Stopping flohmarkt and CouchDB..."
 # stop flohmarkt
 flohmarkt_ynh_stop_service
 # stop couchdb
@@ -18,76 +17,76 @@ flohmarkt_ynh_stop_couchdb
 # Upgrade ynh4 → ynh5, change of paths and filenames
 # https://matrix.to/#/!PauySEslPVuJCJCwlZ:matrix.org/$auU_rSL6MACt9wkyFGlCQbO8ivFlU0ztYW74TimZdcM?via=matrix.org&via=aria-net.org&via=sans-nuage.fr
 # and follow-ups
-if ynh_compare_current_package_version --comparison lt --version 0.0~ynh5 &&
+if ynh_app_upgrading_from_version_before 0.0~ynh5 &&
   ( [[ "$upgrade_type" == UPGRADE_PACKAGE ]] || [[ "$upgrade_type" == UPGRADE_APP ]] )
 then
   flohmarkt_ynh_upgrade_path_ynh5
 fi
 
 # upgrade couchdb
-ynh_script_progression --message="Upgrading CouchDB..." --weight=50
+ynh_script_progression "Upgrading CouchDB..."
 flohmarkt_ynh_up_inst_couchdb
 
 # stop couchdb
-ynh_script_progression --message="Stop couchdb before updating configuration file..." --weight=1
+ynh_script_progression "Stop couchdb before updating configuration file..."
 flohmarkt_ynh_stop_couchdb
 
 # upgrade couchdb config
-ynh_script_progression --message="Updating couchdb configuration file..." --weight=1
-ynh_add_config --template="../conf/05-flohmarkt.ini" --destination="/opt/couchdb/etc/local.d/05-flohmarkt.ini"
+ynh_script_progression "Updating couchdb configuration file..."
+ynh_config_add --template="05-flohmarkt.ini" --destination="/opt/couchdb/etc/local.d/05-flohmarkt.ini"
 chown root:couchdb /opt/couchdb/etc/local.d/05-flohmarkt.ini
 chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
 
 # start couchdb
-ynh_script_progression --message="Starting couchdb..." --weight=1
+ynh_script_progression "Starting couchdb..."
 flohmarkt_ynh_start_couchdb
 
 # install upgrade for flohmarkt
-ynh_script_progression --message="Upgrading flohmarkt..." --weight=4
+ynh_script_progression "Upgrading flohmarkt..."
 ynh_setup_source --dest_dir="$flohmarkt_app_dir/"
 
-ynh_script_progression --message="Upgrading flohmarkt python dependencies..." --weight=6
+ynh_script_progression "Upgrading flohmarkt python dependencies..."
 # upgrade python environment / install new dependencies
 flohmarkt_ynh_venv_upgrade
 flohmarkt_ynh_venv_requirements
 
 # upgrade flohmarkt.conf
-ynh_script_progression --message="Upgrading flohmarkt configuration..." --weight=1
-ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_app_dir/flohmarkt.conf"
+ynh_script_progression "Upgrading flohmarkt configuration..."
+ynh_config_add --template="flohmarkt.conf" --destination="$flohmarkt_app_dir/flohmarkt.conf"
 
-ynh_script_progression --message="Upgrading flohmarkt couchdb..." --weight=10
+ynh_script_progression "Upgrading flohmarkt couchdb..."
 flohmarkt_ynh_initialize_couchdb
 
 # set file permissions for install dir
 flohmarkt_ynh_set_permission
 
 # systemd service upgrade
-ynh_script_progression --message="Upgrading flohmarkt systemd service..." --weight=1
-ynh_add_systemd_config --service=$flohmarkt_filename
+ynh_script_progression "Upgrading flohmarkt systemd service..."
+ynh_config_add_systemd --service=$flohmarkt_filename
 # INTEGRATE SERVICE IN YUNOHOST
-ynh_script_progression --message="Integrating service in YunoHost..." --weight=2
+ynh_script_progression "Integrating service in YunoHost..."
 yunohost service add $flohmarkt_filename --description="A decentral federated small advertisement platform" --log="$flohmarkt_logfile"
 
 # upgrade logrotate
-ynh_script_progression --message="Upgrading logrotate configuration..." --weight=1
+ynh_script_progression "Upgrading logrotate configuration..."
 # Use logrotate to manage app-specific logfile(s)
-ynh_use_logrotate --non-append
+ynh_config_add_logrotate
 
 # upgrade nginx configuration
-ynh_script_progression --message="Upgrading NGINX web server configuration..." --weight=2
-ynh_add_nginx_config
+ynh_script_progression "Upgrading NGINX web server configuration..."
+ynh_config_add_nginx
 
 # UPGRADE FAIL2BAN
-ynh_script_progression --message="Reconfiguring Fail2Ban..." --weight=3
-ynh_add_fail2ban_config --logpath="$flohmarkt_logfile" --failregex='INFO: +<HOST>:\d+ - "POST /token HTTP/\d+\.\d+" 403 Forbidden' --max_retry=5
+ynh_script_progression "Reconfiguring Fail2Ban..."
+ynh_config_add_fail2ban --logpath="$flohmarkt_logfile" --failregex='INFO: +<HOST>:\d+ - "POST /token HTTP/\d+\.\d+" 403 Forbidden'
 
 # start flohmarkt
-ynh_script_progression --message="Starting flohmarkt..." --weight=3
+ynh_script_progression "Starting flohmarkt..."
 flohmarkt_ynh_start_service
 
 # check if admin_mail is already set and if not use a default
 if ! [[ -v admin_mail ]] || [[ -z "${admin_mail}" ]]; then
-  ynh_print_warn --message="new setting admin_mail - trying to set a default"
+  ynh_print_warn "new setting admin_mail - trying to set a default"
   # try to read admin email address from flohmarkt installation
   admin_mail=$( flohmarkt_ynh_local_curl -n -m POST -u admin -p "$password_couchdb_admin" \
     -H "Accept: application/json" -H "Content-Type: application/json" -s none \
@@ -99,12 +98,12 @@ if ! [[ -v admin_mail ]] || [[ -z "${admin_mail}" ]]; then
     # use yunohost admin group
     admin_mail="admin@$(yunohost domain main-domain | cut -d' ' -f2)"
   fi
-  ynh_print_warn --message="using ${admin_mail} for new setting admin_mail"
-  ynh_app_setting_set --app=$app --key=admin_mail --value="${admin_mail}"
+  ynh_print_warn "using ${admin_mail} for new setting admin_mail"
+  ynh_app_setting_set --key=admin_mail --value="${admin_mail}"
 fi
 
 # upgrade urlwatch configuration
-ynh_script_progression --message="Upgrade urlwatch configuration..." --weight=1
+ynh_script_progression "Upgrade urlwatch configuration..."
 flohmarkt_ynh_urlwatch_cron
 
-ynh_script_progression --message="Upgrade of $app completed" --last
+ynh_script_progression "Upgrade of $app completed"

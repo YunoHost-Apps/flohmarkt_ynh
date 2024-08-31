@@ -3,15 +3,17 @@
 source /etc/yunohost/apps/$app/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-ynh_abort_if_errors
+#REMOVEME? ynh_abort_if_errors
 
 # my code starts here:
 
 get__flohmarkt_initial_setup_url(){
     local init_key="$(flohmarkt_ynh_get_initialization_key)"
     # TODO: wenn leer, dann etwas anderes zurückgeben
-    if ! [[ -v init_key ]] || 
-        [[ "${init_key}" == 'null' ]] || 
+    if ! [[ -v init_key ]] ||
+
+        [[ "${init_key}" == 'null' ]] ||
+
         [[ -z "${init_key}" ]]
     then
         if flohmarkt_initialized; then
