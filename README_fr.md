@@ -5,7 +5,7 @@ Il NE doit PAS être modifié à la main.
 
 # flohmarkt pour YunoHost
 
-[![Niveau d’intégration](https://dash.yunohost.org/integration/flohmarkt.svg)](https://dash.yunohost.org/appci/app/flohmarkt) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/flohmarkt.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/flohmarkt.maintain.svg)
+[![Niveau d’intégration](https://dash.yunohost.org/integration/flohmarkt.svg)](https://ci-apps.yunohost.org/ci/apps/flohmarkt/) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/flohmarkt.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/flohmarkt.maintain.svg)
 
 [![Installer flohmarkt avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=flohmarkt)
 
@@ -53,7 +53,7 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 * [Service compatibility chart](https://codeberg.org/flohmarkt/flohmarkt/wiki/Service-compatibility-chart)
 
 
-**Version incluse :** 0.0~ynh8
+**Version incluse :** 0.0~ynh9
 
 **Démo :** <https://flohmarkt.ween.de/>
 

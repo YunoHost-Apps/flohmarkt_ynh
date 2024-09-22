@@ -5,7 +5,7 @@ EZ editatu eskuz.
 
 # flohmarkt YunoHost-erako
 
-[![Integrazio maila](https://dash.yunohost.org/integration/flohmarkt.svg)](https://dash.yunohost.org/appci/app/flohmarkt) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/flohmarkt.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/flohmarkt.maintain.svg)
+[![Integrazio maila](https://dash.yunohost.org/integration/flohmarkt.svg)](https://ci-apps.yunohost.org/ci/apps/flohmarkt/) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/flohmarkt.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/flohmarkt.maintain.svg)
 
 [![Instalatu flohmarkt YunoHost-ekin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=flohmarkt)
 
@@ -53,7 +53,7 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 * [Service compatibility chart](https://codeberg.org/flohmarkt/flohmarkt/wiki/Service-compatibility-chart)
 
 
-**Paketatutako bertsioa:** 0.0~ynh8
+**Paketatutako bertsioa:** 0.0~ynh9
 
 **Demoa:** <https://flohmarkt.ween.de/>
 
