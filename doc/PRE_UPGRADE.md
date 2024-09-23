@@ -4,6 +4,14 @@ This is just an upgrade of the flohmarkt code. No changes to the yunohost integr
 
 After upgrading the clients might **need to clear their browser cache to avoid broken pages**.
 
+## new features
+
+* Share button
+* Improved image uploader
+* Hashtag support
+* prominent 'about' section on landing page
+* a lot of small improvements
+
 # new in 0.0~ynh8
 
 ## urlwatch
