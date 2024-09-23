@@ -1,6 +1,6 @@
 # new in 0.0~ynh9
 
-This is just an upgrade of the flohmarkt code. No changes to the yunohost integration.
+Starting with this update the venv of flohmarkt will be updated.
 
 After upgrading the clients might **need to clear their browser cache to avoid broken pages**.
 
