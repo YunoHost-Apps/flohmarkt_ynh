@@ -6,10 +6,11 @@ After upgrading the clients might **need to clear their browser cache to avoid b
 
 ## new features
 
-* Share button
+* Share button on mobile devices
 * Improved image uploader
 * Hashtag support
 * prominent 'about' section on landing page
+* export and import of account data
 * a lot of small improvements
 
 # new in 0.0~ynh8
