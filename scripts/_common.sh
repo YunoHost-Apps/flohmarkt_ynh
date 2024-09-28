@@ -751,7 +751,6 @@ flohmarkt_ynh_create_venv() {
 }
 
 flohmarkt_ynh_venv_upgrade() {
-  ynh_print_warn --message="upgrading venv"
   (
     $flohmarkt_venv_dir/bin/python3 -m venv --upgrade-deps "$flohmarkt_venv_dir"
   )
