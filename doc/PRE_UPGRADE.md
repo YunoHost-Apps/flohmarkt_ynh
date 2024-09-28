@@ -6,6 +6,9 @@ After upgrading the clients might **need to clear their browser cache to avoid b
 
 ## new features
 
+* i18n
+  * status of translations: https://translate.codeberg.org/projects/flohmarkt/#languages
+  * you're **welcome to help**
 * Share button on mobile devices
 * Improved image uploader
 * Hashtag support

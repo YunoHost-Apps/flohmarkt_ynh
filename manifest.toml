@@ -7,7 +7,7 @@ name = "flohmarkt"
 description.en = "A decentral federated small ads platform"
 description.fr = "Plateforme de petites annonces fédérées décentralisées"
 
-version = "0.0~ynh9"
+version = "0.0.1~ynh1"
 
 maintainers = ["Chris Vogel"]
 
@@ -114,8 +114,8 @@ ram.runtime = "100M"
     # This will pre-fetch the asset which can then be deployed during the install/upgrade scripts with :
     #    ynh_setup_source --dest_dir="$install_dir"
     # You can also define other assets than "main" and add --source_id="foobar" in the previous command
-    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/e80ec442701211bea15511532c6d3ba0f734a3e7.tar.gz"
-    sha256 = "08deb3f277d0771722a0f79b6dfe8e8d95522c6f36d9acaf0d6a835cef2c8411"
+    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/40a9151664eca9891e8a2c41022a5a1e598aa2e6.tar.gz"
+    sha256 = "4f9595e5680350fecb0c269d95230cc807de47facf321d44e108ea8e5a1ac8e7"
 
     # These infos are used by https://github.com/YunoHost/apps/blob/master/tools/autoupdate_app_sources/autoupdate_app_sources.py
     # to auto-update the previous asset urls and sha256sum + manifest version
