@@ -1,4 +1,4 @@
-# new in 0.0~ynh9
+# new in 0.2.0~ynh1
 
 Starting with this update the venv of flohmarkt will be updated.
 
