@@ -1,3 +1,21 @@
+# new in 0.2.0~ynh1
+
+Starting with this update the venv of flohmarkt will be updated.
+
+After upgrading the clients might **need to clear their browser cache to avoid broken pages**.
+
+## new features
+
+* i18n
+  * status of translations: https://translate.codeberg.org/projects/flohmarkt/#languages
+  * you're **welcome to help**
+* Share button on mobile devices
+* Improved image uploader
+* Hashtag support
+* prominent 'about' section on landing page
+* export and import of account data
+* a lot of small improvements
+
 # new in 0.0~ynh8
 
 ## urlwatch

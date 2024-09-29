@@ -751,10 +751,8 @@ flohmarkt_ynh_create_venv() {
 }
 
 flohmarkt_ynh_venv_upgrade() {
-  ynh_print_warn --message="flohmarkt_ynh_venv_upgrade: I'll sit here and do nothing without @grindholds confirmation"
-  return
   (
-    $flohmarkt_venv_dir/bin/python3 -m venv --upgrade-deps
+    $flohmarkt_venv_dir/bin/python3 -m venv --upgrade-deps "$flohmarkt_venv_dir"
   )
 }
   
