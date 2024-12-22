@@ -1,0 +1,15 @@
+diff -ruN app.orig/pyproject.toml app/pyproject.toml 
+--- app.orig/pyproject.toml	2024-12-22 10:34:30.942179631 +0100
++++ app/pyproject.toml	2024-12-22 10:37:22.305882167 +0100
+@@ -24,6 +24,11 @@
+ # Core dependencies required for the package to operate.
+ dependencies = [
+ 
++    # flohmarkt needs pydantic >= 2, but fastapi only has got a dependency
++    # for '!=1.8,!=1.8.1,!=2.0.0,!=2.0.1,!=2.1.0,<3.0.0,>=1.7.4'. Get version 
++    # greater than 2
++    "pydantic >= 2.0.0",
++
+     # Web framework for building APIs based on standard Python type hints.
+     # Documentation: <URL:https://fastapi.tiangolo.com/>.
+     "fastapi >= 0.110.2",

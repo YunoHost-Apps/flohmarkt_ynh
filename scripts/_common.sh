@@ -765,7 +765,10 @@ flohmarkt_ynh_venv_requirements() {
     set -o nounset
     set -x
     $flohmarkt_venv_dir/bin/python3 -m ensurepip
-    $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_app_dir/requirements.txt"
+    # starting with 0.6.1~ynh1 dependencies are not in requirements.txt anymore,
+    # but in pyproject.toml
+    # $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_app_dir/requirements.txt"
+    $flohmarkt_venv_dir/bin/pip3 install "$flohmarkt_app_dir"
   )
 }
 

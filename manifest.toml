@@ -7,7 +7,7 @@ name = "flohmarkt"
 description.en = "A decentral federated small ads platform"
 description.fr = "Plateforme de petites annonces fédérées décentralisées"
 
-version = "0.2.0~ynh1"
+version = "0.6.1~ynh1"
 
 maintainers = ["Chris Vogel"]
 
@@ -115,10 +115,8 @@ ram.runtime = "100M"
     #    ynh_setup_source --dest_dir="$install_dir"
     # You can also define other assets than "main" and add --source_id="foobar" in the previous command
     #
-    # 2024-09-29 This is one commit behind 0.2.0, because for yunohost 11.x.y needed this issue be resolved:
-    # https://codeberg.org/flohmarkt/flohmarkt/issues/333
-    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/70afb387b9c755a2e0f485759263658f6f21af6c.tar.gz"
-    sha256 = "05ff98940b23b9e7d856a4fbc75d38005f92c1f67cbac636c52531b825f66615"
+    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/0.6.1.tar.gz"
+    sha256 = "e52dc810c8f0da130979c811fa44f5b5545e4ecf57885af97aae66fd08e81094"
 
     # These infos are used by https://github.com/YunoHost/apps/blob/master/tools/autoupdate_app_sources/autoupdate_app_sources.py
     # to auto-update the previous asset urls and sha256sum + manifest version
