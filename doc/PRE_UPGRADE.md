@@ -1,3 +1,9 @@
+# new in 0.6.1~ynh2
+
+No new features.
+
+Fixed a bug in the generation of the urlwatch configuration: on yunohosts with mulitple flohmarkt installations the second and any further installation used a wrong url path to access flohmarkts couchdb.
+
 # new in 0.6.1~ynh1
 
 ## new features
