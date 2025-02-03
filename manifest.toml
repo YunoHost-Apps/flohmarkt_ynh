@@ -7,7 +7,7 @@ name = "flohmarkt"
 description.en = "A decentral federated small ads platform"
 description.fr = "Plateforme de petites annonces fédérées décentralisées"
 
-version = "0.6.1~ynh1"
+version = "0.6.1~ynh3"
 
 maintainers = ["Chris Vogel"]
 
@@ -26,7 +26,7 @@ code = "https://codeberg.org/flohmarkt/flohmarkt"
 # fund = "???"
 
 [integration]
-yunohost = ">= 11.2.11"
+yunohost = ">= 12.0.9"
 architectures = "all"
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/11
 multi_instance = true
