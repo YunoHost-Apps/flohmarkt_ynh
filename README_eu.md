@@ -55,7 +55,7 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 * [Service compatibility chart](https://codeberg.org/flohmarkt/flohmarkt/wiki/Service-compatibility-chart)
 
 
-**Paketatutako bertsioa:** 0.6.1~ynh3
+**Paketatutako bertsioa:** 0.8.0~ynh1
 
 **Demoa:** <https://flohmarkt.ween.de/>
 
