@@ -1,2 +1,5 @@
 README*
 scripts/test_local_curl.sh
+*~
+*.sw[op]
+.DS_Store
