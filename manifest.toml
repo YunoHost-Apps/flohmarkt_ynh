@@ -7,7 +7,7 @@ name = "flohmarkt"
 description.en = "A decentral federated small ads platform"
 description.fr = "Plateforme de petites annonces fédérées décentralisées"
 
-version = "0.0~ynh8"
+version = "0.8.0~ynh1"
 
 maintainers = ["Chris Vogel"]
 
@@ -26,7 +26,7 @@ code = "https://codeberg.org/flohmarkt/flohmarkt"
 # fund = "???"
 
 [integration]
-yunohost = ">= 11.2.18"
+yunohost = ">= 12.0.9"
 helpers_version = "2.1"
 architectures = "all"
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/11
@@ -115,8 +115,9 @@ ram.runtime = "100M"
     # This will pre-fetch the asset which can then be deployed during the install/upgrade scripts with :
     #    ynh_setup_source --dest_dir="$install_dir"
     # You can also define other assets than "main" and add --source_id="foobar" in the previous command
-    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/1b783dcac6543bdcc6f7b105b2c8211e2bc51bee.tar.gz"
-    sha256 = "82c05ea75333fb7f869252f941fa76dbe39282984055aae22d4806b100f2d493"
+    #
+    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/0.8.0.zip"
+    sha256 = "7405374787cffa202be7b62cf86db3e717e8c3a0e0c3b277dfb57ed5eeab9af3"
 
     # These infos are used by https://github.com/YunoHost/apps/blob/master/tools/autoupdate_app_sources/autoupdate_app_sources.py
     # to auto-update the previous asset urls and sha256sum + manifest version
@@ -162,7 +163,7 @@ ram.runtime = "100M"
 
     [resources.apt]
     # python dependencies shall be installed in a venv using pip.
-	# moreutils is needed for `ts` used in systemd.service
+    #  moreutils is needed for `ts` used in systemd.service
     # urlwatch for email notifications
     packages = "python3-pip python3-full curl apt-transport-https gnupg moreutils curl urlwatch"
     # repo for couchdb - doesn't work, yet

@@ -5,7 +5,9 @@
 
 # YunoHost 上的 flohmarkt
 
-[![集成程度](https://dash.yunohost.org/integration/flohmarkt.svg)](https://dash.yunohost.org/appci/app/flohmarkt) ![工作状态](https://ci-apps.yunohost.org/ci/badges/flohmarkt.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/flohmarkt.maintain.svg)
+[![集成程度](https://apps.yunohost.org/badge/integration/flohmarkt)](https://ci-apps.yunohost.org/ci/apps/flohmarkt/)
+![工作状态](https://apps.yunohost.org/badge/state/flohmarkt)
+![维护状态](https://apps.yunohost.org/badge/maintained/flohmarkt)
 
 [![使用 YunoHost 安装 flohmarkt](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=flohmarkt)
 
@@ -53,17 +55,13 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 * [Service compatibility chart](https://codeberg.org/flohmarkt/flohmarkt/wiki/Service-compatibility-chart)
 
 
-**分发版本：** 0.0~ynh8
+**分发版本：** 0.8.0~ynh1
 
 **演示：** <https://flohmarkt.ween.de/>
 
 ## 截图
 
 ![flohmarkt 的截图](./doc/screenshots/screenshot.png)
-
-## :red_circle: 负面特征
-
-- **Alpha software**: Early development stage. May contain changing or unstable features, bugs, and security vulnerability.
 
 ## 文档与资源
 

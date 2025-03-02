@@ -5,7 +5,9 @@ EZ editatu eskuz.
 
 # flohmarkt YunoHost-erako
 
-[![Integrazio maila](https://dash.yunohost.org/integration/flohmarkt.svg)](https://dash.yunohost.org/appci/app/flohmarkt) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/flohmarkt.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/flohmarkt.maintain.svg)
+[![Integrazio maila](https://apps.yunohost.org/badge/integration/flohmarkt)](https://ci-apps.yunohost.org/ci/apps/flohmarkt/)
+![Funtzionamendu egoera](https://apps.yunohost.org/badge/state/flohmarkt)
+![Mantentze egoera](https://apps.yunohost.org/badge/maintained/flohmarkt)
 
 [![Instalatu flohmarkt YunoHost-ekin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=flohmarkt)
 
@@ -53,17 +55,13 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 * [Service compatibility chart](https://codeberg.org/flohmarkt/flohmarkt/wiki/Service-compatibility-chart)
 
 
-**Paketatutako bertsioa:** 0.0~ynh8
+**Paketatutako bertsioa:** 0.8.0~ynh1
 
 **Demoa:** <https://flohmarkt.ween.de/>
 
 ## Pantaila-argazkiak
 
 ![flohmarkt(r)en pantaila-argazkia](./doc/screenshots/screenshot.png)
-
-## :red_circle: Ezaugarri zalantzagarriak
-
-- **Alfa softwarea**: Garapenaren hasierako fasean dago. Ezaugarri aldakor edo ezegonkorrak, erroreak eta segurtasun-arazoak izan ditzazke.
 
 ## Dokumentazioa eta baliabideak
 

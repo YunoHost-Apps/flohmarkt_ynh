@@ -5,7 +5,9 @@ Il NE doit PAS être modifié à la main.
 
 # flohmarkt pour YunoHost
 
-[![Niveau d’intégration](https://dash.yunohost.org/integration/flohmarkt.svg)](https://dash.yunohost.org/appci/app/flohmarkt) ![Statut du fonctionnement](https://ci-apps.yunohost.org/ci/badges/flohmarkt.status.svg) ![Statut de maintenance](https://ci-apps.yunohost.org/ci/badges/flohmarkt.maintain.svg)
+[![Niveau d’intégration](https://apps.yunohost.org/badge/integration/flohmarkt)](https://ci-apps.yunohost.org/ci/apps/flohmarkt/)
+![Statut du fonctionnement](https://apps.yunohost.org/badge/state/flohmarkt)
+![Statut de maintenance](https://apps.yunohost.org/badge/maintained/flohmarkt)
 
 [![Installer flohmarkt avec YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=flohmarkt)
 
@@ -53,17 +55,13 @@ Generally the [wiki](https://codeberg.org/flohmarkt/flohmarkt/wiki) is a good so
 * [Service compatibility chart](https://codeberg.org/flohmarkt/flohmarkt/wiki/Service-compatibility-chart)
 
 
-**Version incluse :** 0.0~ynh8
+**Version incluse :** 0.8.0~ynh1
 
 **Démo :** <https://flohmarkt.ween.de/>
 
 ## Captures d’écran
 
 ![Capture d’écran de flohmarkt](./doc/screenshots/screenshot.png)
-
-## :red_circle: Anti-fonctionnalités
-
-- **Logiciel en version alpha **: Le logiciel est au tout début de son développement. Il pourrait contenir des fonctionnalités changeantes ou instables, des bugs, et des failles de sécurité.
 
 ## Documentations et ressources
 

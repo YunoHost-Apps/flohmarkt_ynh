@@ -767,10 +767,9 @@ flohmarkt_ynh_create_venv() {
 }
 
 flohmarkt_ynh_venv_upgrade() {
-  ynh_print_warn "flohmarkt_ynh_venv_upgrade: I'll sit here and do nothing without @grindholds confirmation"
-  return
+
   (
-    $flohmarkt_venv_dir/bin/python3 -m venv --upgrade-deps
+    $flohmarkt_venv_dir/bin/python3 -m venv --upgrade-deps "$flohmarkt_venv_dir"
   )
 }
 
@@ -782,7 +781,10 @@ flohmarkt_ynh_venv_requirements() {
     set -o nounset
     set -x
     $flohmarkt_venv_dir/bin/python3 -m ensurepip
-    $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_app_dir/requirements.txt"
+    # starting with 0.6.1~ynh1 dependencies are not in requirements.txt anymore,
+    # but in pyproject.toml
+    # $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_app_dir/requirements.txt"
+    $flohmarkt_venv_dir/bin/pip3 install "$flohmarkt_app_dir"
   )
 }
 

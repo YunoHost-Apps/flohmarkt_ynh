@@ -23,6 +23,13 @@ then
   flohmarkt_ynh_upgrade_path_ynh5
 fi
 
+# Upgrade from 0.2.0: remove requirements.txt which is replaced by pyproject.toml
+if ynh_compare_current_package_version --comparison lt --version 0.6.1~ynh1 &&
+  ( [[ "$upgrade_type" == UPGRADE_PACKAGE ]] || [[ "$upgrade_type" == UPGRADE_APP ]] )
+then 
+  ynh_secure_remove "${flohmarkt_app_dir}/requirements.txt"
+fi
+
 # upgrade couchdb
 ynh_script_progression "Upgrading CouchDB..."
 flohmarkt_ynh_up_inst_couchdb
