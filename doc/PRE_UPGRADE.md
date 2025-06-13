@@ -61,3 +61,12 @@ You'll get WARNINGs during the upgrade showing you the address being used. Pleas
 
 If you do not like the default you can change it on the new config panel you can find in your yunohost admin webgui on the page of the flohmarkt app.
 
+## new in flohmarkt 0.10.0
+
+* currencies can now be optionally limited by the admin. if a comma-separated set of currencies is chosen, the currency field of the new-item or edit-item dialogs will show up as a drop-down instead of a free-text field
+* reworked item page
+* item page now features other items of the same user
+* improved input form validation in many contexts
+* move tagline into navigation bar in order to make better use of screen space
+* use a new version of tobii, the image viewer we use for showing item pictures, thus enhancing tobii's accessibility features
+* work on han chinese by @poesty
