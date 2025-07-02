@@ -115,8 +115,8 @@ ram.runtime = "100M"
     #    ynh_setup_source --dest_dir="$install_dir"
     # You can also define other assets than "main" and add --source_id="foobar" in the previous command
     #
-    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/0.10.0.zip"
-    sha256 = "0fe1916c517c30f4a2cb0b42de1a3a63bc0f40a5804687f42360dd57804084c4"
+    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/45a9a3464476d99db7bbd6020160cbc54de5c9ec.zip"
+    sha256 = "9fa8a1cd7dd7e0d110f74d4883acc274b07c1e6043efc1615157786ff1e4b091"
 
     # These infos are used by https://github.com/YunoHost/apps/blob/master/tools/autoupdate_app_sources/autoupdate_app_sources.py
     # to auto-update the previous asset urls and sha256sum + manifest version
