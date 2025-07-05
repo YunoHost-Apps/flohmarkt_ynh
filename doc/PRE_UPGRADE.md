@@ -70,3 +70,7 @@ If you do not like the default you can change it on the new config panel you can
 * move tagline into navigation bar in order to make better use of screen space
 * use a new version of tobii, the image viewer we use for showing item pictures, thus enhancing tobii's accessibility features
 * work on han chinese by @poesty
+
+## new in flohmarkt 0.10.1
+
+just small fixes for 0.10.0
