@@ -73,4 +73,7 @@ If you do not like the default you can change it on the new config panel you can
 
 ## new in flohmarkt 0.10.1
 
-just small fixes for 0.10.0
+* small fixes for 0.10.0
+* accessibility refinements
+* few bugfixes
+* performance improvements for start page
