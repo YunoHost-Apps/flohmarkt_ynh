@@ -32,7 +32,7 @@ If you're looking for another instance to federate with the list on the wiki is 
 
 # help welcome
 
-You're welcome to take part by opening issues or sending pull requests. You can also reach me on Matrix in [Yunohost Apps development](https://matrix.to/#/%23yunohost-apps:matrix.org) as @chrichri:librem.one .
+You're welcome to take part by opening issues or sending pull requests. You can also reach me on Matrix in the [YunoHost support room](https://matrix.to/#/%23yunohost:matrix.org) as @chrichri:ween.de .
 
 I also announced this work on the [yunohost forum](https://forum.yunohost.org/t/ynh-flohmarkt-flohmarkt-as-an-app-for-yunohost/28455?u=chrichri).
 
