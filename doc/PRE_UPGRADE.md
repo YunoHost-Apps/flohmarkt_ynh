@@ -77,3 +77,50 @@ If you do not like the default you can change it on the new config panel you can
 * accessibility refinements
 * few bugfixes
 * performance improvements for start page
+
+## new in flohmarkt 0.12.1
+
+### General
+
+* More flexible tabs on the main page
+* Tabs can now be reordered
+* Admins are free to select the default tab for their instance
+* About-Text can be shown as a tab.
+
+### Backend
+
+* Support of the nodeinfo protocol to facilitate easier discovery of instances and
+* have usage metrics.
+* Correct behaviour where the markdown of federated posts would not be shown correctly.
+* More reliable backgroundjob-architecture for email-sending
+
+### Frontend
+
+* Avatars of users without avatar image are now displayed with the account name's
+* first letter to make them more easily distinguishable at first glance.
+* A new button to display the ALT text on item images.
+* Printouts of item pages now omits screen elements that are not relevant to the item.
+* Opengraph metadata for rendering previews of flohmarkt links
+* Back-to-top button
+* Performance increase for low-end devices
+
+### Downstream
+
+* Python dependencies have been modified so flohmarkt can be run with python 3.13. Now it can
+* be deployed on the recently released debian 13 (codename: trixie).
+
+### Translations
+
+* Portuguese Backend translation
+* Bavarian translation (LOL)
+* Many many many updates on the existing translations
+
+**And many many many more fixes and tweaks.**
+
+### **IMPORTANT:**
+
+This version features changes to the database layout, so it is required to run your initialize_couchdb.py script if you manage your instance manually (on yunohost the update script will do this for you)
+
+### Thanks to everyone involved in this release:
+
+midzer, grindhold, Stefan Ruppert, Yonggan, ghose, ivangj, lavacat, AntoninDelFabbro, Kepi, Poesty Li, poVoq, Diminoit, EdwardBrok, EvilCartyen, EvilOlaf, FabioL, Fitik, angelangelangel, geoma, idesmi, mondstern, pepijn aaaaand stdevel
