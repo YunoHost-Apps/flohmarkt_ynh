@@ -624,6 +624,14 @@ flohmarkt_ynh_up_inst_couchdb() {
           --package="couchdb"
 }
 
+# install dependencies - the ynh_install_extra_app_dependencies in flohmarkt_ynh_up_inst_couchdb
+# seem to overwrite the dependencies in 'packages' from manifest.toml 
+# https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/76#issuecomment-7881893
+# https://github.com/YunoHost-Apps/flohmarkt_ynh/pull/34#issuecomment-3442731236
+flohmarkt_ynh_install_dependencies() {
+  ynh_install_app_dependencies python3-pip python3-full curl apt-transport-https gnupg moreutils curl urlwatch
+}
+
 # (re)initialise database during install and upgrade
 flohmarkt_ynh_initialize_couchdb() {
     # run in a sub shell to not source the venv activate to the rest of the script

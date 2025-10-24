@@ -49,6 +49,10 @@ chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
 ynh_script_progression --message="Starting couchdb..." --weight=1
 flohmarkt_ynh_start_couchdb
 
+# upgrade and set dependencies
+ynh_script_progression --message="Updating flohmarkt dependencies..." --weight=2
+flohmarkt_ynh_install_dependencies
+
 # install upgrade for flohmarkt
 ynh_script_progression --message="Upgrading flohmarkt..." --weight=4
 ynh_setup_source --dest_dir="$flohmarkt_app_dir/"
