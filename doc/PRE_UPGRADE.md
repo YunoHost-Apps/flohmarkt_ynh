@@ -61,3 +61,66 @@ You'll get WARNINGs during the upgrade showing you the address being used. Pleas
 
 If you do not like the default you can change it on the new config panel you can find in your yunohost admin webgui on the page of the flohmarkt app.
 
+## new in flohmarkt 0.10.0
+
+* currencies can now be optionally limited by the admin. if a comma-separated set of currencies is chosen, the currency field of the new-item or edit-item dialogs will show up as a drop-down instead of a free-text field
+* reworked item page
+* item page now features other items of the same user
+* improved input form validation in many contexts
+* move tagline into navigation bar in order to make better use of screen space
+* use a new version of tobii, the image viewer we use for showing item pictures, thus enhancing tobii's accessibility features
+* work on han chinese by @poesty
+
+## new in flohmarkt 0.10.1
+
+* small fixes for 0.10.0
+* accessibility refinements
+* few bugfixes
+* performance improvements for start page
+
+## new in flohmarkt 0.12.1
+
+### General
+
+* More flexible tabs on the main page
+* Tabs can now be reordered
+* Admins are free to select the default tab for their instance
+* About-Text can be shown as a tab.
+
+### Backend
+
+* Support of the nodeinfo protocol to facilitate easier discovery of instances and
+* have usage metrics.
+* Correct behaviour where the markdown of federated posts would not be shown correctly.
+* More reliable backgroundjob-architecture for email-sending
+
+### Frontend
+
+* Avatars of users without avatar image are now displayed with the account name's
+* first letter to make them more easily distinguishable at first glance.
+* A new button to display the ALT text on item images.
+* Printouts of item pages now omits screen elements that are not relevant to the item.
+* Opengraph metadata for rendering previews of flohmarkt links
+* Back-to-top button
+* Performance increase for low-end devices
+
+### Downstream
+
+* Python dependencies have been modified so flohmarkt can be run with python 3.13. Now it can
+* be deployed on the recently released debian 13 (codename: trixie).
+
+### Translations
+
+* Portuguese Backend translation
+* Bavarian translation (LOL)
+* Many many many updates on the existing translations
+
+**And many many many more fixes and tweaks.**
+
+### **IMPORTANT:**
+
+This version features changes to the database layout, so it is required to run your initialize_couchdb.py script if you manage your instance manually (on yunohost the update script will do this for you)
+
+### Thanks to everyone involved in this release:
+
+midzer, grindhold, Stefan Ruppert, Yonggan, ghose, ivangj, lavacat, AntoninDelFabbro, Kepi, Poesty Li, poVoq, Diminoit, EdwardBrok, EvilCartyen, EvilOlaf, FabioL, Fitik, angelangelangel, geoma, idesmi, mondstern, pepijn aaaaand stdevel
