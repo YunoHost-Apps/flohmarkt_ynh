@@ -127,6 +127,13 @@ ynh_script_progression --message="Starting flohmarkt..." --weight=10
 flohmarkt_ynh_start_service
 
 # integrate urlwatch
+ynh_script_progression --message="Install urlwatch..." --weight=1
+if ynh_package_is_installed --package=urlwatch;
+then
+  ynh_script_progression --message="urlwatch already installed. Skipping." --weight=1
+else
+  ynh_install_app_dependencies urlwatch
+fi
 ynh_script_progression --message="Configure urlwatch and its cron job..." --weight=1
 flohmarkt_ynh_urlwatch_cron
 
