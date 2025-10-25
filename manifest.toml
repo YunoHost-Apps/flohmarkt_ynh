@@ -7,7 +7,7 @@ name = "flohmarkt"
 description.en = "A decentral federated small ads platform"
 description.fr = "Plateforme de petites annonces fédérées décentralisées"
 
-version = "0.12.1~ynh1"
+version = "0.12.1~ynh2"
 
 maintainers = ["Chris Vogel"]
 
@@ -164,7 +164,10 @@ ram.runtime = "100M"
     # python dependencies shall be installed in a venv using pip.
     #  moreutils is needed for `ts` used in systemd.service
     # urlwatch for email notifications
-    packages = "python3-pip python3-full curl apt-transport-https gnupg moreutils curl urlwatch"
+    ## the package setting seems to be overridden by a later call of ynh_install_extra_app_dependencies
+    ## this is the reason, why the packages are defined in _common.sh in flohmarkt_ynh_install_dependencies
+    ## see comments in that file
+    ## packages = ["python3-pip", "python3-full", "curl", "apt-transport-https", "gnupg", "moreutils", "curl", "urlwatch"]
     # repo for couchdb - doesn't work, yet
     # extras.couchdb.repo = "deb https://apache.jfrog.io/artifactory/couchdb-deb/ __YNH_DEBIAN_VERSION__ main"
     # extras.couchdb.key = "https://couchdb.apache.org/repo/keys.asc"

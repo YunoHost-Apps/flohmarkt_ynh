@@ -50,6 +50,10 @@ chmod 640 /opt/couchdb/etc/local.d/05-flohmarkt.ini
 ynh_script_progression --message="Starting CouchDB..." --weight=2
 flohmarkt_ynh_start_couchdb
 
+# install and set dependencies
+ynh_script_progression --message="Updating flohmarkt dependencies..." --weight=2
+flohmarkt_ynh_install_dependencies
+
 # get flohmarkt
 # suspecting that this deletes all other sources for YNH_APP_ID
 ynh_script_progression --message="Downloading flohmarkt..." --weight=2
