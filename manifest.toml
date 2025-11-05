@@ -7,7 +7,7 @@ name = "flohmarkt"
 description.en = "A decentral federated small ads platform"
 description.fr = "Plateforme de petites annonces fédérées décentralisées"
 
-version = "0.12.1~ynh2"
+version = "0.12.1~ynh3"
 
 maintainers = ["Chris Vogel"]
 
@@ -160,7 +160,7 @@ ram.runtime = "100M"
     # couchdb.default = 5984
     
 
-    [resources.apt]
+    # [resources.apt]
     # python dependencies shall be installed in a venv using pip.
     #  moreutils is needed for `ts` used in systemd.service
     # urlwatch for email notifications
