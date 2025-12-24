@@ -124,3 +124,11 @@ This version features changes to the database layout, so it is required to run y
 ### Thanks to everyone involved in this release:
 
 midzer, grindhold, Stefan Ruppert, Yonggan, ghose, ivangj, lavacat, AntoninDelFabbro, Kepi, Poesty Li, poVoq, Diminoit, EdwardBrok, EvilCartyen, EvilOlaf, FabioL, Fitik, angelangelangel, geoma, idesmi, mondstern, pepijn aaaaand stdevel
+
+# new in flohmarkt 0.12.1~ynh3
+
+Small adjustment to the nginx configuration to work around a caching issue.
+
+https://codeberg.org/flohmarkt/flohmarkt/issues/504
+
+Thanks to grindhold for providing the PR!
