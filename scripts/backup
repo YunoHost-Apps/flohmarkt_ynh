@@ -3,37 +3,40 @@
 source ../settings/scripts/_common.sh
 source /usr/share/yunohost/helpers
 
-ynh_print_info --message="Declaring files to be backed up..."
-ynh_backup --src_path="$flohmarkt_install"
-ynh_backup --src_path="/etc/nginx/conf.d/$domain.d/$app.conf"
-ynh_backup --src_path="/etc/fail2ban/jail.d/$app.conf"
-ynh_backup --src_path="/etc/fail2ban/filter.d/$app.conf"
-ynh_backup --src_path="/etc/logrotate.d/$app"
-ynh_backup --src_path="/opt/couchdb/etc/local.d/05-flohmarkt.ini"
-ynh_backup --src_path="/etc/systemd/system/$flohmarkt_filename.service"
-ynh_backup --src_path="${flohmarkt_cron_job}"
-ynh_backup --src_path="${flohmarkt_log_dir}"
+ynh_print_info "Declaring files to be backed up..."
+ynh_backup "$flohmarkt_install"
+ynh_backup "/etc/nginx/conf.d/$domain.d/$app.conf"
+ynh_backup "/etc/fail2ban/jail.d/$app.conf"
+ynh_backup "/etc/fail2ban/filter.d/$app.conf"
+ynh_backup "/etc/logrotate.d/$app"
+ynh_backup "/opt/couchdb/etc/local.d/05-flohmarkt.ini"
+ynh_backup "/etc/systemd/system/$flohmarkt_filename.service"
+ynh_backup "${flohmarkt_cron_job}"
+ynh_backup "${flohmarkt_log_dir}"
 
 # for the following backups we'll want to stop flohmarkt and couchdb
 # to guarentee a consistant state
-ynh_print_info --message="Stopping flohmarkt to backup data..."
+ynh_print_info "Stopping flohmarkt to backup data..."
 flohmarkt_ynh_stop_service
 
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/24
-# since this might be re-installed as a dependency during 'remove' and 
+# since this might be re-installed as a dependency during 'remove' and
+
 # 'install' anew (like after a failed upgrade) we do not want to use
-# --is_big even thought the directories might be big because:
+#  even thought the directories might be big because:
 # "don't want that your package does backup that part during ynh_backup_﻿before_upgrade"
 # https://yunohost.org/en/packaging_apps_scripts_helpers#ynh-backup
-# 
-# if this becomes a pain we'll need to stop deleting this directories on 'remove'
-# ynh_backup --src_path="$data_dir" --is_big
-ynh_backup --src_path="$flohmarkt_data_dir"
+#
 
-ynh_print_info --message="Dumping couchdb..."
+# if this becomes a pain we'll need to stop deleting this directories on 'remove'
+# ynh_backup "$data_dir"
+
+ynh_backup "$flohmarkt_data_dir"
+
+ynh_print_info "Dumping couchdb..."
 flohmarkt_ynh_dump_couchdb
 
-ynh_print_info --message="Starting flohmarkt..."
+ynh_print_info "Starting flohmarkt..."
 flohmarkt_ynh_start_service
 
-ynh_print_info --message="Backup script completed for $app."
+ynh_print_info "Backup script completed for $app."

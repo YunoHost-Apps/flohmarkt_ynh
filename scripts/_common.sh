@@ -1,14 +1,13 @@
 #!/bin/bash
 
-
-
 #=================================================
-# COMMON VARIABLES
+# COMMON VARIABLES AND CUSTOM HELPERS
 #=================================================
 
 ## new filenames starting 0.00~ynh5
 # make a filename/service name from domain/path
-if [[ "$path" == /* ]]; then 
+if [[ "$path" == /* ]]; then
+
   url_path="${path:1}"
 fi
 if [[ "__${url_path}__" == '____' ]]; then
@@ -31,7 +30,7 @@ flohmarkt_urlwatch_dir="${flohmarkt_install}/urlwatch"
 flohmarkt_log_dir="/var/log/${app}"
 flohmarkt_sym_log_dir="/var/log/${flohmarkt_filename}"
 # filename for logfiles - ¡ojo! if not ends with .log will be interpreted
-# as a directory by ynh_use_logrotate
+# as a directory by ynh_config_add_logrotate
 # https://github.com/YunoHost/issues/issues/2383
 flohmarkt_logfile="${flohmarkt_log_dir}/app.log"
 # flohmarkt data_dir
@@ -88,26 +87,32 @@ flohmarkt_old_service="flohmarkt"
 # For the previous example, that means that $finalpath will be fill with the value given as argument for this option.
 #
 # Also, in the previous example, finalpath has a '=' at the end. That means this option need a value.
-# So, the helper has to be call with --finalpath /final/path, --finalpath=/final/path or -f /final/path, 
+# So, the helper has to be call with --finalpath /final/path, --finalpath=/final/path or -f /final/path,
+
 # the variable $finalpath will get the value /final/path
 # If there's many values for an option, -f /final /path, the value will be separated by a ';' $finalpath=/final;/path
-# For an option without value, like --user in the example, the helper can be called only with --user or -u. $user 
+# For an option without value, like --user in the example, the helper can be called only with --user or -u. $user
+
 # will then get the value 1.
 #
 # To keep a retrocompatibility, a package can still call a helper, using getopts, with positional arguments.
-# The "legacy mode" will manage the positional arguments and fill the variable in the same order than they are given 
+# The "legacy mode" will manage the positional arguments and fill the variable in the same order than they are given
+
 # in $args_array. e.g. for `my_helper "val1" val2`, arg1 will be filled with val1, and arg2 with val2.
 
-# Positional parameters (used to be the only way to use ynh_handle_getopts_args once upon a time) can be 
+# Positional parameters (used to be the only way to use ynh_handle_getopts_args once upon a time) can be
+
 # used also:
-# 
+#
+
 # '--'          start processing the rest of the arguments as positional parameters
 # $legacy_args  The arguments positional parameters will be assign to
 #               Needs to be composed of array keys of args_array. If a key for a predefined variable
 #               is used multiple times the assigned values will be concatenated delimited by ';'.
 #               If the long option variable to contain the data is predefined as an array (e.g. using
 #               `local -a arg1` then multiple values will be assigned to its cells.
-#               If the last positional parameter defined in legacy_args is defined as an array all 
+#               If the last positional parameter defined in legacy_args is defined as an array all
+
 #               the leftover positional parameters will be assigned to its cells.
 #               (it is named legacy_args, because the use of positional parameters was about to be
 #               deprecated before the last re-design of this sub)
@@ -118,7 +123,7 @@ flohmarkt_ynh_handle_getopts_args() {
     # Manage arguments only if there's some provided
     set +o xtrace # set +x
     if [ $# -eq 0 ]; then
-      ynh_print_warn --message="ynh_handle_getopts_args called without arguments"
+      ynh_print_warn "ynh_handle_getopts_args called without arguments"
       return
     fi
 
@@ -135,11 +140,13 @@ flohmarkt_ynh_handle_getopts_args() {
     flohmarkt_print_debug "args_array = (${!args_array[@]})"
     for option_flag in "${!args_array[@]}"; do
         # TODO refactor: Now I'm not sure anymore this part belongs here. To make the
-        # this all less hard to read and understand I'm thinking at the moment that it 
+        # this all less hard to read and understand I'm thinking at the moment that it
+
         # would be good to split the different things done here into their own loops:
         #
         # 1. build the option string $getopts_parameters
-        # 2. go through the arguments and add empty arguments where needed to 
+        # 2. go through the arguments and add empty arguments where needed to
+
         #    allow for cases like '--arg= --value' where 'value' is a valid option, too
         # 3. replace long option names by short once
         # 4. (possibly add empty parameters for '-a -v' in cases where -a expects a value
@@ -147,7 +154,8 @@ flohmarkt_ynh_handle_getopts_args() {
         flohmarkt_print_debug "option_flag = $option_flag"
         # Concatenate each option_flags of the array to build the string of arguments for getopts
         # Will looks like 'abcd' for -a -b -c -d
-        # If the value of an option_flag finish by =, it's an option with additionnal values. 
+        # If the value of an option_flag finish by =, it's an option with additionnal values.
+
         # (e.g. --user bob or -u bob)
         # Check the last character of the value associate to the option_flag
         flohmarkt_print_debug "compare to '${args_array[$option_flag]: -1}'"
@@ -174,9 +182,10 @@ flohmarkt_ynh_handle_getopts_args() {
             #   but if exists '[v]=value=' this is not the expected behavior:
             #   → then $arg is expected to contain an empty value and '-v' or '--value'
             #     is expected to be interpreted as its own valid argument
-            #   (found in use of ynh_replace_string called by ynh_add_config)
+            #   (found in use of ynh_replace called by ynh_config_add)
             #   solution:
-            #   insert an empty arg into array arguments to be later interpreted by 
+            #   insert an empty arg into array arguments to be later interpreted by
+
             #   getopts as the missing value to --arg=
             if [[ -v arguments[arg+1] ]] && [[ ${arguments[arg]: -1} == '=' ]]; then
                 # arg ends with a '='
@@ -187,7 +196,8 @@ flohmarkt_ynh_handle_getopts_args() {
                 flohmarkt_print_debug "MISSING PARAMETER: this_argument='$this_argument', next_argument='$next_argument'"
 
                 # check if next_argument is a value in args_array
-                # → starts with '--' and the rest of the argument excluding optional trailing '=' 
+                # → starts with '--' and the rest of the argument excluding optional trailing '='
+
                 #     of the string is a value in associative array args_array
                 # → or starts with '-' and the rest of the argument is a valid key in args_array
                 #   (long argument could already have been replaced by short version before)
@@ -218,7 +228,7 @@ flohmarkt_ynh_handle_getopts_args() {
         flohmarkt_print_debug "====> end loop: arguments = '${arguments[@]}'"
     done
     flohmarkt_print_debug '================= end first loop ================='
-    
+
     # Parse the first argument, return the number of arguments to be shifted off the arguments array
     # The function call is necessary here to allow `getopts` to use $@
     parse_arg() {
@@ -231,11 +241,11 @@ flohmarkt_ynh_handle_getopts_args() {
         flohmarkt_print_debug "after getopts - parameter='$parameter', OPTIND='${OPTIND:-none}', OPTARG='${OPTARG:-none}'"
 
         if [ "$parameter" = "?" ]; then
-            ynh_die --message="Invalid argument: -${OPTARG:-}"
+            ynh_die "Invalid argument: -${OPTARG:-}"
             flohmarkt_print_debug "Invalid argument: -${OPTARG:-}"
             exit 255
         elif [ "$parameter" = ":" ]; then
-            ynh_die --message="-$OPTARG parameter requires an argument."
+            ynh_die "-$OPTARG parameter requires an argument."
             echo "-$OPTARG parameter requires an argument."
             exit 255
         else
@@ -268,7 +278,8 @@ flohmarkt_ynh_handle_getopts_args() {
     local positional_count=0 # counter for positional parameters
     local option_var=''   # the variable name to be filled
     # Try to use legacy_args as a list of option_flag of the array args_array
-    # Otherwise, fill it with getopts_parameters to get the option_flag. 
+    # Otherwise, fill it with getopts_parameters to get the option_flag.
+
     # (But an associative arrays isn't always sorted in the correct order...)
     # Remove all ':' in getopts_parameters, if used.
     legacy_args=${legacy_args:-${getopts_parameters//:/}}
@@ -291,12 +302,15 @@ flohmarkt_ynh_handle_getopts_args() {
             positional_mode=1 # set state to positional parameter mode
             flohmarkt_print_debug "positional parameter, argument='$argument'"
 
-            # Get the option_flag from getopts_parameters by using the option_flag according to the 
+            # Get the option_flag from getopts_parameters by using the option_flag according to the
+
             # position of the argument.
             option_flag=${legacy_args:$positional_count:1}
 
-            # increment counter for legacy_args if still args left. If no args left check if the 
-            # last arg is a predefined array and let it cells be filled. Otherwise complain and 
+            # increment counter for legacy_args if still args left. If no args left check if the
+
+            # last arg is a predefined array and let it cells be filled. Otherwise complain and
+
             # return.
             flohmarkt_print_debug "positional_counter='$positional_count', max positional_counter='$(( ${#legacy_args} -1 ))'"
             if [[ $positional_count -le $((${#legacy_args} - 1)) ]]; then
@@ -309,11 +323,12 @@ flohmarkt_ynh_handle_getopts_args() {
                 # Also, remove '=' at the end of the long option
                 # The variable name will be stored in 'option_var'
                 option_var="${args_array[$option_flag]%=}"
-            elif [[ $positional_count -ge $((${#legacy_args} - 1)) ]] && 
+            elif [[ $positional_count -ge $((${#legacy_args} - 1)) ]] &&
+
                 ! declare -p ${option_var} | grep '^declare -a'
             then
                 # no more legacy_args to fill - legacy behaviour: complain and return
-                ynh_print_warn --message="Too many arguments ! \"${arguments[$i]}\" will be ignored."
+                ynh_print_warn "Too many arguments ! \"${arguments[$i]}\" will be ignored."
                 return
             else
                 flohmarkt_print_debug "array found - keep going"
@@ -371,7 +386,7 @@ flohmarkt_ynh_local_curl() {
 # Curl abstraction to help with POST requests to local pages (such as installation forms)
 #
 # usage: ynh_local_curl [--option [-other_option […]]] "page" "key1=value1" "key2=value2" ...
-# | arg: -l --line_match: check answer against an extended regex
+# | arg: -l --wait_until: check answer against an extended regex
 # | arg: -m --method:     request method to use: POST (default), PUT, GET, DELETE
 # | arg: -H --header:     add a header to the request (can be used multiple times)
 # | arg: -d --data:       data to be PUT or POSTed. Can be used multiple times.
@@ -387,7 +402,8 @@ flohmarkt_ynh_local_curl() {
 #
 # example: ynh_local_curl "/install.php?installButton" "foo=$var1" "bar=$var2"
 #   → will open a POST request to "https://$domain/$path/install.php?installButton" posting "foo=$var1" and "bar=$var2"
-# example: ynh_local_curl -m POST --header "Accept: application/json" \ 
+# example: ynh_local_curl -m POST --header "Accept: application/json" \
+
 #   -H "Content-Type: application/json" \
 #   --data "{\"members\":{\"names\": [\"${app}\"],\"roles\": [\"editor\"]}}" -l '"ok":true' \
 #   "http://localhost:5984/"
@@ -398,24 +414,27 @@ flohmarkt_ynh_local_curl() {
 # For multiple calls, cookies are persisted between each call for the same app.
 #
 # `$domain` and `$path_url` need to be defined externally if the first form for the 'page' argument is used.
-# 
-# The return code of this function will vary depending of the use of --line_match:
-# 
-# If --line_match has been used the return code will be the one of the grep checking line_match
+#
+
+# The return code of this function will vary depending of the use of --wait_until:
+#
+
+# If --wait_until has been used the return code will be the one of the grep checking line_match
 # against the output of curl. The output of curl will not be returned.
 #
-# If --line_match has not been provided the return code will be the one of the curl command and
+# If --wait_until has not been provided the return code will be the one of the curl command and
 # the output of curl will be echoed.
 #
 # Requires YunoHost version 2.6.4 or higher.
 
     # Declare an array to define the options of this helper.a
     local -A supported_methods=( [PUT]=1 [POST]=1 [GET]=1 [DELETE]=1 )
-    local legacy_args=Ld
+    #REMOVEME? local legacy_args=Ld
     local -A args_array=( [l]=line_match= [m]=method= [H]=header= [n]=no_sleep [L]=location= [d]=data= [u]=user= [p]=password= [s]=seperator= )
     local line_match
     local method
-    local -a header 
+    local -a header
+
     local no_sleep
     local location
     local user
@@ -428,7 +447,7 @@ flohmarkt_ynh_local_curl() {
 
     # make sure method is a supported one
     if ! [[ -v supported_methods[$method] ]]; then
-      ynh_die --message="method $method not supported by flohmarkt_ynh_local_curl"
+      ynh_die "method $method not supported by flohmarkt_ynh_local_curl"
     fi
 
     # linter doesn't want that the internal function is used anymore
@@ -487,11 +506,12 @@ flohmarkt_ynh_local_curl() {
       seq=$(( $seq + 1 ))
     done
 
-    # build --user for curl 
+    # build --user for curl
+
     if [[ -n "$user" ]] && [[ -n "$password" ]]; then
       curl_opt_args+=('--user' "$user:$password")
     elif [[ -n "$user" ]] && [[ -z "$password" ]]; then
-      ynh_die --message="user provided via '-u/--user' needs password specified via '-p/--password'"
+      ynh_die "user provided via '-u/--user' needs password specified via '-p/--password'"
     fi
 
     flohmarkt_print_debug "long string curl_opt_args='${curl_opt_args[@]}'"
@@ -533,14 +553,14 @@ flohmarkt_ynh_local_curl() {
       --resolve "$domain:443:127.0.0.1" "${curl_opt_args[@]}" "$full_page_url" )
     local curl_error=$?
     flohmarkt_print_debug "curl_result='$curl_result' ($curl_error)"
-    
-    # check result agains --line_match if provided
+
+    # check result agains --wait_until if provided
     if [[ -v line_match ]] && [[ -n $line_match ]]; then
       printf '%s' "$curl_result" | grep "$line_match" > /dev/null
       # will return the error code of the above grep
       curl_error=$?
     else
-      # no --line_match, return curls error code and output
+      # no --wait_until, return curls error code and output
       echo $curl_result
     fi
 
@@ -550,10 +570,6 @@ flohmarkt_ynh_local_curl() {
     fi
     return $curl_error
 }
-
-#=================================================
-# PERSONAL HELPERS
-#=================================================
 
 # debug output for flohmarkt_ynh_handle_getopts_args and flohmarkt_ynh_local_curl
 # otherwise not needed TODO delete after development of the two is done
@@ -581,28 +597,28 @@ flohmarkt_ynh_set_permission() {
 
 # start flohmarkt service
 flohmarkt_ynh_start_service() {
-  ynh_systemd_action --service_name=$flohmarkt_filename --action="start"  \
-    --line_match='INFO: *Application startup complete.' --log_path="$flohmarkt_logfile" \
+  ynh_systemctl --service=$flohmarkt_filename --action="start"  \
+    --wait_until='INFO: *Application startup complete.' --log_path="$flohmarkt_logfile" \
     --timeout=30
 }
 
 # stop flohmarkt service
 flohmarkt_ynh_stop_service() {
-  ynh_systemd_action --service_name=$flohmarkt_filename --action="stop"
+  ynh_systemctl --service=$flohmarkt_filename --action="stop"
 }
 
 # start couchdb and wait for success
 flohmarkt_ynh_start_couchdb() {
-  ynh_systemd_action --service_name=couchdb --action="start" --timeout=30 \
+  ynh_systemctl --service=couchdb --action="start" --timeout=30 \
     --log_path="/var/log/couchdb/couchdb.log" \
-    --line_match='Apache CouchDB has started on http://127.0.0.1'
+    --wait_until='Apache CouchDB has started on http://127.0.0.1'
 }
 
 # stop couchdb
 flohmarkt_ynh_stop_couchdb() {
-  ynh_systemd_action --service_name=couchdb --action="stop" --timeout=30 \
+  ynh_systemctl --service=couchdb --action="stop" --timeout=30 \
     --log_path="/var/log/couchdb/couchdb.log" \
-    --line_match='SIGTERM received - shutting down'
+    --wait_until='SIGTERM received - shutting down'
 }
 
 # install or upgrade couchdb
@@ -618,7 +634,7 @@ flohmarkt_ynh_up_inst_couchdb() {
   couchdb couchdb/adminpass_again password $password_couchdb_admin
   couchdb couchdb/adminpass_again seen true" | debconf-set-selections
   DEBIAN_FRONTEND=noninteractive # apt-get install -y --force-yes couchdb
-  ynh_install_extra_app_dependencies \
+  ynh_apt_install_dependencies_from_extra_repository \
           --repo="deb https://apache.jfrog.io/artifactory/couchdb-deb/ $(lsb_release -c -s) main" \
           --key="https://couchdb.apache.org/repo/keys.asc" \
           --package="couchdb"
@@ -667,7 +683,7 @@ flohmarkt_ynh_delete_couchdb_user() {
     flohmarkt_ynh_local_curl -n -m DELETE -u admin -p ${password_couchdb_admin} -l '"ok":true' \
       "http://127.0.0.1:5984/_users/org.couchdb.user%3A${app}?rev=${couchdb_user_revision}"
   else
-    ynh_die --message "couchdb_user_revision is empty (${couchdb_user_revision})"
+    ynh_die  "couchdb_user_revision is empty (${couchdb_user_revision})"
   fi
 }
 
@@ -677,7 +693,7 @@ flohmarkt_ynh_create_couchdb_user() {
     -d '{' \
     -d "\"name\": \"${app}\", \"password\": \"${password_couchdb_flohmarkt}\"," \
     -d '"roles": [], "type": "user"}' \
-    --line_match='"ok":true' \
+    --wait_until='"ok":true' \
     "http://127.0.0.1:5984/_users/org.couchdb.user:${app}"
 }
 
@@ -685,7 +701,7 @@ flohmarkt_ynh_couchdb_user_permissions() {
   flohmarkt_ynh_local_curl -n -m PUT -u admin -p "$password_couchdb_admin" \
     -H "Accept: application/json" -H "Content-Type: application/json" \
     -d "{\"members\":{\"names\": [\"${app}\"],\"roles\": [\"editor\"]}}" \
-    --line_match='"ok":true' \
+    --wait_until='"ok":true' \
     "http://127.0.0.1:5984/${app}/_security"
 }
 
@@ -700,18 +716,18 @@ flohmarkt_ynh_exists_couchdb_db() {
 }
 
 flohmarkt_ynh_delete_couchdb_db() {
-  local legacy_args='n'
+  #REMOVEME? local legacy_args='n'
   local -A args_array=( [n]=name= )
   flohmarkt_ynh_handle_getopts_args "$@"
   local name=${name:-${app}}
 
   flohmarkt_ynh_local_curl -n -m DELETE -u admin -p "$password_couchdb_admin" \
-    --line_match='"ok":true' "http://127.0.0.1:5984/${name}"
+    --wait_until='"ok":true' "http://127.0.0.1:5984/${name}"
 }
 
 # replicate couchdb to a new database
 flohmarkt_ynh_copy_couchdb() {
-  local legacy_args='on'
+  #REMOVEME? local legacy_args='on'
   local -A args_array=( [o]=old_name= [n]=new_name= )
   local new_name
   local old_name
@@ -722,12 +738,12 @@ flohmarkt_ynh_copy_couchdb() {
     -H "Accept: application/json" -H "Content-Type: application/json" \
     -d '{ "create_target":true,"source" : "' -d"${old_name}" -d'",' \
     -d '"target":"' -d "${new_name}" -d'"}' --seperator=none \
-    --line_match='"ok":true' "http://127.0.0.1:5984/_replicate"
+    --wait_until='"ok":true' "http://127.0.0.1:5984/_replicate"
 }
 
 # copy couchdb to new name and delete source
 flohmarkt_ynh_rename_couchdb() {
-  local legacy_args='on'
+  #REMOVEME? local legacy_args='on'
   local -A args_array=( [o]=old_name= [n]=new_name= )
   local new_name
   local old_name
@@ -741,9 +757,9 @@ flohmarkt_ynh_rename_couchdb() {
 flohmarkt_ynh_backup_old_couchdb() {
   flohmarkt_couchdb_rename_to="${app}_$(date '+%Y-%m-%d_%H-%M-%S_%N')"
   if flohmarkt_ynh_rename_couchdb "${app}" "${flohmarkt_couchdb_rename_to}"; then
-    ynh_print_warn --message="renamed existing database ${app} to ${flohmarkt_couchdb_rename_to}"
+    ynh_print_warn "renamed existing database ${app} to ${flohmarkt_couchdb_rename_to}"
   else
-    ynh_die --message="could not rename existing couchdb database and cannot overwrite it"
+    ynh_die "could not rename existing couchdb database and cannot overwrite it"
   fi
 }
 
@@ -759,11 +775,11 @@ flohmarkt_ynh_create_venv() {
 }
 
 flohmarkt_ynh_venv_upgrade() {
+
   (
     $flohmarkt_venv_dir/bin/python3 -m venv --upgrade-deps "$flohmarkt_venv_dir"
   )
 }
-  
 
 # install requirements.txt in venv
 flohmarkt_ynh_venv_requirements() {
@@ -783,31 +799,34 @@ flohmarkt_ynh_venv_requirements() {
 flohmarkt_ynh_urlwatch_cron() {
     mkdir -m 750 -p "${flohmarkt_urlwatch_dir}"
     chown ${app}:root "${flohmarkt_urlwatch_dir}"
-    ynh_add_config --template="../conf/urlwatch_config.yaml" \
+    ynh_config_add --template="urlwatch_config.yaml" \
         --destination="${flohmarkt_urlwatch_dir}/config.yaml"
-    ynh_add_config --template="../conf/urlwatch_urls.yaml" \
+    ynh_config_add --template="urlwatch_urls.yaml" \
         --destination="${flohmarkt_urlwatch_dir}/urls.yaml"
-    ynh_add_config --template="../conf/urlwatch.cron" \
+    ynh_config_add --template="urlwatch.cron" \
         --destination="${flohmarkt_cron_job}"
     chown root:root "${flohmarkt_cron_job}"
     chmod 755 "${flohmarkt_cron_job}"
-    # run urlwatch once to initialize if cache file does not exist, 
+    # run urlwatch once to initialize if cache file does not exist,
+
     # but if sending email fails (like on CI) just warn. We do not want
     # to show the output that might contain passwords
     if ! [[ -s ${flohmarkt_urlwatch_dir}/cache.file ]] &&
-        ! ynh_exec_fully_quiet sudo -u ${app} urlwatch \
+        ! sudo -u ${app} urlwatch \
         --config=${flohmarkt_urlwatch_dir}/config.yaml \
         --urls=${flohmarkt_urlwatch_dir}/urls.yaml \
-        --cache=${flohmarkt_urlwatch_dir}/cache.file 
+        --cache=${flohmarkt_urlwatch_dir}/cache.file
+
     then
-        ynh_print_warn --message="initial call to urlwatch failed"
+        ynh_print_warn "initial call to urlwatch failed"
     fi
 }
 
 flohmarkt_initialized() {
     flohmarkt_ynh_local_curl -n -m GET -u admin -p "$password_couchdb_admin" \
         -l '"initialized":true' \
-        "http://127.0.0.1:5984/${app}/instance_settings" 
+        "http://127.0.0.1:5984/${app}/instance_settings"
+
 }
 
 flohmarkt_ynh_get_initialization_key() {
@@ -826,39 +845,31 @@ flohmarkt_ynh_upgrade_path_ynh5() {
   # yunohost seems to move the venv dir automatically, but this
   # doesn't work, because the paths inside the venv are not adjusted
   # delete the old, not working venv and create a new one:
-  ynh_secure_remove --file="$flohmarkt_venv_dir"
+  ynh_safe_rm "$flohmarkt_venv_dir"
   flohmarkt_ynh_create_venv
   flohmarkt_ynh_venv_requirements
   # remove old $install_dir
-  ynh_secure_remove --file="$flohmarkt_old_install"
+  ynh_safe_rm "$flohmarkt_old_install"
 
   # move logfile directory
   mkdir -p "$flohmarkt_log_dir"
 
   # remove systemd.service - will be generated newly by upgrade
-  # ynh_remove_systemd_config --service="$flohmarkt_old_service"
-  ynh_systemd_action --action=stop --service_name="$flohmarkt_old_service"
-  ynh_systemd_action --action=disable --service_name="$flohmarkt_old_service"
-  ynh_secure_remove --file="/etc/systemd/system/multi-user.target.wants/flohmarkt.service"
-  ynh_secure_remove --file="/etc/systemd/system/flohmarkt.service"
+  # ynh_config_remove_systemd"$flohmarkt_old_service"
+  ynh_systemctl --action=stop --service="$flohmarkt_old_service"
+  ynh_systemctl --action=disable --service="$flohmarkt_old_service"
+  ynh_safe_rm "/etc/systemd/system/multi-user.target.wants/flohmarkt.service"
+  ynh_safe_rm "/etc/systemd/system/flohmarkt.service"
   # funktioniert nicht? issue?
-  #ynh_systemd_action --action=daemon-reload
+  #ynh_systemctl --action=daemon-reload
   # DEBUG + systemctl daemon-reload flohmarkt
   # WARNING Too many arguments.
   systemctl daemon-reload
   # unit flohmarkt is automatically appended and therefor this fails:
-  #ynh_systemd_action --action=reset-failed
+  #ynh_systemctl --action=reset-failed
   systemctl reset-failed
- 
+
   # create symlinks
   ln -s "$flohmarkt_install" "$flohmarkt_sym_install"
   ln -s "$flohmarkt_data_dir" "$flohmarkt_sym_data_dir"
 }
-
-#=================================================
-# EXPERIMENTAL HELPERS
-#=================================================
-
-#=================================================
-# FUTURE OFFICIAL HELPERS
-#=================================================
