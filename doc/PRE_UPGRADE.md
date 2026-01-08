@@ -1,3 +1,69 @@
+## new in flohmarkt 0.14.0
+
+### General
+
+* **Geographic overhaul**
+  * Users and items now have their own independent locations
+  * User location can be set in Settings
+  * Item location can be set in new item/edit item dialog
+  * **Location-based searches** - find items near you!
+  * Removed configurable instance radius for simpler geo handling
+* **Support for different authentication backends**
+  * LDAP authentication support (turn on in Administration settings under "Authentication")
+  * FediAuth - Link your identity to another fediverse account (turn on in Administration settings under "Authentication")
+
+### Backend
+
+* Tilecache for caching OpenStreetMap tiles
+  * Improves map performance and reduces external requests
+  * Configurable tile server and cache size
+
+### Frontend
+
+* Loader indicators for time-intensive tasks
+* Keyboard navigation for tabs
+* Speed improvements through better templating
+* Improved form validation on edit item dialog
+* **Image rotation** - users can now rotate images in the edit item form
+* **Emoji picker** in markdown forms
+* Avatar menu closes when clicking outside
+* Admin diagnostics tab now shows currently installed flohmarkt version
+* **Progress bar for image uploader**
+* General page load improvements through script priority optimization and critical SVG loading
+* ActivityPub-related fixes
+* Many small CSS fixes and improvements
+
+### Configuration Changes
+
+**New `[Tilecache]` section** added to configuration (automatically included in YunoHost installations):
+
+```ini
+[Tilecache]
+TileServerURL = https://tile.openstreetmap.org
+TileCacheSize = 10_000
+```
+
+### Database Changes
+
+This version features changes to the database layout. On YunoHost, the upgrade script will automatically run `initialize_couchdb.py` to apply the new indices.
+
+### Dependencies
+
+LDAP support and geographic features require additional build dependencies (automatically installed by YunoHost during upgrade):
+- build-essential
+- python3-dev
+- libldap2-dev
+- libsasl2-dev
+- libspatialindex-dev
+
+### Thanks
+
+Many thanks to all the people who helped in this release:
+
+@midzer @Profpatsch @armadillo11 @Yonggan @EvilCartyen @Fjuro
+
+And a special thanks to the **NLNet foundation** for funding work on this release's two major General features!
+
 # new in 0.6.1~ynh2
 
 No new features.
