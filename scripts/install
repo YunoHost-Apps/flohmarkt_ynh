@@ -76,6 +76,7 @@ ynh_app_setting_set --app=$app --key=password_couchdb_flohmarkt --value="$passwo
 
 # generate flohmarkt.conf
 ynh_script_progression --message="Adding flohmarkt.conf configuration..." --weight=2
+ynh_package_version="$YNH_APP_MANIFEST_VERSION"
 ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_app_dir/flohmarkt.conf"
 
 # setup couchdb
