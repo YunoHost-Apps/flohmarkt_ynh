@@ -8,7 +8,7 @@ It shall NOT be edited by hand.
   flohmarkt, packaged for YunoHost
 </h1>
 
-A decentral federated small ads platform
+Decentral federated small ads platform
 
 [![🌐 Official app website](https://img.shields.io/badge/Official_app_website-darkgreen?style=for-the-badge)](https://codeberg.org/flohmarkt/flohmarkt)
 [![App Demo](https://img.shields.io/badge/App_Demo-blue?style=for-the-badge)](https://flohmarkt.ween.de/)
