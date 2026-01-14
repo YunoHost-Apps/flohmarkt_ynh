@@ -64,6 +64,7 @@ flohmarkt_ynh_venv_requirements
 
 # upgrade flohmarkt.conf
 ynh_script_progression --message="Upgrading flohmarkt configuration..." --weight=1
+ynh_package_version="$YNH_APP_MANIFEST_VERSION"
 ynh_add_config --template="../conf/flohmarkt.conf" --destination="$flohmarkt_app_dir/flohmarkt.conf"
 
 ynh_script_progression --message="Upgrading flohmarkt couchdb..." --weight=10

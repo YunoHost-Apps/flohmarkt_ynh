@@ -628,8 +628,12 @@ flohmarkt_ynh_up_inst_couchdb() {
 # seem to overwrite the dependencies in 'packages' from manifest.toml 
 # https://codeberg.org/flohmarkt/flohmarkt_ynh/issues/76#issuecomment-7881893
 # https://github.com/YunoHost-Apps/flohmarkt_ynh/pull/34#issuecomment-3442731236
+# flohmarkt 0.14.0 adds LDAP support and geographic features requiring build dependencies:
+# - build-essential, python3-dev: needed to compile python-ldap C extensions
+# - libldap2-dev, libsasl2-dev: LDAP client library headers for python-ldap
+# - libspatialindex-dev: spatial indexing library for rtree (geographic features)
 flohmarkt_ynh_install_dependencies() {
-  ynh_install_app_dependencies python3-pip python3-full curl apt-transport-https gnupg moreutils curl urlwatch
+  ynh_install_app_dependencies python3-pip python3-full curl apt-transport-https gnupg moreutils curl urlwatch build-essential python3-dev libldap2-dev libsasl2-dev libspatialindex-dev
 }
 
 # (re)initialise database during install and upgrade
