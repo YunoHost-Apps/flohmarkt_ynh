@@ -198,3 +198,35 @@ Many thanks to all the people who helped in this release:
 @midzer @Profpatsch @armadillo11 @Yonggan @EvilCartyen @Fjuro
 
 And a special thanks to the **NLNet foundation** for funding work on this release's two major General features!
+
+## new in flohmarkt 0.16.0
+
+### important
+
+**Fediauth is enabled by default**: people ara able to login to your flohmarkt using their elsewhere existing fediverse account
+
+### changes
+
+#### General
+* Fediauth is enabled by default
+* OAuth2 Authentication
+* Many bugfixes
+
+#### Backend
+* Stateful Session Management
+* Backend log-messages are not translated anymore (reduces load on translators and makes asking for help in the internet easier)
+* HTTP Caching middleware
+* Fix Image preview for item page links on other platforms (opengraph)
+
+### Frontend
+* Tag autocompletion
+* Show distance to current user on items
+* Show age of listing on items
+* Rework item page layout
+* BF Cache fixed
+
+### sorry and thanks
+
+As always many thanks to the flohmarkt development team for their great work! I'm sorry I missed a release inbetween. I sailed in different waters...
+
+Have a nice [Digital Independence Day](https://di.day/) [#DID](https://mastodon.social/tags/did) on 01. of March everybody!
