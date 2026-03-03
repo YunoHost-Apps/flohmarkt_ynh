@@ -230,3 +230,11 @@ And a special thanks to the **NLNet foundation** for funding work on this releas
 As always many thanks to the flohmarkt development team for their great work! I'm sorry I missed a release inbetween. I sailed in different waters...
 
 Have a nice [Digital Independence Day](https://di.day/) [#DID](https://mastodon.social/tags/did) on 01. of March everybody!
+
+## flohmarkt 0.16.1
+
+After a wave of spam / scam the flohmarkt team releases this improvement within one night.
+
+### changes
+
+Fixes in HTTP Signature checks
