@@ -777,6 +777,9 @@ flohmarkt_ynh_venv_requirements() {
     set -o nounset
     set -x
     $flohmarkt_venv_dir/bin/python3 -m ensurepip
+    # pin this version of fastapi (fixed upstream but waiting on new version https://codeberg.org/flohmarkt/flohmarkt/issues/956)
+    # To remove when version > 0.16.1 is out
+    $flohmarkt_venv_dir/bin/pip install fastapi==0.134.0
     # starting with 0.6.1~ynh1 dependencies are not in requirements.txt anymore,
     # but in pyproject.toml
     # $flohmarkt_venv_dir/bin/pip3 install -r "$flohmarkt_app_dir/requirements.txt"
