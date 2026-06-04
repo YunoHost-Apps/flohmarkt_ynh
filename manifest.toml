@@ -119,12 +119,7 @@ ram.runtime = "100M"
     sha256 = "a246260500ee089bb148ed5537dcb8098e29c0f5865f6dac479be903e4e74a70"
     # download counter at codeberg for the zip archive is at 1 download before started this update
 
-    # These infos are used by https://github.com/YunoHost/apps/blob/master/tools/autoupdate_app_sources/autoupdate_app_sources.py
-    # to auto-update the previous asset urls and sha256sum + manifest version
-    # assuming the upstream's code repo is on github and relies on tags or releases
-    # See the 'sources' resource documentation for more details
-
-    # autoupdate.strategy = "latest_github_tag"
+    autoupdate.strategy = "latest_forgejo_release"
 
     # This will provision/deprovision a unix system user named id form above → 'flohmarkt'
     [resources.system_user]
