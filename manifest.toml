@@ -7,7 +7,7 @@ name = "flohmarkt"
 description.en = "Decentral federated small ads platform"
 description.fr = "Plateforme de petites annonces fédérées décentralisées"
 
-version = "0.16.1~ynh1"
+version = "0.18.1~ynh1"
 
 maintainers = ["Chris Vogel"]
 
@@ -29,7 +29,7 @@ code = "https://codeberg.org/flohmarkt/flohmarkt"
 yunohost = ">= 12.1.38"
 architectures = "all"
 # https://codeberg.org/ChriChri/flohmarkt_ynh/issues/11
-multi_instance = true
+multi_instance = false
 
 # the "ldap" key corresponds to wether or not a user *can* login on the app using
 # its YunoHost credentials.
@@ -111,13 +111,8 @@ ram.runtime = "100M"
     [resources.sources]
 
     [resources.sources.main]
-    # This will pre-fetch the asset which can then be deployed during the install/upgrade scripts with :
-    #    ynh_setup_source --dest_dir="$install_dir"
-    # You can also define other assets than "main" and add --source_id="foobar" in the previous command
-    #
-    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/0.16.1.zip"
-    sha256 = "a246260500ee089bb148ed5537dcb8098e29c0f5865f6dac479be903e4e74a70"
-    # download counter at codeberg for the zip archive is at 1 download before started this update
+    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/0.18.1.tar.gz"
+    sha256 = "0953f1b2b264eb22b8cc7b24e24828e1e48a91dd5debae4e7c341e45a9f3237b"
 
     autoupdate.strategy = "latest_forgejo_release"
 
