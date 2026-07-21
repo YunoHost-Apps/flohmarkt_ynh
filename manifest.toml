@@ -7,7 +7,7 @@ name = "flohmarkt"
 description.en = "Decentral federated small ads platform"
 description.fr = "Plateforme de petites annonces fédérées décentralisées"
 
-version = "0.18.1~ynh1"
+version = "0.20.1~ynh1"
 
 maintainers = ["Chris Vogel"]
 
@@ -111,8 +111,8 @@ ram.runtime = "100M"
     [resources.sources]
 
     [resources.sources.main]
-    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/0.18.1.tar.gz"
-    sha256 = "0953f1b2b264eb22b8cc7b24e24828e1e48a91dd5debae4e7c341e45a9f3237b"
+    url = "https://codeberg.org/flohmarkt/flohmarkt/archive/0.20.1.tar.gz"
+    sha256 = "2c3d10401a24daa4e72c19572ee326837eca64e21be93603e624626a066de733"
 
     autoupdate.strategy = "latest_forgejo_release"
 
